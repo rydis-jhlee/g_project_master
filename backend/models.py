@@ -57,9 +57,9 @@ class TbBuy(models.Model):
 
 
 # 구매 아이템 테이블
-class TbItemBuy(models.Model):
+class TbBuyItem(models.Model):
     class Meta:
-        db_table = 'tb_item_buy'
+        db_table = 'tb_buy_item'
 
     buy_id = models.ForeignKey("TbBuy", on_delete=models.SET_NULL, db_column='buy_id', null=True)            # 구매FK
     product_id = models.ForeignKey("TbProduct", on_delete=models.SET_NULL, db_column='product_id', null=True)  # 제품FK

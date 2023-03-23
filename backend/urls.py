@@ -7,6 +7,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # 전체 제품 리스트 조회, 제품 등록
-    path("backend/product", ProductListAPI.as_view(), name='product'),
+    # 제품 조회, 등록, 수정 ,삭제
+    path("backend/product", ProductAPI.as_view(), name='product'),
+    # 판매 조회, 등록, 수정 ,삭제
+    path("backend/sale_agent", SaleAgentAPI.as_view(), name='sale_agent'),
+    # 구매 아이템
+    path("backend/buy_item", BuyItemAPI.as_view(), name='buy_item'),
+
+    # 구매 내역, 결제 정보
+    #path("backend/sale_agent", SaleAgentAPI.as_view(), name='sale_agent'),
 ]
