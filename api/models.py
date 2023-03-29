@@ -35,7 +35,7 @@ class Product(models.Model):
     quantity = models.CharField(max_length=150)               # 제품 수량
     created = models.DateTimeField(auto_now_add=True)         # 제품 등록 일시
     updated = models.DateTimeField(auto_now=True, null=True)  # 제품 수정 일시
-    type = models.CharField(max_length=150)                   # 제품 타입(판매중, 판매완료 등)
+    type = models.CharField(max_length=150)                   # 제품 타입(1:판매중, 2:판매완료)
     desc = models.CharField(max_length=150)                   # 제품 설명
     sale_agent_id = models.ForeignKey("SaleAgent", on_delete=models.SET_NULL, db_column='sale_agent_id', null=True)  # 판매업체ID
     # product_category 제품 카테고리
@@ -52,10 +52,10 @@ class Payment(models.Model):
     price = models.CharField(max_length=150, null=True)       # 결제 금액
     created = models.DateTimeField(auto_now_add=True)         # 결제 생성 일시
     updated = models.DateTimeField(auto_now=True, null=True)  # 결제 상태 수정 일시
-    status = models.CharField(max_length=150)                 # 결제 상태(결제,미결제,결제취소)
+    status = models.CharField(max_length=150)                 # 결제 상태(1:미결제, 2:결제, 3:결제취소)
     payment_date = models.DateTimeField(null=True)            # 결제 일시
-    delivery_type = models.CharField(max_length=150, null=True)  # 제품 수령 방식(배송, 직접수령)
-    payment_type = models.CharField(max_length=150, null=True)   # 제품 결제 방식(카드, 계좌이체, 현금)
+    delivery_type = models.CharField(max_length=150, null=True)  # 제품 수령 방식(1:직접수령, 2:배송)
+    payment_type = models.CharField(max_length=150, null=True)   # 제품 결제 방식(1:신용카드, 2:계좌이체, 3:현금)
     desc = models.CharField(max_length=150, null=True)        # 구매 요약(판매자에 대한 요청)
     memo = models.CharField(max_length=150, null=True)        # 구매 메모
     delivery_id = models.ForeignKey("Delivery", on_delete=models.SET_NULL, db_column='delivery_id', null=True)  # 배송ID
@@ -80,8 +80,8 @@ class Delivery(models.Model):
         db_table = 'tb_delivery'
 
     delivery_id = models.BigAutoField(primary_key=True)       # 배송ID
-    type = models.CharField(max_length=150)                   # 배송 타입(직접수령, 배달기사 할당, 배달기사 비할당)
-    status = models.CharField(max_length=150)                 # 배송 상태(배송 완료, 배송 준비, 배송 취소, 배송중)
+    type = models.CharField(max_length=150)                   # 배송 타입(1:직접수령, 2:배달기사 접수, 3:배달기사 미접수)
+    status = models.CharField(max_length=150)                 # 배송 상태(1:배송 준비, 2:배송중, 3:배송 완료, 4:배송 취소)
     man_id = models.CharField(max_length=150)                 # 배송기사ID(직접수령이면 구매자ID, 배달이면 배송기사ID)
     man_number = models.CharField(max_length=150)             # 배송기사 연락처(직접수령이면 구매자 전화번호, 배달이면 배송기사 전화번호)
     created = models.DateTimeField(auto_now_add=True)         # 배송 시작 일시(직접수령 or 배송시작)

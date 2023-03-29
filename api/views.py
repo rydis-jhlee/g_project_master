@@ -20,9 +20,7 @@ class SaleAgentAPI(View):
         
         # 판매업체명으로 검색
         if name:
-            sale_agents = SaleAgent.objects.filter(
-                Q(name=name)
-            )
+            sale_agents = SaleAgent.objects.filter(Q(name=name))
         # 판매업체명이 없으면 전체 검색
         else:
             sale_agents = SaleAgent.objects.all()
@@ -44,8 +42,10 @@ class SaleAgentAPI(View):
 
     def post(self, request):
         try:
+            name = request.POST.get('name')
+
             # 업체명으로 등록된게 있는지 체크
-            if SaleAgent.objects.filter(name=request.POST.get('name')).exists():
+            if SaleAgent.objects.filter(name=name).exists():
                 return JsonResponse({'등록취소': "등록된 판매사가 존재 합니다."})
             else:
                 tb_sale_agent = SaleAgent.objects.create(
@@ -69,24 +69,22 @@ class SaleAgentAPI(View):
     def put(self, request):
 
         # 필수 항목
-        name = request.GET.get('name')  # 판매업체명
+        sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
 
         # 수정 항목
-        rename = request.GET.get('rename')  # 판매업체명(수정할 명칭)
+        name = request.GET.get('name')                    # 판매업체명
         business_info = request.GET.get('business_info')  # 사업자정보
-        addr = request.GET.get('addr')  # 주소
-        ceo = request.GET.get('ceo')  # 대표
-        phone_number = request.GET.get('phone_number')  # 전화번호
-        desc = request.GET.get('desc')  # 설명
-        memo = request.GET.get('memo')  # 메모
+        addr = request.GET.get('addr')                    # 주소
+        ceo = request.GET.get('ceo')                      # 대표
+        phone_number = request.GET.get('phone_number')    # 전화번호
+        desc = request.GET.get('desc')                    # 설명
+        memo = request.GET.get('memo')                    # 메모
 
         try:
             # 판매업체명으로 수정항목 조회
-            if name:
-                sale_agent = SaleAgent.objects.get(name=name)
-
+            sale_agent = SaleAgent.objects.filter(sale_agent_id=sale_agent_id).first()
             if sale_agent:
-                sale_agent.name = rename
+                sale_agent.name = name
                 sale_agent.business_info = business_info
                 sale_agent.addr = addr
                 sale_agent.ceo = ceo
@@ -132,17 +130,16 @@ class ProductAPI(View):
     def get(self, request):
         
         # 필수 파라미터
-        name = request.GET.get('name')                        # 제품명
+        #name = request.GET.get('name')                        # 제품명
         sale_agent_name = request.GET.get('sale_agent_name')  # 판매업체명
 
         product_list = list()
 
-        # 판매업체와 제품명으로 검색(현재는 제품 검색시 무조건 판매업체도 같이있어야함)
-        if name and sale_agent_name:
-            products = Product.objects.filter(
-                Q(name=name) & Q(sale_agent_id__name=sale_agent_name))
+        # 판매업체에서 판매중인 제품만 검색
+        if sale_agent_name:
+            products = Product.objects.filter(Q(sale_agent_id__name=sale_agent_name) & Q(type=1))
         else:
-            products = Product.objects.all()
+            products = Product.objects.filter(Q(type=1))
 
         if products:
             for product in products:
@@ -169,11 +166,14 @@ class ProductAPI(View):
             # 필수 파라미터
             name = request.POST.get('name')                        # 제품명
             sale_agent_name = request.POST.get('sale_agent_name')  # 판매업체명
+            type = request.POST.get('type')                        # 제품 타입(1:판매중, 2:판매완료)
 
-            # 판매업체내에서 같은제품이 등록되어 있는지 체크
-            if name and sale_agent_name:
+            # 판매업체내에서 같은제품이 등록되어 있는지, 판매중인 상품인지 체크
+            if name and sale_agent_name and type:
                 product = Product.objects.filter(
-                    Q(name=name) & Q(sale_agent_id__name=sale_agent_name)
+                    Q(name=name) & 
+                    Q(sale_agent_id__name=sale_agent_name) &
+                    Q(type=type)
                 )
                 if product:
                     return JsonResponse({'등록취소': "등록된 제품이 존재 합니다."})
@@ -186,7 +186,7 @@ class ProductAPI(View):
                             image=request.POST.get('image'),
                             price=request.POST.get('price'),
                             quantity=request.POST.get('quantity'),
-                            type=request.POST.get('type'),
+                            type=1,  # 제품등록시 판매중으로 등록
                             desc=request.POST.get('desc'),
                             sale_agent_id=sale_agent_info
                         )
@@ -204,11 +204,10 @@ class ProductAPI(View):
     def put(self, request):
 
         # 필수 항목
-        name = request.GET.get('name')  # 제품명
-        sale_agent_name = request.GET.get('sale_agent_name')  # 판매업체명
+        product_id = request.GET.get('product_id')  # 제품ID
 
         # 수정 항목
-        rename = request.GET.get('rename')  # 제품명(수정할 명칭)
+        name = request.GET.get('name')  # 제품명
         image = request.GET.get('image')  # 제품이미지
         price = request.GET.get('price')  # 제품 가격
         quantity = request.GET.get('quantity')  # 제품 수량
@@ -216,23 +215,20 @@ class ProductAPI(View):
         desc = request.GET.get('desc')  # 제품 요약
 
         try:
-            # 제품명, 판매업체명으로 수정항목 조회
-            if name and sale_agent_name:
-                product = Product.objects.filter(
-                    name=name,
-                    sale_agent_id__name=sale_agent_name
-                ).first()
+            # 제품ID로 수정항목 조회
+            if product_id:
+                product = Product.objects.filter(product_id=product_id).first()
 
-            if product:
-                product.name = rename
-                product.image = image
-                product.price = price
-                product.quantity = quantity
-                product.type = type
-                product.desc = desc
-                product.updated = datetime.now()
-                product.save()
-                return JsonResponse({'status': "success"})
+                if product:
+                    product.name = name
+                    product.image = image
+                    product.price = price
+                    product.quantity = quantity
+                    product.type = type
+                    product.desc = desc
+                    product.updated = datetime.now()
+                    product.save()
+                    return JsonResponse({'status': "success"})
             else:
                 return JsonResponse({'제품 수정 실패': "조회된 제품이 존재하지 않습니다."})
         except Exception as e:
