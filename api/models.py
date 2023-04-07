@@ -13,14 +13,29 @@ class SaleAgent(models.Model):
 
     sale_agent_id = models.BigAutoField(primary_key=True)        # 판매사ID
     name = models.CharField(max_length=150)                      # 판매사명
+    building_name = models.CharField(max_length=150)             # 건물명(판매업체가 소속된 건물)
     business_info = models.CharField(max_length=150, null=True)  # 판매사 사업자정보
     addr = models.CharField(max_length=150)                      # 판매사 주소
-    ceo = models.CharField(max_length=150)                       # 판매사 대표자명
-    phone_number = models.CharField(max_length=150)              # 판매사 전화번호
+    owner_name = models.CharField(max_length=150)                # 업체대표명
+    owner_number = models.CharField(max_length=150)              # 업체대표 전화번호
     desc = models.CharField(max_length=150, null=True)           # 판매사 설명
     memo = models.CharField(max_length=150, null=True)           # 판매사 메모
     created = models.DateTimeField(auto_now_add=True)            # 판매사 등록 일시
     updated = models.DateTimeField(auto_now=True, null=True)     # 판매사 수정 일시
+    # level = models.IntegerField(null=True, default=0)          # 판매사 등급 --> 판매업체가 아니라 판매자 계정쪽에 넣어야함.
+
+    @staticmethod
+    def create(**kwargs):
+        SaleAgent.objects.create(
+            name=kwargs.get('name'),
+            business_info=kwargs.get('business_info'),
+            addr=kwargs.get('addr'),
+            owner_name=kwargs.get('owner_name'),
+            owner_number=kwargs.get('owner_number'),
+            desc=kwargs.get('desc'),
+            memo=kwargs.get('memo'),
+            building_name=kwargs.get('building_name')
+        )
 
 
 # 제품 테이블
@@ -35,11 +50,21 @@ class Product(models.Model):
     quantity = models.CharField(max_length=150)               # 제품 수량
     created = models.DateTimeField(auto_now_add=True)         # 제품 등록 일시
     updated = models.DateTimeField(auto_now=True, null=True)  # 제품 수정 일시
-    type = models.CharField(max_length=150)                   # 제품 타입(1:판매중, 2:판매완료)
+    type = models.CharField(max_length=150)                   # 제품 타입(0:판매준비, 1:판매중, 2:판매완료)
     desc = models.CharField(max_length=150)                   # 제품 설명
     sale_agent_id = models.ForeignKey("SaleAgent", on_delete=models.SET_NULL, db_column='sale_agent_id', null=True)  # 판매업체ID
     # product_category 제품 카테고리
     # product_sell_time 제품 판매시간
+
+    @staticmethod
+    def create(**kwargs):
+        Product.objects.create(
+            name=kwargs.get('name'),
+            image=kwargs.get('image'),
+            sale_agent_id=kwargs.get('sale_agent_id'),
+            type=0  # 제품등록시 판매준비로 등록
+        )
+
 
 
 # 결제 테이블
@@ -62,11 +87,11 @@ class Payment(models.Model):
 
 
 # 구매 테이블
-class Buy(models.Model):
+class Order(models.Model):
     class Meta:
-        db_table = 'tb_buy'
+        db_table = 'tb_order'
 
-    buy_id = models.BigAutoField(primary_key=True)
+    order_id = models.BigAutoField(primary_key=True)
     payment_id = models.ForeignKey("Payment", on_delete=models.SET_NULL, db_column='payment_id', null=True)  # 결제FK
     product_id = models.ForeignKey("Product", on_delete=models.SET_NULL, db_column='product_id', null=True)  # 제품FK
     quantity = models.CharField(max_length=150)
@@ -92,4 +117,17 @@ class Delivery(models.Model):
     desc = models.CharField(max_length=150)                   # 배송 요청 메시지(배달기사 --> 구매자)
 
 
-    
+class DeliveryUser(models.Model):
+    class Meta:
+        db_table = 'tb_delivery_user'
+
+    id = models.BigAutoField(primary_key=True)
+    user_id = models.CharField(max_length=150)
+    user_name = models.CharField(max_length=150)
+    phone_number = models.CharField(max_length=150)
+    grade = models.CharField(max_length=20, null=False, default=3)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    auth_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='auth_user_id')
+    my_restaurant = models.ForeignKey("SaleAgent", on_delete=models.SET_NULL, db_column='my_restaurant', null=True)  # 마이식당
+
