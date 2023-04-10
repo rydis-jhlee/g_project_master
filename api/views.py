@@ -1,12 +1,17 @@
 import json
 from django.db.models import Q
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from api.models import *
+<<<<<<< Updated upstream
 from django.contrib.auth.models import *
+=======
+import requests
+
+>>>>>>> Stashed changes
 
 class SaleAgentAPI(View):
     @method_decorator(csrf_exempt)
@@ -693,3 +698,87 @@ class UserAPI(View):
                 'error': "exception 처리 할것.",
                 'e': str(e)
             })
+
+
+class SocialLoginKakaoCallbackAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SocialLoginKakaoCallbackAPI, self).dispatch(request, *args, **kwargs)
+
+    # def get(self, request):
+    #     ID = request.GET.get('id')
+    #     ACCESS_TOKEN = request.GET.get('accessToken')
+    #     EXPIRED_AT = request.GET.get('accessTokenExpiredAt')
+    def get(self, request):
+        client_id = '2d9a8c40a0e8c3ffc616db53634327fb'
+        redirect_uri = '128.0.0.1:8000/login/social/callback/kakao'
+        auth_code = request.GET.get('code')
+        kakao_token_api = 'https://kauth.kakao.com/oauth/token'
+        data = {
+            'grant_type': 'authorization_code',
+            'client_id': client_id,
+            'redirection_uri': redirect_uri,
+            'code': auth_code
+        }
+
+        token_response = requests.post(kakao_token_api, data=data)
+
+        access_token = token_response.json().get('access_token')
+
+        user_info_response = requests.get('https://kapi.kakao.com/v2/user/me', headers={"Authorization": f'Bearer ${access_token}'})
+
+        return JsonResponse({"user_info": user_info_response.json()})
+
+
+class SocialLoginNaverCallbackAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SocialLoginNaverCallbackAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        code = request.GET.get("code")
+        client_id = '9VonWGGFfdKrpns5cxOR'
+        client_secret = 'fXkqGIKzKh'
+
+        token_request = requests.get(
+            f"https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id={client_id}&client_secret={client_secret}&code={code}")
+        token_json = token_request.json()
+        print(token_json)
+
+        access_token = token_json.get("access_token")
+        profile_request = requests.get("https://openapi.naver.com/v1/nid/me",
+                                       headers={"Authorization": f"Bearer {access_token}"}, )
+        profile_data = profile_request.json()
+
+        print(profile_data)
+        return JsonResponse(profile_data)
+
+
+class KakaoSignInView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(KakaoSignInView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        redirect_uri = 'http://127.0.0.1:8000/login/social/callback/kakao'
+        client_id = '2d9a8c40a0e8c3ffc616db53634327fb'
+        kakao_auth_api = 'https://kauth.kakao.com/oauth/authorize?response_type=code'
+
+        return redirect(
+            f'{kakao_auth_api}&client_id={client_id}&redirect_uri={redirect_uri}'
+        )
+
+
+class SocialLoginNaver(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SocialLoginNaver, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        client_id = '9VonWGGFfdKrpns5cxOR'
+        redirect_uri = 'http://127.0.0.1:8000/login/social/callback/naver'
+        url = 'https://nid.naver.com/oauth2.0/authorize?response_type=code'
+
+        return redirect(
+            f'{url}&client_id={client_id}&redirect_uri={redirect_uri}'
+        )

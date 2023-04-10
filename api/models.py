@@ -4,7 +4,16 @@ from django.db import models
 from django.conf import settings
 from datetime import datetime
 from datetime import timedelta
+from django.contrib.auth.models import AbstractUser
 
+# class User(AbstractUser):
+#     class Meta:
+#         db_table = "AUTH_USER"
+#
+#     name = models.CharField(max_length=150)
+#     mobile = models.CharField(max_length=3)
+#     birthday = models.CharField(max_length=6)
+#     gender_num = models.IntegerField(null=True, default=None)
 
 # 판매 업체 테이블
 class SaleAgent(models.Model):
