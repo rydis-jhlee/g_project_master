@@ -1,17 +1,20 @@
-asgiref @ file:///C:/Users/BUILDE~1/AppData/Local/Temp/abs_cchykh5sgr/croots/recipe/asgiref_1661287542702/work
+#asgiref==3.5.2
 beautifulsoup4==4.11.2
 bootstrap4==0.1.0
-certifi @ file:///C:/b/abs_85o_6fm0se/croot/certifi_1671487778835/work/certifi
-charset-normalizer==3.1.0
-Django @ file:///C:/Users/BUILDE~1/AppData/Local/Temp/abs_eeor5o9jj8/croots/recipe/django_1661292534510/work
+#certifi==2022.12.7
+#charset-normalizer==3.1.0
+Django==4.1
 django-bootstrap4==22.3
 django-environ==0.10.0
-idna==3.4
+#idna==3.4
 mysqlclient==2.1.1
 Pillow==9.4.0
+pip==23.0.1
 requests==2.28.2
-soupsieve==2.4
-sqlparse @ file:///C:/b/abs_83jn6owfpc/croot/sqlparse_1668793499314/work
-tzdata @ file:///tmp/build/80754af9/python-tzdata_1611693927741/work
-urllib3==1.26.15
-wincertstore==0.2
+setuptools==65.6.3
+#soupsieve==2.4
+#sqlparse==0.4.3
+#tzdata==2021.1
+#urllib3==1.26.15
+#wheel==0.38.4
+#wincertstore==0.2
