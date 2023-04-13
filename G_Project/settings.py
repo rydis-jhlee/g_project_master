@@ -42,7 +42,15 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "api"
+    "api",
+
+    # 로그인 관련
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.kakao',
+    'allauth.socialaccount.providers.naver',
 ]
 
 MIDDLEWARE = [
@@ -89,7 +97,6 @@ DATABASES = {
         'PORT': 3306,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -139,3 +146,76 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#간편 로그인 관련 설정
+
+ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
+ACCOUNT_ADAPTER_CLASS = 'G_Project.core.adapter.MyAccountAdapter'
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+
+SOCIAL_PROVIDERS = {
+    'naver': {
+        'APP': {
+            'client_id': '9VonWGGFfdKrpns5cxOR',
+            'secret': 'fXkqGIKzKh',
+        }
+    },
+    'kakao': {
+        'APP': {
+            'client_id': '2d9a8c40a0e8c3ffc616db53634327fb',
+            'secret': 'KAKAO_SECRET_KEY',
+        }
+    }
+
+}
+SOCIALACCOUNT_PROVIDERS = {
+    'naver': {
+        'APP': {
+            'client_id': '9VonWGGFfdKrpns5cxOR',
+            'secret': 'fXkqGIKzKh',
+            'key': '',
+        },
+        # 'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        # 'METHOD': 'oauth2',
+        # 'VERIFIED_EMAIL': False,
+        # 'ID_KEY': '9VonWGGFfdKrpns5cxOR',
+        # 'SECRET_KEY': 'fXkqGIKzKh',
+    },
+    'kakao': {
+        'APP': {
+            'client_id': '2d9a8c40a0e8c3ffc616db53634327fb',
+            'secret': 'KAKAO_SECRET_KEY',
+            'key': '',
+        },
+        'METHOD': 'oauth2',
+        'VERIFIED_EMAIL': False,
+        'ID_KEY': 'id',
+        'SECRET_KEY': 'KAKAO_SECRET_KEY',
+    },
+    # 'apple': {
+    #     'APP': {
+    #         'client_id': 'APPLE_CLIENT_ID',
+    #         'client_secret': 'APPLE_SECRET_KEY',
+    #         'key': '',
+    #     },
+    #     'SCOPE': ['name', 'email'],
+    #     'METHOD': 'jwt',
+    #     'VERIFIED_EMAIL': True,
+    #     'ID_KEY': 'sub',
+    #     'SECRET_KEY': 'APPLE_SECRET_KEY',
+    # },
+}
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+LOGIN_REDIRECT_URL = 'sale_agent'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'product'
+ACCOUNT_LOGOUT_ON_GET = True
+
+

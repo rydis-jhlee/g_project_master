@@ -6,12 +6,16 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from api.models import *
-<<<<<<< Updated upstream
 from django.contrib.auth.models import *
-=======
 import requests
 
->>>>>>> Stashed changes
+from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.models import SocialApp
+from allauth.socialaccount.models import SocialToken
+
+from django.contrib.auth import authenticate, login, logout
+
+import os
 
 class SaleAgentAPI(View):
     @method_decorator(csrf_exempt)
@@ -214,7 +218,11 @@ class ProductAPI(View):
             # 필수 파라미터
             name = request.POST.get('name')                        # 제품명
             sale_agent_name = request.POST.get('sale_agent_name')  # 판매업체명
-            image = request.POST.get('image')                      # 제품이미지
+            # 제품 이미지 파일 업로드 추가
+            image = request.FILES.get('image')
+
+
+            # 제품이미지
 
             # 오늘 식단은 최소정보만 입력 --> 반찬메뉴로 업데이트 될때 수량, 가격 등 입력
 
@@ -231,9 +239,19 @@ class ProductAPI(View):
 
                 # 판매업체가 존재하는지 체크
                 if sale_agent_info:
+                    image_folder = 'images'  # 이미지 파일을 저장할 폴더 이름
+                    sale_agent_id = SaleAgent.objects.get(name=sale_agent_name)
+                    sub_folder = str(sale_agent_id.sale_agent_id)  # 추가로 생성할 하위 폴더 이름
+                    upload_to = settings.MEDIA_ROOT + '/' + image_folder + '/' + sub_folder  # 이미지 파일을 저장할 경로
+                    if not os.path.exists(upload_to):
+                        os.makedirs(upload_to)
+                    image_path = upload_to + '/' + image.name
+                    with open(image_path, 'wb+') as fb:
+                        for chunk in image.chunks():
+                            fb.write(chunk)
                     Product.create(**{
                         "name": name,
-                        "image": image,
+                        "image": settings.MEDIA_URL+image_folder + '/' + sub_folder + '/' + image.name,
                         "sale_agent_id": sale_agent_info
                     })
                     return JsonResponse({'status': "success"})
@@ -700,6 +718,112 @@ class UserAPI(View):
             })
 
 
+def social_signup(profile, provider_object, access_token=None, expires_in=None):
+    social_user = User.objects.create(
+        username=profile['username'],
+        email='test@test.co.kr',
+    )
+    # Add Group # TODO: 판매자,구마자,라이더 관련 그룹 정보 수정 필요
+    group_user = Group.objects.get_or_create(name='Group.User')[0]
+    group_user.user_set.add(social_user)
+
+    # https://docs.djangoproject.com/en/3.0/ref/contrib/auth/#django.contrib.auth.models.User.set_unusable_password
+    social_user.set_unusable_password()
+    social_user.save()
+
+    social_account = SocialAccount.objects.create(
+        user=social_user,
+        provider=provider_object.provider,
+        uid=hashlib.sha1(str({
+            'username': social_user.username,
+            'provider': provider_object.name,
+        }).encode('utf-8')).hexdigest(),
+    )
+
+    if expires_in:
+        expires_at = datetime.now() + timedelta(seconds=int(expires_in))
+        SocialToken.objects.create(
+            app=provider_object,
+            account=social_account,
+            token=access_token,
+            expires_at=expires_at
+        )
+    else:
+        SocialToken.objects.create(
+            app=provider_object,
+            account=social_account,
+            token=access_token,
+            # expires_at=token['refresh_token_expires_in']
+        )
+
+    if str(profile.get('gender')).lower() == 'm':
+        gender_num = 1
+    elif str(profile.get('gender')).lower() == 'f':
+        gender_num = 2
+    elif str(profile.get('gender')).lower() == 'u':
+        gender_num = 0
+    elif str(profile.get('gender')) == '1' or str(profile.get('gender')) =='3':
+        gender_num = 1
+    elif str(profile.get('gender')) == '2' or str(profile.get('gender')) =='4':
+        gender_num = 1
+    else:
+        gender_num = 0
+
+    info, _ = DeliveryUser.objects.get_or_create(user_name=profile['username'], auth_user_id_id=social_user.id)
+    info.user_name = profile.get('name')
+    info.phone_number = profile.get('mobile')
+    # info.birthday = profile.get('birthday')
+    # info.gender_num = gender_num
+    info.is_agree_marketing = 0
+    info.register_type = str(provider_object.name).capitalize()
+    info.created = datetime.now()
+    info.save()
+    return social_user
+
+
+class LogoutAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LogoutAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        data = dict()
+        try:
+            # base_user = OriginUser.objects.get(username=request.user.username)
+            social_account = SocialAccount.objects.get(user=request.user)
+            provider = social_account.provider.lower()
+
+            token = SocialToken.objects.get(account=social_account)
+
+            if provider == 'kakao':
+                url = '{}/v1/user/logout'.format(settings.SOCIAL_PROVIDERS['kakao']['auth_host'])
+                delete_req = requests.post(url, data={'Authorization': token.token})
+                # print(delete_req.json())
+
+            elif provider == 'naver':
+                # https://nid.naver.com/oauth2.0/token
+                url = '	https://nid.naver.com/oauth2.0/token'
+                delete_req = requests.post(url, data={
+                    'grant_type': 'delete',
+                    'client_id': settings.SOCIAL_PROVIDERS['naver']['client_id'],
+                    'client_secret': settings.SOCIAL_PROVIDERS['naver']['client_secret'],
+                    'access_token': token.token,
+                    'service_provider': "NAVER"
+                })
+                print(delete_req.json())
+
+        except Exception as e:
+            print(e)
+            # Admin cases, Accounts created by superuser
+            # or not.
+            pass
+
+        logout(request)
+        data['code'] = '1'
+        data['msg'] = 'Success'
+        return JsonResponse(data)
+
+
 class SocialLoginKakaoCallbackAPI(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -725,9 +849,10 @@ class SocialLoginKakaoCallbackAPI(View):
 
         access_token = token_response.json().get('access_token')
 
-        user_info_response = requests.get('https://kapi.kakao.com/v2/user/me', headers={"Authorization": f'Bearer ${access_token}'})
+        profile_req = requests.get('https://kapi.kakao.com/v2/user/me', headers={"Authorization": f'Bearer ${access_token}'})
 
-        return JsonResponse({"user_info": user_info_response.json()})
+        data = dict()
+        return JsonResponse(data)
 
 
 class SocialLoginNaverCallbackAPI(View):
@@ -737,21 +862,73 @@ class SocialLoginNaverCallbackAPI(View):
 
     def get(self, request):
         code = request.GET.get("code")
-        client_id = '9VonWGGFfdKrpns5cxOR'
-        client_secret = 'fXkqGIKzKh'
+        naver = SocialApp.objects.get(name='naver')
 
         token_request = requests.get(
-            f"https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id={client_id}&client_secret={client_secret}&code={code}")
+            f"https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id={naver.client_id}&client_secret={naver.secret}&code={code}")
         token_json = token_request.json()
-        print(token_json)
+        # print(token_json)
 
-        access_token = token_json.get("access_token")
-        profile_request = requests.get("https://openapi.naver.com/v1/nid/me",
-                                       headers={"Authorization": f"Bearer {access_token}"}, )
-        profile_data = profile_request.json()
+        ACCESS_TOKEN = token_json.get("access_token")
+        profile_req = requests.get("https://openapi.naver.com/v1/nid/me",
+                                       headers={"Authorization": f"Bearer {ACCESS_TOKEN}"}, )
+        # profile_data = profile_request.json()
+        if profile_req.status_code == 200:
+            profile_res = profile_req.json()
+            profile = dict()
+            ID = profile_res['response']['id']
+            # email = profile_res['response']['email']
+            # birthday = profile_res['response']['birthyear'] + str(profile_res['response']['birthday']).replace("-", '')
+            mobile = profile_res['response']['mobile']
+            if mobile.__contains__("-"):
+                mobile = mobile.replace("-", '')
 
-        print(profile_data)
-        return JsonResponse(profile_data)
+            profile.update({'username': ID})
+            profile.update({'name': profile_res['response']['name']})
+            # profile.update({'email': email})
+            # profile.update({"birthday": birthday[2:]})
+            profile.update({'mobile': mobile})
+            profile.update({'gender': profile_res['response']['gender']})
+
+            try:
+                social_user = User.objects.get(username=ID)
+                social_account = SocialAccount.objects.get(user=social_user)
+                social_token = SocialToken.objects.get(account=social_account)
+
+                social_token.token = ACCESS_TOKEN,
+                # social_token.expires_at = datetime.now() + timedelta(seconds=int(EXPIRES_IN))
+                social_token.save()
+
+                login(
+                    request,
+                    social_user,
+                    backend="django.contrib.auth.backends.ModelBackend"
+                )
+                data = {'result_code': '1', 'result_msg': 'Success', 'token': request.session.session_key}
+                return JsonResponse(data)
+
+            except User.DoesNotExist:
+
+                social_user = social_signup(profile, naver, ACCESS_TOKEN)
+
+                # after user is saved to db, login the user
+                login(
+                    request,
+                    social_user,
+                    backend="django.contrib.auth.backends.ModelBackend",
+                )
+                data = {'result_code': '1', 'result_msg': 'Success', 'token': request.session.session_key}
+
+                return JsonResponse(data)
+
+            except Exception as e:
+                print(e)
+                data = {'result_code': '2', 'result_msg': 'Access denied'}
+                return JsonResponse(data)
+        else:
+            data = {'result_code': '3', 'result_msg': 'Access denied'}
+            return JsonResponse(data)
+
 
 
 class KakaoSignInView(View):
@@ -782,3 +959,4 @@ class SocialLoginNaver(View):
         return redirect(
             f'{url}&client_id={client_id}&redirect_uri={redirect_uri}'
         )
+

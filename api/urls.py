@@ -27,7 +27,6 @@ urlpatterns = [
     # POST(결제 하기)
     path("api/payment", PaymentAPI.as_view(), name='payment'),
 
-<<<<<<< Updated upstream
     # GET(배송 현황 조회)
     path("api/delivery", DeliveryAPI.as_view(), name='delivery'),
 
@@ -36,14 +35,16 @@ urlpatterns = [
 
 
 
-=======
     # 결제 전처리 --> 배송테이블 등록 --> 총 구매제품 합산된 결제금액 정보 추가 --> 결제 처리로 통합
     #path("backend/payment/preProcess", PaymentPreProcessAPI.as_view(), name='pre_process'),
+
+    #간편 로그인 테스트 페이지 및 callback
+    path('accounts/', include('allauth.urls')),
     path('login/social/kakao', KakaoSignInView.as_view()),
     path('login/social/naver', SocialLoginNaver.as_view()),
+    path('logout', LogoutAPI.as_view()),
     path('login/social/callback/kakao', SocialLoginKakaoCallbackAPI.as_view()),
     path('login/social/callback/naver', SocialLoginNaverCallbackAPI.as_view()),
     # path('login/social/callback/apple', SocialLoginAppleCallbackAPI.as_view()),
->>>>>>> Stashed changes
 
 ]
