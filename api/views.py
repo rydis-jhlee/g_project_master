@@ -14,6 +14,10 @@ class SaleAgentAPI(View):
         return super(SaleAgentAPI, self).dispatch(request, *args, **kwargs)
 
     def get(self, request):
+
+        """
+        마이식당이 등록될 경우, 이용자ID로 식당을 조회되게 변경할 수도 있음.
+        """
         
         # 선택 파라미터
         name = request.GET.get('name')                    # 판매업체명
@@ -43,20 +47,26 @@ class SaleAgentAPI(View):
                     "owner_name": sale_agent.owner_name,
                     "owner_number": sale_agent.owner_number,
                     "desc": sale_agent.desc,
-                    "memo": sale_agent.memo
+                    "memo": sale_agent.memo,
+                    "building_name": sale_agent.building_name
                 })
         sale_agent_list.update({'sale_agent_list': set_list})
         return JsonResponse(sale_agent_list)
 
     def post(self, request):
+
+        """
+           1. 관리자 등급일 경우에만 식당 등록이 되도록 수정(tb_sale_user:grade)
+        """
+
         try:
             # 필수 파라미터
             name = request.POST.get('name')                    # 판매업체명
+            building_name = request.POST.get('building_name')  # 건물명(판매업체가 소속된 건물)
             business_info = request.POST.get('business_info')  # 사업자정보
             addr = request.POST.get('addr')                    # 판매사 주소
             owner_name = request.POST.get('owner_name')        # 대표자명
             owner_number = request.POST.get('owner_number')    # 대표자번호
-            building_name = request.POST.get('building_name')  # 건물명(판매업체가 소속된 건물)
 
             # 선택 파라미터
             desc = request.POST.get('desc')                    # 업체 설명
@@ -64,7 +74,13 @@ class SaleAgentAPI(View):
 
             # 업체명으로 등록된게 있는지 체크
             if SaleAgent.objects.filter(name=name).exists():
-                return JsonResponse({'등록취소': "등록된 판매사가 존재 합니다."})
+                # '등록실패': "등록된 식당이 없습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
             else:
                 SaleAgent.create(**{
                     "name": name,
@@ -76,18 +92,14 @@ class SaleAgentAPI(View):
                     "memo": memo,
                     "building_name": building_name
                 })
-                # tb_sale_agent = SaleAgent.objects.create(
-                #     name=name,
-                #     business_info=business_info,
-                #     addr=addr,
-                #     owner_name=owner_name,
-                #     owner_number=owner_number,
-                #     desc=desc,
-                #     memo=memo,
-                #     building_name=building_name
-                # )
-                # tb_sale_agent.save()
-            return JsonResponse({'status': "success"})
+
+            result_data = {
+                'result_code': '1',
+                'result_msg': 'Success'
+                #'token': request.session.session_key
+            }
+
+            return JsonResponse(result_data)
 
         except Exception as e:
             return JsonResponse({
@@ -96,6 +108,10 @@ class SaleAgentAPI(View):
             })
 
     def put(self, request):
+
+        """
+           1. 관리자 등급일 경우에만 식당 수정이 되도록 할것.
+        """
 
         # 필수 파라미터
         sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
@@ -111,10 +127,8 @@ class SaleAgentAPI(View):
         memo = request.GET.get('memo')                    # 메모
 
         try:
-            # 판매업체명으로 수정항목 조회
+            # 판매업체ID로 수정항목 조회
             sale_agent = SaleAgent.objects.filter(sale_agent_id=sale_agent_id).first()
-
-            # 추후 수정하는 사용자가 수정권한이 있는지 체크할것.
 
             if sale_agent:
                 sale_agent.name = name
@@ -127,35 +141,28 @@ class SaleAgentAPI(View):
                 sale_agent.memo = memo
                 sale_agent.updated = datetime.now()
                 sale_agent.save()
-                return JsonResponse({'status': "success"})
+
+                result_data = {
+                    'result_code': '1',
+                    'result_msg': 'Success'
+                    # 'token': request.session.session_key
+                }
+
+                return JsonResponse(result_data)
             else:
-                return JsonResponse({'수정취소': "등록된 판매사가 존재 하지 않습니다."})
+                # '수정취소': "등록된 판매사가 존재 하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
 
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
-
-    """ 판매업체 삭제는 현재 사용하지 않음.
-    def delete(self, request):
-
-        # 필수 항목
-        name = request.GET.get('name')  # 판매업체명
-
-        try:
-            # 판매업체명으로 삭제
-            if name:
-                SaleAgent.objects.get(name=name).delete()
-
-                return JsonResponse({'status': "success"})
-
-        except Exception as e:
-            return JsonResponse({
-                'error': "exception 처리 할것.",
-                'e': str(e)
-            })
-    """
 
 
 class ProductAPI(View):
@@ -166,9 +173,9 @@ class ProductAPI(View):
     def get(self, request):
 
         # 필수 파라미터
-        sale_agent_name = request.GET.get('sale_agent_name')  # 판매업체명
+        sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
         # 선택 파라미터
-        type = request.GET.get('type')  # 타입(0: 판매준비, 1: 판매완료)
+        type = request.GET.get('type')  # 타입(0: 판매준비, 1: 판매증)
 
         if type is None:
             type = -1
@@ -176,13 +183,13 @@ class ProductAPI(View):
         product_list = list()
 
         # 오늘 식단
-        if sale_agent_name and int(type) == 0:
-            products = Product.objects.filter(Q(sale_agent_id__name=sale_agent_name) & Q(type=0))
+        if sale_agent_id and int(type) == 0:
+            products = Product.objects.filter(Q(sale_agent_id=sale_agent_id) & Q(type=0))
         # 반찬 메뉴
-        elif sale_agent_name and int(type) == 1:
-            products = Product.objects.filter(Q(sale_agent_id__name=sale_agent_name) & Q(type=1))
+        elif sale_agent_id and int(type) == 1:
+            products = Product.objects.filter(Q(sale_agent_id=sale_agent_id) & Q(type=1))
         else:
-            products = Product.objects.filter(Q(sale_agent_id__name=sale_agent_name))
+            products = Product.objects.filter(Q(sale_agent_id=sale_agent_id))
 
         if products:
             for product in products:
@@ -201,17 +208,27 @@ class ProductAPI(View):
                     })
             return JsonResponse({'product_list': product_list})
         else:
-            return JsonResponse({'검색실패': "등록된 제품이 없습니다."})
+            # '검색실패': "등록된 제품이 없습니다.
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Fail'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
 
     def post(self, request):
+
+        """
+            1. 이미지 경로에 맞게 서버에 저장 시킬수 있도록 수정
+            2. 판매 관리자(2등급)?인 특정 판매자만 등록할 수 있도록 수정
+            * 오늘 식단은 제품명, 이미지만 등록 --> 반찬메뉴로 업데이트 될때 수량, 가격 등 입력
+        """
 
         try:
             # 필수 파라미터
             name = request.POST.get('name')                        # 제품명
             sale_agent_name = request.POST.get('sale_agent_name')  # 판매업체명
             image = request.POST.get('image')                      # 제품이미지
-
-            # 오늘 식단은 최소정보만 입력 --> 반찬메뉴로 업데이트 될때 수량, 가격 등 입력
 
             # 판매업체에서 제품명으로 판매완료가 아닌(즉, 판매준비나 판매중인) 상품이 있는지 체크
             product = Product.objects.filter(
@@ -220,7 +237,13 @@ class ProductAPI(View):
             )
 
             if product:
-                return JsonResponse({'등록취소': "등록된 제품이 존재 합니다."})
+                # '등록취소': "등록된 제품이 존재 합니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
             else:
                 sale_agent_info = SaleAgent.objects.filter(name=request.POST.get('sale_agent_name')).first()
 
@@ -231,17 +254,34 @@ class ProductAPI(View):
                         "image": image,
                         "sale_agent_id": sale_agent_info
                     })
-                    return JsonResponse({'status': "success"})
+                    result_data = {
+                        'result_code': '1',
+                        'result_msg': 'Success'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
+
                 else:
-                    return JsonResponse({'등록취소': "판매업체가 존재 하지 않습니다."})
+                    # '등록취소': "판매업체가 존재 하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
 
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
     def put(self, request):
+
+        """
+           1. 판매 관리자(2등급)?인 특정 판매자만 등록할 수 있도록 수정
+           2. 이미지 경로에 맞게 서버에 저장 시킬수 있도록 수정 --> 기존에 있는 경우 덮어씌워야함.
+        """
 
         # 필수 항목
         product_id = request.GET.get('product_id')  # 제품ID
@@ -260,40 +300,33 @@ class ProductAPI(View):
                     product.image = image
                     product.updated = datetime.now()
                     product.save()
-                    return JsonResponse({'status': "success"})
+                    result_data = {
+                        'result_code': '1',
+                        'result_msg': 'Success'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
                 else:
-                    return JsonResponse({'제품 수정 실패': "조회된 제품이 존재하지 않습니다."})
+                    # '제품 수정 실패': "조회된 제품이 존재하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
             else:
-                return JsonResponse({'제품 수정 실패': "조회된 제품이 존재하지 않습니다."})
+                # '제품 수정 실패': "조회된 제품이 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
         except Exception as e:
             return JsonResponse({
                 'error': "exception 처리 할것.",
                 'e': str(e)
             })
-
-    """ 제품삭제은 현재 고려하지 않음.
-    def delete(self, request):
-
-        # 필수 항목
-        name = request.GET.get('name')  # 제품명
-        sale_agent_name = request.GET.get('sale_agent_name')  # 판매업체명
-
-        try:
-            # 제품명, 판매업체명으로 삭제
-            if name and sale_agent_name:
-                Product.objects.get(
-                    name=name,
-                    sale_agent_id__name=sale_agent_name
-                ).delete()
-
-                return JsonResponse({'status': "success"})
-
-        except Exception as e:
-            return JsonResponse({
-                'error': "exception 처리 할것.",
-                'e': str(e)
-            })
-    """
 
 
 class OrderModifyAPI(View):
@@ -334,11 +367,28 @@ class OrderModifyAPI(View):
                         order_item.save()
 
                     else:
-                        return JsonResponse({'수정취소': "조회된 제품이 존재 하지 않습니다."})
+                        # '수정취소': "조회된 제품이 존재 하지 않습니다."
+                        result_data = {
+                            'result_code': '2',
+                            'result_msg': 'Fail'
+                            # 'token': request.session.session_key
+                        }
+                        return JsonResponse(result_data)
                 else:
-                    return JsonResponse({'수정취소': "필수 입력값이 존재하지 않습니다."})
+                    # '수정취소': "필수 입력값이 존재하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
 
-            return JsonResponse({'status': "success"})
+            result_data = {
+                'result_code': '1',
+                'result_msg': 'Success'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
         except Exception as e:
             return JsonResponse({
                 'error': "exception 처리 할것.",
@@ -359,7 +409,6 @@ class PaymentAPI(View):
 
         payment_dict = {}
 
-        # 오늘 식단
         if payment_id and user_id:
             payment = Payment.objects.filter(Q(payment_id=payment_id) & Q(user_id=user_id)).first()
 
@@ -391,14 +440,29 @@ class PaymentAPI(View):
                     payment_dict.update({'order_list': order_set_list})
                     return JsonResponse(payment_dict)
                 else:
-                    return JsonResponse({'조회실패': "조회된 구매건이 없습니다."})
-
-
+                    # '조회실패': "조회된 구매건이 없습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
             else:
-                return JsonResponse({'조회실패': "조회된 결제건이 없습니다."})
-        # 반찬 메뉴
+                # '조회실패': "조회된 결제건이 없습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
         else:
-            return JsonResponse({'조회실패': "조회된 결제건이 없습니다."})
+            # '조회실패': "조회된 결제건이 없습니다."
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Fail'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
 
     def post(self, request):
         try:
@@ -419,6 +483,9 @@ class PaymentAPI(View):
             payment_type = data.get('payment_type')  # 제품 결제 방식(1:신용카드, 2:계좌이체, 3:현금)
             desc = data.get('desc')  # 구매 요약(판매자에 대한 요청)
             total_price = data.get('total_price')  # 전체 금액(front 에서 합산해서 준 금액)
+            delivery_memo = data.get('delivery_memo')
+            addr1 = data.get('addr1')  # 배송 주소(빌딩명)
+            addr2 = data.get('addr2')  # 배송 주소(상세주소)
 
             is_executed = False  # 결제테이블 1회 생성 초기화
 
@@ -457,7 +524,15 @@ class PaymentAPI(View):
                             tb_payment.status = 3  # 결제취소
                             tb_payment.memo = "구매수량 부족으로 인한 취소"
                             tb_payment.save()
-                        return JsonResponse({'구매취소': "제품 보유 수량이 구매 수량 보다 많습니다."})
+                        # '구매취소': "제품 보유 수량이 구매 수량 보다 많습니다."
+                        result_data = {
+                            'result_code': '2',
+                            'result_msg': 'Fail'
+                            # 'token': request.session.session_key
+                        }
+                        return JsonResponse(result_data)
+
+
 
             payment = Payment.objects.get(payment_id=tb_payment.payment_id)
             own_total_price = 0  # 구매할 제품 전체 가격
@@ -469,7 +544,10 @@ class PaymentAPI(View):
 
                 tb_delivery = Delivery.objects.create(
                     type=delivery_type,  # 직접수령 or 배송
-                    status=1  # 배송준비
+                    status=1,  # 배송준비
+                    addr1=addr1,
+                    addr2=addr2,
+                    memo=delivery_memo
                 )
                 payment.delivery_id = tb_delivery
 
@@ -493,7 +571,15 @@ class PaymentAPI(View):
                 payment.desc = desc
                 payment.payment_date = datetime.now()
                 payment.save()
-                return JsonResponse({'status': "success"})
+
+                result_data = {
+                    'result_code': '1',
+                    'result_msg': 'Success'
+                    # 'token': request.session.session_key
+                }
+
+                return JsonResponse(result_data)
+
             else:
                 if tb_payment:
                     tb_payment.status = 3  # 결제취소
@@ -505,9 +591,20 @@ class PaymentAPI(View):
                     product.quantity = int(product.quantity) + int(row.quantity)
                     product.save()
 
-                return JsonResponse({'구매취소': "결제 가격 오류 발생."})
+                # '구매취소': "결제 가격 오류 발생."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
 
-            return JsonResponse({'status': "success"})
+            result_data = {
+                'result_code': '1',
+                'result_msg': 'Success'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
 
         except Exception as e:
             return JsonResponse({
@@ -522,6 +619,10 @@ class ProductUpdateAPI(View):
         return super(ProductUpdateAPI, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
+
+        """
+          1. 판매 관리자(2등급)?인 특정 판매자만 업데이트할 수 있도록 수정
+        """
 
         try:
 
@@ -566,7 +667,7 @@ class ProductUpdateAPI(View):
                 
                 tb_product = Product.objects.filter(Q(product_id=product_id) & Q(sale_agent_id=sale_agent_id)).first()
                 
-                # 제품아이디와 판매업체아이디로 조회된 건이 있는지 체크
+                # 제품ID와 판매업체ID로 조회된 건이 있는지 체크
                 if tb_product:
                     tb_product.price = price
                     tb_product.quantity = quantity
@@ -575,8 +676,20 @@ class ProductUpdateAPI(View):
                     tb_product.type = 1  # 판매중으로 변경
                     tb_product.save()
                 else:
-                    return JsonResponse({'수정취소': "조회된 제품이 존재하지 않습니다."})
-            return JsonResponse({'status': "success"})
+                    # '수정취소': "조회된 제품이 존재하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
+
+            result_data = {
+                'result_code': '1',
+                'result_msg': 'Success'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
         except Exception as e:
             return JsonResponse({
                 'error': "exception 처리 할것.",
@@ -597,9 +710,13 @@ class DeliveryAPI(View):
 
         _payment = {}
 
-        # 오늘 식단
+        # 결제id와 결제이용자id로 조회하고, delivery_id가 None이 아니면 조회
         if payment_id and user_id:
-            payment = Payment.objects.filter(Q(payment_id=payment_id) & Q(user_id=user_id)).first()
+            payment = Payment.objects.filter(
+                Q(payment_id=payment_id) &
+                Q(user_id=user_id) &
+                ~Q(delivery_id=None)
+            ).first()
 
             # 결제 내역
             if payment:
@@ -619,25 +736,29 @@ class DeliveryAPI(View):
                     "delivery_status": payment.delivery_id.status,
                     "man_id": payment.delivery_id.man_id,
                     "man_number": payment.delivery_id.man_number,
-                    "addr": payment.delivery_id.addr,
+                    "addr1": payment.delivery_id.addr1,
+                    "addr2": payment.delivery_id.addr2,
                     "delivery_desc": payment.delivery_id.desc,
                     "delivery_memo": payment.delivery_id.memo
                 })
 
-                # 구매 내역
-                # order_list = Order.objects.filter(Q(payment_id=payment_id))
-                # order_set_list = list()
-                # if order_list:
-                #     for order in order_list:
-                #         order_set_list.append({
-                #             "product_id": order.product_id_id,
-                #             "product_name": order.product_id.name,
-                #             "quantity": order.quantity
-                #         })
-                #     payment_list.update({'order_list': order_set_list})
                 return JsonResponse(_payment)
             else:
-                return JsonResponse({'조회실패': "조회된 구매건이 없습니다."})
+                # '조회실패': "조회된 구매건이 없습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+        else:
+            # '조회실패': "입력값이 존재하지 않습니다."
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Fail'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
 
 
 class UserAPI(View):
@@ -650,7 +771,7 @@ class UserAPI(View):
             # 판매자 id 생성하기
 
             # 그룹 생성
-            group = Group.objects.create(name="라이더")
+            group = Group.objects.create(name="판매자")
 
             # 사용자 생성
             user = User.objects.create_user(username="rydis_jhlee", password='1234qwer')
@@ -661,14 +782,14 @@ class UserAPI(View):
             create_user = User.objects.get(id=user.id)
 
             # 그룹에 맞는 user 테이블에 등록
-            delivery_user = DeliveryUser.objects.create(
+            delivery_user = OrderUser.objects.create(
                 user_id=create_user.username,
                 user_name='이재혁',
                 phone_number='01095113344',
                 auth_user_id=create_user
             )
 
-            delivery_user = DeliveryUser.objects.get(Q(user_id=delivery_user.user_id))
+            delivery_user = OrderUser.objects.get(Q(user_id=delivery_user.user_id))
             user_groups = Group.objects.filter(Q(user=user)).first()
             _user = {}
 
@@ -687,6 +808,361 @@ class UserAPI(View):
             })
 
             return JsonResponse(_user)
+
+        except Exception as e:
+            return JsonResponse({
+                'error': "exception 처리 할것.",
+                'e': str(e)
+            })
+
+
+class MyRestaurantAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(MyRestaurantAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        # 필수 파라미터
+        sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
+
+        # 등급으로 판매관리자만 볼수있도록 수정할것.
+
+        user_list = list()
+
+        if sale_agent_id:
+            sale_agent = SaleAgent.objects.filter(Q(sale_agent_id=sale_agent_id))
+            if sale_agent:
+                my_restraurant_list = OrderUser.objects.filter(Q(my_restaurant1=sale_agent_id))
+                for my_restraurant in my_restraurant_list:
+                    if my_restraurant:
+                        user_list.append({
+                            "user_id": my_restraurant.user_id,
+                            "user_name": my_restraurant.user_name
+                        })
+                return JsonResponse({'user_list': user_list})
+            else:
+                # '조회실패': "등록된 판매업체가 없습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+        else:
+            # '조회실패': "입력된 판매업체가 존재하지 않습니다."
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Fail'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
+
+    def post(self, request):
+        try:
+            # 필수 파라미터
+            name = request.POST.get('name')        # 판매업체명
+            user_id = request.POST.get('user_id')  # 이용자ID
+
+            if name:
+                sale_agent = SaleAgent.objects.filter(Q(name=name)).first()
+                if sale_agent:
+                    tb_order_user = OrderUser.objects.get(user_id=user_id)
+                    if tb_order_user:
+                        tb_order_user.my_restaurant1 = sale_agent.sale_agent_id
+                        tb_order_user.updated = datetime.now()
+                        tb_order_user.save()
+
+                        result_data = {
+                            'result_code': '1',
+                            'result_msg': 'Success'
+                            # 'token': request.session.session_key
+                        }
+                        return JsonResponse(result_data)
+                    else:
+                        return JsonResponse({'등록취소': "조회된 이용자가 존재하지 않습니다."})
+                else:
+                    return JsonResponse({'등록취소': "조회된 식당이 존재하지 않습니다."})
+            else:
+                return JsonResponse({'등록취소': "조회된 식당이 존재하지 않습니다."})
+
+        except Exception as e:
+            return JsonResponse({
+                'error': "exception 처리 할것.",
+                'e': str(e)
+            })
+
+
+class SaleConnectAgentAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SaleConnectAgentAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        # 필수 파라미터
+        sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
+
+        set_list = list()
+
+        if sale_agent_id:
+            sale_agent = SaleAgent.objects.filter(Q(sale_agent_id=sale_agent_id))
+            if sale_agent:
+                agent_connect_list = SaleConnectAgent.objects.filter(Q(sale_agent_id=sale_agent_id))
+                for agent_connect in agent_connect_list:
+                    if agent_connect:
+                        set_list.append({
+                            "name": agent_connect.name,
+                            "addr": agent_connect.addr
+                        })
+                return JsonResponse({'agent_connect_list': set_list})
+            else:
+                return JsonResponse({'조회실패': "등록된 판매업체가 없습니다."})
+        else:
+            return JsonResponse({'조회실패': "입력된 판매업체가 존재하지 않습니다."})
+
+    def post(self, request):
+        try:
+            # 필수 파라미터
+            sale_agent_name = request.POST.get('sale_agent_name')  # 판매업체명
+            user_id = request.POST.get('user_id')                  # 등록한 관리자ID
+            name = request.POST.get('name')                        # 배송받을 건물명
+            addr = request.POST.get('addr')                        # 배송받을 주소
+
+            # user_id로 해당 메서드 사용할 수 있는 등급인지 체크할것.
+
+            if sale_agent_name:
+                sale_agent = SaleAgent.objects.filter(Q(name=sale_agent_name)).first()
+                if sale_agent:
+                    # user_id가 해당 메서드 사용할 수 있는 등급인지 같이 체크
+                    order_user = OrderUser.objects.get(Q(user_id=user_id) & Q(grade=0))
+                    if order_user:
+                        SaleConnectAgent.objects.create(
+                            user_id=user_id,
+                            name=name,
+                            addr=addr,
+                            sale_agent_id=sale_agent
+                        )
+                        result_data = {
+                            'result_code': '1',
+                            'result_msg': 'Success'
+                            # 'token': request.session.session_key
+                        }
+                        return JsonResponse(result_data)
+                    else:
+                        # '등록취소': "조회된 이용자가 존재하지 않습니다."
+                        result_data = {
+                            'result_code': '2',
+                            'result_msg': 'Fail'
+                            # 'token': request.session.session_key
+                        }
+                        return JsonResponse(result_data)
+                else:
+                    # '등록취소': "조회된 식당이 존재하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
+            else:
+                # '등록취소': "조회된 식당이 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+
+        except Exception as e:
+            return JsonResponse({
+                'error': "exception 처리 할것.",
+                'e': str(e)
+            })
+
+
+class DeliveryPickUpAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeliveryPickUpAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        # 필수 파라미터
+        # sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
+        addr1 = request.GET.get('addr1')  # 배송 가능한 빌딩
+        # addr2 = request.GET.get('addr2')
+
+        set_list = list()
+
+        if addr1:
+            delivery_list = Delivery.objects.filter(Q(addr1=addr1))
+            if delivery_list:
+                for delivery in delivery_list:
+                    set_list.append({
+                        "addr1": delivery.addr1,
+                        "addr2": delivery.addr2,
+                        "memo": delivery.memo,
+                        "desc": delivery.desc
+                    })
+                return JsonResponse({'delivery_list': set_list})
+            else:
+                # '조회': "배달 가능한 제품이 없습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+        else:
+            # '조회실패': "입력된 주소가 존재하지 않습니다."
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Fail'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
+
+
+    def post(self, request):
+        try:
+            # 필수 파라미터
+            man_id = request.POST.get('man_id')          # 배달기사ID
+            man_number = request.POST.get('man_number')  # 배달기사 전화번호
+            addr1 = request.POST.get('addr1')            # 배송할 빌딜명
+
+            # user_id로 해당 메서드 사용할 수 있는 등급인지 체크할것.
+
+            if addr1:
+                delivery_list = Delivery.objects.filter(Q(addr1=addr1))
+                if delivery_list:
+                    for delivery in delivery_list:
+                        _delivery = Delivery.objects.get(delivery_id=delivery.delivery_id)
+                        _delivery.type = 3  # 배달기사 접수
+                        _delivery.status = 2  # 배송중
+                        _delivery.man_id = man_id
+                        _delivery.man_number = man_number
+                        _delivery.updated = datetime.now()
+                        _delivery.save()
+                    result_data = {
+                        'result_code': '1',
+                        'result_msg': 'Success'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
+                else:
+                    # '등록실패': "조회된 배달건이 존재하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
+            else:
+                # '등록실패': "조회된 주소가 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+
+        except Exception as e:
+            return JsonResponse({
+                'error': "exception 처리 할것.",
+                'e': str(e)
+            })
+
+
+class DeliveryCompleteAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeliveryCompleteAPI, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        try:
+            # 필수 파라미터
+            delivery_id = request.POST.get('delivery_id')  # 배달1건
+            desc = request.POST.get('desc')                # 배달완료 요약
+
+            delivery = Delivery.objects.get(Q(delivery_id=delivery_id))
+
+            if delivery:
+                delivery.status = 3   # 배송완료
+                delivery.desc = desc  # 배송완료 요약
+                delivery.completed_date = datetime.now()
+                delivery.save()
+                result_data = {
+                    'result_code': '1',
+                    'result_msg': 'Success'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+            else:
+                # '등록실패': "조회된 배달건이 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': "exception 처리 할것.",
+                'e': str(e)
+            })
+
+
+class PaymentCancelAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PaymentCancelAPI, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        try:
+            # 필수 파라미터
+            payment_id = request.POST.get('payment_id')  # 결제ID
+
+            """
+            신용카드/현금에 대한 결제방식에 따라 어떻게 돌려줄건지 고민해야함.
+            """
+
+            # 주문된 수량만큼 제품수량에 증가
+            payment = Payment.objects.filter(Q(payment_id=payment_id)).first()
+            if payment:
+                orders = Order.objects.filter(Q(payment_id=payment_id))
+                for order in orders:
+                    product = Product.objects.get(product_id=order.product_id)
+                    product.quantity += int(order.quantity)
+                    product.save()
+
+                # 결제테이블 취소
+                payment.status = 3  # 결제취소
+                payment.memo = "이용자 취소"
+                payment.save()
+
+                # 배송테이블 취소
+                delivery = Delivery.objects.get(delivery_id=payment.delivery_id_id)
+                delivery.status = 4  # 배송취소
+                delivery.memo = "이용자 취소"
+                delivery.save()
+
+                result_data = {
+                    'result_code': '1',
+                    'result_msg': 'Success'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+
+            else:
+                # '조회오류': "조회된 결제건이 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
 
         except Exception as e:
             return JsonResponse({
