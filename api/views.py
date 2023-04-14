@@ -1169,3 +1169,49 @@ class PaymentCancelAPI(View):
                 'error': "exception 처리 할것.",
                 'e': str(e)
             })
+
+
+class PaymentListAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PaymentListAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        # 필수 파라미터
+        user_id = request.GET.get('user_id')  # 사용자ID
+
+        # 선택 파라미터
+        status = request.GET.get('status')  # 결제상태(1:미결제, 2:결제, 3:결제취소)
+
+        payment_list = list()
+
+        if user_id:
+            if status:
+                payments = Payment.objects.filter(Q(user_id=user_id) & Q(status=status))
+            else:
+                payments = Payment.objects.filter(Q(user_id=user_id))
+            for payment in payments:
+
+                payment_list.append({
+                    "product_id": payment.payment_id,
+                    "user_id": payment.user_id,
+                    "price": payment.price,
+                    "updated": payment.updated,
+                    "status": payment.status,
+                    "payment_date": payment.payment_date,
+                    "delivery_type": payment.delivery_type,
+                    "payment_type": payment.payment_type,
+                    "desc": payment.desc,
+                    "memo": payment.memo
+                })
+
+            return JsonResponse({'payment_list': payment_list})
+        else:
+            # '조회실패': "조회된 결제건이 없습니다."
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Fail'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)

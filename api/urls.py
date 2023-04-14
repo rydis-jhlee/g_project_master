@@ -49,6 +49,10 @@ urlpatterns = [
 
     # POST(결제 취소)
     path("api/payment_cancel", PaymentCancelAPI.as_view(), name='payment_cancel'),
+    
+    # GET(주문 내용 확인)
+    path("api/payment_list", PaymentListAPI.as_view(), name='payment_list'),
+    
 
     # OrderModifyAPI 주문수정하는 api인데 수량변경 같은건 front에서 하면될것 같아서 사용 중지
 

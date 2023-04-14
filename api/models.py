@@ -65,7 +65,6 @@ class Product(models.Model):
         )
 
 
-
 # 결제 테이블
 class Payment(models.Model):
     class Meta:
@@ -129,6 +128,7 @@ class DeliveryUser(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     auth_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='auth_user_id')
+    sale_agent_id = models.CharField(max_length=150, null=True)
 
 
 class OrderUser(models.Model):
