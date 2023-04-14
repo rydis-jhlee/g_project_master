@@ -12,13 +12,97 @@ import requests
 from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.models import SocialToken
-
+from django.contrib.auth.decorators import login_required,user_passes_test
 from django.contrib.auth import authenticate, login, logout
-
+from functools import wraps
 import os
+
+from django.contrib.sessions.models import Session
+# def group_user_permission(request):
+#     """Decorator for Check group permissions."""
+#     def wrapper(request, *args, **kwargs):
+#         user = request.user
+#         if user:
+#             permit = user.groups.filter(name__in=[
+#                 'Group.User',
+#                 'Group.Admin',
+#                 'Group.Master'
+#             ]).exists()
+#             if permit:
+#                 request.user = user
+#                 response = user(request, *args, **kwargs)
+#                 return response
+#             else:
+#                 res = {'code':-2,'msg':'Access denied'}
+#                 return JsonResponse(res)
+#
+#         elif user == False:
+#             res = {'code': -2, 'msg': 'Access denied'}
+#             return JsonResponse(res)
+#
+#         else:
+#             res = {'code': -2, 'msg': 'Expired authorize token'}
+#             return JsonResponse(res)
+#
+#     return wrapper
+
+
+def authorize_session(request):
+    # logger = logging.getLogger("api")
+    k = "X-Authorize-Token"
+    token = request.headers.get(k)
+    if not token:
+        token = request.GET.get('authorize_token')
+        if not token:
+            token = request.POST.get('authorize_token')
+            if not token:
+                token = request.session.session_key
+                if not token:
+                    if request.user.is_authenticated:
+                        return User.objects.get(username=request.user.username)
+    try:
+        if token:
+            data = Session.objects.get(session_key=token).get_decoded()
+            user = User.objects.get(id=data.get('_auth_user_id'))
+            return user
+        else:
+            return False
+    except Exception as e:
+        return None
+
+
+def group_user_permission(func):
+    """Decorator for checking group permissions."""
+    @wraps(func)
+    def wrapper(request, *args, **kwargs):
+        user = authorize_session(request)
+        if user:
+            permit = user.groups.filter(name__in=[
+                'Group.User',
+                'Group.Admin',
+                'Group.Master'
+            ]).exists()
+            if permit:
+                response = func(request, *args, **kwargs) # view_func을 호출하도록 수정
+                return response
+            else:
+                res = {'code':-2,'msg':'Access denied'}
+                return JsonResponse(res)
+
+        elif user == False:
+            res = {'code': -2, 'msg': 'Access denied'}
+            return JsonResponse(res)
+
+        else:
+            res = {'code': -2, 'msg': 'Expired authorize token'}
+            return JsonResponse(res)
+
+    return wrapper
+
 
 class SaleAgentAPI(View):
     @method_decorator(csrf_exempt)
+    @method_decorator(group_user_permission)
     def dispatch(self, request, *args, **kwargs):
         return super(SaleAgentAPI, self).dispatch(request, *args, **kwargs)
 
@@ -55,7 +139,11 @@ class SaleAgentAPI(View):
                     "memo": sale_agent.memo
                 })
         sale_agent_list.update({'sale_agent_list': set_list})
-        return JsonResponse(sale_agent_list)
+        return JsonResponse(sale_agent_list,
+                            json_dumps_params={
+                                'ensure_ascii': False,
+                                'indent': 4
+                            })
 
     def post(self, request):
         try:
