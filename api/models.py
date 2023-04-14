@@ -31,7 +31,6 @@ class SaleAgent(models.Model):
     memo = models.CharField(max_length=150, null=True)           # 판매사 메모
     created = models.DateTimeField(auto_now_add=True)            # 판매사 등록 일시
     updated = models.DateTimeField(auto_now=True, null=True)     # 판매사 수정 일시
-    # level = models.IntegerField(null=True, default=0)          # 판매사 등급 --> 판매업체가 아니라 판매자 계정쪽에 넣어야함.
 
     @staticmethod
     def create(**kwargs):
@@ -73,7 +72,6 @@ class Product(models.Model):
             sale_agent_id=kwargs.get('sale_agent_id'),
             type=0  # 제품등록시 판매준비로 등록
         )
-
 
 
 # 결제 테이블
@@ -121,7 +119,8 @@ class Delivery(models.Model):
     created = models.DateTimeField(auto_now_add=True)         # 배송 시작 일시(직접수령 or 배송시작)
     updated = models.DateTimeField(auto_now=True, null=True)  # 배송 수정 일시(배송 상태, 타입 변경 등)
     completed_date = models.DateTimeField(null=True)          # 배송 시작 일시(직접수령 or 배송완료)
-    addr = models.CharField(max_length=150)                   # 배송주소
+    addr1 = models.CharField(max_length=150)                  # 배송주소(빌딩명)
+    addr2 = models.CharField(max_length=150)                  # 배송주소(상세주소)
     memo = models.CharField(max_length=150)                   # 배송 요청 메시지(구매자 --> 배달기사)
     desc = models.CharField(max_length=150)                   # 배송 요청 메시지(배달기사 --> 구매자)
 
@@ -138,5 +137,51 @@ class DeliveryUser(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     auth_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='auth_user_id')
-    my_restaurant = models.ForeignKey("SaleAgent", on_delete=models.SET_NULL, db_column='my_restaurant', null=True)  # 마이식당
+    sale_agent_id = models.CharField(max_length=150, null=True)
+
+
+class OrderUser(models.Model):
+    class Meta:
+        db_table = 'tb_order_user'
+
+    id = models.BigAutoField(primary_key=True)
+    user_id = models.CharField(max_length=150)
+    user_name = models.CharField(max_length=150)
+    phone_number = models.CharField(max_length=150)
+    grade = models.CharField(max_length=20, null=False, default=3)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    auth_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='auth_user_id')
+    my_restaurant1 = models.CharField(max_length=150, null=True)  # 마이식당1
+    my_restaurant2 = models.CharField(max_length=150, null=True)  # 마이식당2
+    # 기본 배송지에 대한 정보 필요할수도있음.
+
+
+class SaleUser(models.Model):
+    class Meta:
+        db_table = 'tb_sale_user'
+
+    id = models.BigAutoField(primary_key=True)
+    user_id = models.CharField(max_length=150)
+    user_name = models.CharField(max_length=150)
+    phone_number = models.CharField(max_length=150)
+    grade = models.CharField(max_length=20, null=False, default=3)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    auth_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='auth_user_id')
+
+
+class SaleConnectAgent(models.Model):
+    class Meta:
+        db_table = 'tb_sale_connect_agent'
+
+    id = models.BigAutoField(primary_key=True)  # 판매사ID
+    user_id = models.CharField(max_length=150)  # 등록한 관리자ID
+    name = models.CharField(max_length=150)     # 건물명
+    addr = models.CharField(max_length=150)     # 건물주소
+    created = models.DateTimeField(auto_now_add=True)  # 등록 일시
+    updated = models.DateTimeField(auto_now=True, null=True)  # 수정 일시
+    sale_agent_id = models.ForeignKey("SaleAgent", on_delete=models.SET_NULL, db_column='sale_agent_id', null=True)  # 판매업체PK
+
+
 

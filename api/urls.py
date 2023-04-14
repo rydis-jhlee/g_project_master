@@ -10,7 +10,6 @@ urlpatterns = [
 
     # POST(식당 등록)
     # GET(식당 찾기)
-    # GET(마이식당 조회) --> 같이 만들 예정
     # PUT(식당 수정)
     path("api/sale_agent", SaleAgentAPI.as_view(), name='sale_agent'),
 
@@ -33,7 +32,32 @@ urlpatterns = [
     # 이용자 생성 테스트
     path("api/user", UserAPI.as_view(), name='user'),
 
+    # POST(마이식당 등록, 수정)
+    # GET(마이식당 등록된 이용자 조회) --> 판매 관리자가 볼 수 있는 화면
+    path("api/my_restaurant", MyRestaurantAPI.as_view(), name='my_restaurant'),
+    
+    # POST(식당 배송 가능 건물 등록)
+    # GET(배송 가능 빌딩 조회)
+    path("api/sale_connect_agent", SaleConnectAgentAPI.as_view(), name='sale_connect_agent'),
 
+    # POST(배달기사 픽업 수령)
+    # GET(배달기사 픽업 조회)
+    path("api/delivery_pickup", DeliveryPickUpAPI.as_view(), name='delivery_pickup'),
+    
+    # POST(배달기사 배송완료)
+    path("api/delivery_complete", DeliveryCompleteAPI.as_view(), name='delivery_complete'),
+
+    # POST(결제 취소)
+    path("api/payment_cancel", PaymentCancelAPI.as_view(), name='payment_cancel'),
+    
+    # GET(주문 내용 확인)
+    path("api/payment_list", PaymentListAPI.as_view(), name='payment_list'),
+
+    # 판매 현황 테스트
+    path("api/order_stat", OrderStatAPI.as_view(), name='order_stat'),
+
+
+    # OrderModifyAPI 주문수정하는 api인데 수량변경 같은건 front에서 하면될것 같아서 사용 중지
 
     # 결제 전처리 --> 배송테이블 등록 --> 총 구매제품 합산된 결제금액 정보 추가 --> 결제 처리로 통합
     #path("backend/payment/preProcess", PaymentPreProcessAPI.as_view(), name='pre_process'),
