@@ -52,7 +52,10 @@ urlpatterns = [
     
     # GET(주문 내용 확인)
     path("api/payment_list", PaymentListAPI.as_view(), name='payment_list'),
-    
+
+    # 판매 현황 테스트
+    path("api/order_stat", OrderStatAPI.as_view(), name='order_stat'),
+
 
     # OrderModifyAPI 주문수정하는 api인데 수량변경 같은건 front에서 하면될것 같아서 사용 중지
 

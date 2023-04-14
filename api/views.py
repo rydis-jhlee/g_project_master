@@ -1,5 +1,5 @@
 import json
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.shortcuts import render
 from django.views.generic import View
 from django.utils.decorators import method_decorator
@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from api.models import *
 from django.contrib.auth.models import *
+
 
 class SaleAgentAPI(View):
     @method_decorator(csrf_exempt)
@@ -51,7 +52,11 @@ class SaleAgentAPI(View):
                     "building_name": sale_agent.building_name
                 })
         sale_agent_list.update({'sale_agent_list': set_list})
-        return JsonResponse(sale_agent_list)
+
+        return JsonResponse(sale_agent_list, json_dumps_params={
+            'ensure_ascii': False,
+            'indent': 4
+        })
 
     def post(self, request):
 
@@ -181,6 +186,7 @@ class ProductAPI(View):
             type = -1
 
         product_list = list()
+        sale_agent_list = {}
 
         # 오늘 식단
         if sale_agent_id and int(type) == 0:
@@ -206,7 +212,14 @@ class ProductAPI(View):
                         "sale_agent_id": product.sale_agent_id_id,
                         "sale_agent_name": product.sale_agent_id.name
                     })
-            return JsonResponse({'product_list': product_list})
+
+            sale_agent_list.update({'product_list': product_list})
+
+            return JsonResponse(sale_agent_list, json_dumps_params={
+                'ensure_ascii': False,
+                'indent': 4
+            })
+
         else:
             # '검색실패': "등록된 제품이 없습니다.
             result_data = {
@@ -324,7 +337,7 @@ class ProductAPI(View):
                 return JsonResponse(result_data)
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -391,7 +404,7 @@ class OrderModifyAPI(View):
             return JsonResponse(result_data)
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -438,7 +451,11 @@ class PaymentAPI(View):
                             "quantity": order.quantity
                         })
                     payment_dict.update({'order_list': order_set_list})
-                    return JsonResponse(payment_dict)
+
+                    return JsonResponse(payment_dict, json_dumps_params={
+                        'ensure_ascii': False,
+                        'indent': 4
+                    })
                 else:
                     # '조회실패': "조회된 구매건이 없습니다."
                     result_data = {
@@ -608,7 +625,7 @@ class PaymentAPI(View):
 
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -692,7 +709,7 @@ class ProductUpdateAPI(View):
             return JsonResponse(result_data)
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -742,7 +759,12 @@ class DeliveryAPI(View):
                     "delivery_memo": payment.delivery_id.memo
                 })
 
-                return JsonResponse(_payment)
+                return JsonResponse(_payment, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
+
+
             else:
                 # '조회실패': "조회된 구매건이 없습니다."
                 result_data = {
@@ -807,11 +829,14 @@ class UserAPI(View):
                 "phone_number": delivery_user.phone_number
             })
 
-            return JsonResponse(_user)
+            return JsonResponse(_user, json_dumps_params={
+                'ensure_ascii': False,
+                'indent': 4
+            })
 
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -829,6 +854,7 @@ class MyRestaurantAPI(View):
         # 등급으로 판매관리자만 볼수있도록 수정할것.
 
         user_list = list()
+        data = {}
 
         if sale_agent_id:
             sale_agent = SaleAgent.objects.filter(Q(sale_agent_id=sale_agent_id))
@@ -840,7 +866,13 @@ class MyRestaurantAPI(View):
                             "user_id": my_restraurant.user_id,
                             "user_name": my_restraurant.user_name
                         })
-                return JsonResponse({'user_list': user_list})
+
+                data.update({'user_list': user_list})
+                return JsonResponse(data, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
+
             else:
                 # '조회실패': "등록된 판매업체가 없습니다."
                 result_data = {
@@ -880,15 +912,33 @@ class MyRestaurantAPI(View):
                         }
                         return JsonResponse(result_data)
                     else:
-                        return JsonResponse({'등록취소': "조회된 이용자가 존재하지 않습니다."})
+                        # '등록취소': "조회된 이용자가 존재하지 않습니다."
+                        result_data = {
+                            'result_code': '2',
+                            'result_msg': 'Fail'
+                            # 'token': request.session.session_key
+                        }
+                        return JsonResponse(result_data)
                 else:
-                    return JsonResponse({'등록취소': "조회된 식당이 존재하지 않습니다."})
+                    # '등록취소': "조회된 식당이 존재하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
             else:
-                return JsonResponse({'등록취소': "조회된 식당이 존재하지 않습니다."})
+                # '등록취소': "조회된 식당이 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
 
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -904,6 +954,7 @@ class SaleConnectAgentAPI(View):
         sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
 
         set_list = list()
+        data = {}
 
         if sale_agent_id:
             sale_agent = SaleAgent.objects.filter(Q(sale_agent_id=sale_agent_id))
@@ -915,11 +966,29 @@ class SaleConnectAgentAPI(View):
                             "name": agent_connect.name,
                             "addr": agent_connect.addr
                         })
-                return JsonResponse({'agent_connect_list': set_list})
+
+                data.update({'agent_connect_list': set_list})
+                return JsonResponse(data, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
+
             else:
-                return JsonResponse({'조회실패': "등록된 판매업체가 없습니다."})
+                # '조회실패': "등록된 판매업체가 없습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
         else:
-            return JsonResponse({'조회실패': "입력된 판매업체가 존재하지 않습니다."})
+            # '조회실패': "입력된 판매업체가 존재하지 않습니다."
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Fail'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
 
     def post(self, request):
         try:
@@ -976,7 +1045,7 @@ class SaleConnectAgentAPI(View):
 
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -994,6 +1063,7 @@ class DeliveryPickUpAPI(View):
         # addr2 = request.GET.get('addr2')
 
         set_list = list()
+        data = {}
 
         if addr1:
             delivery_list = Delivery.objects.filter(Q(addr1=addr1))
@@ -1005,7 +1075,13 @@ class DeliveryPickUpAPI(View):
                         "memo": delivery.memo,
                         "desc": delivery.desc
                     })
-                return JsonResponse({'delivery_list': set_list})
+
+                data.update({'delivery_list': set_list})
+                return JsonResponse(data, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
+
             else:
                 # '조회': "배달 가능한 제품이 없습니다."
                 result_data = {
@@ -1069,7 +1145,7 @@ class DeliveryPickUpAPI(View):
 
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -1109,7 +1185,7 @@ class DeliveryCompleteAPI(View):
             
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -1166,7 +1242,7 @@ class PaymentCancelAPI(View):
 
         except Exception as e:
             return JsonResponse({
-                'error': "exception 처리 할것.",
+                'error': "exception",
                 'e': str(e)
             })
 
@@ -1185,6 +1261,7 @@ class PaymentListAPI(View):
         status = request.GET.get('status')  # 결제상태(1:미결제, 2:결제, 3:결제취소)
 
         payment_list = list()
+        data = {}
 
         if user_id:
             if status:
@@ -1206,7 +1283,12 @@ class PaymentListAPI(View):
                     "memo": payment.memo
                 })
 
-            return JsonResponse({'payment_list': payment_list})
+            data.update({'payment_list': payment_list})
+            return JsonResponse(data, json_dumps_params={
+                'ensure_ascii': False,
+                'indent': 4
+            })
+
         else:
             # '조회실패': "조회된 결제건이 없습니다."
             result_data = {
@@ -1215,3 +1297,24 @@ class PaymentListAPI(View):
                 # 'token': request.session.session_key
             }
             return JsonResponse(result_data)
+
+
+class OrderStatAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(OrderStatAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+            total_quantity = Order.objects.filter(Q(product_id__sale_agent_id=1) & Q(~Q(payment_id__status=3))).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+            # 전체 판매 수량
+            # 전체 판매 금액
+
+            # 전체 판매 리스트 --> 날짜, 상태에 대한 조건
+            # 딸기 판매 수량, 금액
+
+
+
+            print(total_quantity)
+
+            return JsonResponse({"Success": total_quantity})
+
