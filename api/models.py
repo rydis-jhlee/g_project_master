@@ -120,7 +120,7 @@ class Delivery(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)  # 배송 수정 일시(배송 상태, 타입 변경 등)
     completed_date = models.DateTimeField(null=True)          # 배송 시작 일시(직접수령 or 배송완료)
     addr1 = models.CharField(max_length=150)                  # 배송주소(빌딩명)
-    addr2 = models.CharField(max_length=150)                  # 배송주소(상세주소)
+    addr2 = models.CharField(max_length=150, null=True)                  # 배송주소(상세주소)
     memo = models.CharField(max_length=150)                   # 배송 요청 메시지(구매자 --> 배달기사)
     desc = models.CharField(max_length=150)                   # 배송 요청 메시지(배달기사 --> 구매자)
 

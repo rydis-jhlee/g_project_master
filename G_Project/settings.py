@@ -149,8 +149,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #간편 로그인 관련 설정
 
-ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
-ACCOUNT_ADAPTER_CLASS = 'G_Project.core.adapter.MyAccountAdapter'
+# ACCOUNT_ADAPTER = 'allauth.account.adapter.DefaultAccountAdapter'
+# ACCOUNT_ADAPTER_CLASS = 'G_Project.core.adapter.MyAccountAdapter'
 
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
@@ -218,4 +218,7 @@ LOGIN_REDIRECT_URL = 'sale_agent'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'product'
 ACCOUNT_LOGOUT_ON_GET = True
 
+
+# HTTPONLY 설정
+CSRF_COOKIE_HTTPONLY = True
 

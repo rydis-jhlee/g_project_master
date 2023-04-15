@@ -29,8 +29,7 @@ urlpatterns = [
     # GET(배송 현황 조회)
     path("api/delivery", DeliveryAPI.as_view(), name='delivery'),
 
-    # 이용자 생성 테스트
-    path("api/user", UserAPI.as_view(), name='user'),
+
 
     # POST(마이식당 등록, 수정)
     # GET(마이식당 등록된 이용자 조회) --> 판매 관리자가 볼 수 있는 화면
@@ -67,8 +66,11 @@ urlpatterns = [
     path('login/social/kakao', KakaoSignInView.as_view()),
     path('login/social/naver', SocialLoginNaver.as_view()),
     path('logout', LogoutAPI.as_view()),
+    path('login', LoginAPI.as_view()),
     path('login/social/callback/kakao', SocialLoginKakaoCallbackAPI.as_view()),
     path('login/social/callback/naver', SocialLoginNaverCallbackAPI.as_view()),
     # path('login/social/callback/apple', SocialLoginAppleCallbackAPI.as_view()),
+    # 이용자 생성 테스트
+    path("api/user", UserAPI.as_view(), name='user'),
 
 ]

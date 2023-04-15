@@ -19,6 +19,7 @@ from functools import wraps
 import os
 
 from django.contrib.sessions.models import Session
+from core.payload.validator import *
 
 
 def authorize_session(request):
@@ -875,47 +876,143 @@ class UserAPI(View):
         return super(UserAPI, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
+
         try:
-            # 판매자 id 생성하기
+            register_type = request.POST.get('register_type')
 
-            # 그룹 생성
-            group = Group.objects.create(name="판매자")
+            form_msg_dict = {
+                'username': '아이디',
+                'password': '비밀번호',
+                'password_repeat': '비밀번호 확인',
+                'name': '이름',
+                'mobile': '핸드폰 번호',
+            }
+            form = {
+                'username': request.POST.get('username'),
+                'password': request.POST.get('password'),
+                'password_repeat': request.POST.get('password_repeat'),
 
-            # 사용자 생성
-            user = User.objects.create_user(username="rydis_jhlee", password='1234qwer')
+                'name': request.POST.get('name'),
+                'mobile': request.POST.get('mobile'),
+            }
+            if form['username']:
+                form['username'] = form['username'].lower()
 
-            # 사용자를 그룹에 추가
-            user.groups.add(group)
+            # TODO: 사업자번호 추가
+            if register_type == '3':
+                form.update({
+                                '사업자번호': request.POST.get('사업자번호'),
+                })
+                form_msg_dict.update({
+                      "사업자번호": "사업자 번호"
+                })
 
-            create_user = User.objects.get(id=user.id)
+            for k, v in form.items():
+                if not v:
+                    res = {"result_code": "11", "result_msg": "{}(을)를 입력해주세요.".format(form_msg_dict.get(k))}
+                    return JsonResponse(res)
+            # form.update({
+            #     # TODO: 생일, 성별, 마케팅 동의 등 추가적인 정보 받을시
+            #     'birthday': request.POST.get('birthday'),
+            #     'gender_num': request.POST.get('gender_num', 1),
+            #     # 0: 미동의, 1: 동의
+            #     'is_agree_marketing': request.POST.get('is_agree_marketing', 0),
+            # })
+            if form['mobile']:
+                form['mobile'] = form['mobile'].replace('-', '')
 
-            # 그룹에 맞는 user 테이블에 등록
-            delivery_user = OrderUser.objects.create(
-                user_id=create_user.username,
-                user_name='이재혁',
-                phone_number='01095113344',
-                auth_user_id=create_user
-            )
+            try:
+                _user = User.objects.get(username=form.get('username'))
+                res = {'result_code': '12', 'result_msg': '이미 존재하는 아이디입니다.'}
+                return JsonResponse(res, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
+            except:
+                if IDRules(form['username']) == False:
+                    res = {'result_code': '13', 'result_msg': '아이디 규칙에 적합하지 않습니다.'}
+                    return JsonResponse(res, json_dumps_params={
+                        'ensure_ascii': False,
+                        'indent': 4
+                    })
 
-            delivery_user = OrderUser.objects.get(Q(user_id=delivery_user.user_id))
-            user_groups = Group.objects.filter(Q(user=user)).first()
-            _user = {}
+            if PasswordRules(form['password'], form['password_repeat']) == False:
+                res = {'result_code': '14', 'result_msg': '패스워드 규칙에 적합하지 않습니다'}
+                return JsonResponse(res, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
 
-            # auth_group, auth_user, auth_user_groups, tb_delivery_user 4개 테이블이 연결된 구조
-            # auth_group을 생성(판매자, 라이더, 구매자)
-            # auth_user에 이용자에 정보를 저장하고
-            # 사용자를 그룹에 추가하면 auth_user_groups으로 묶이게 됨.
-            # auth_user의 추가 정보를 받기위해 username 을 key로 잡고, 각 이용자의 테이블에 추가 정보 입력.
+            if MobileNumberRules(form['mobile']) == False:
+                res = {'result_code': '11', 'result_msg': '핸드폰 번호가 올바르지 않습니다.'}
+                return JsonResponse(res, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
 
-            _user.update({
-                "user_groups_name": user_groups.name,
-                #"group": delivery_user.auth_user_id_id,
-                "user_id": delivery_user.user_id,
-                "user_name": delivery_user.user_name,
-                "phone_number": delivery_user.phone_number
-            })
+                # if len(form['birthday']) != 6:
+                # 	res.setup(11, '생년월일 형식이 올바르지 않습니다.')
 
-            return JsonResponse(_user, json_dumps_params={
+            #TODO: 구매자,사업자,라이더 등의 회원 중복가입 관련 정책 필요
+            # user_exists = OrderUser.objects.filter(
+            #     name=form['name'],
+            #     mobile=form['mobile'],
+            #     # birthday=form['birthday'],
+            #     gender_num=form['gender_num'],
+            # ).exists()
+            #
+            # if user_exists:
+            #     res.setup(3, "이미 회원정보가 존재합니다.")
+
+        # 그룹 생성
+            try:
+                user = User.objects.create(username=form['username'])
+                user.set_password(form['password'])
+                user.save()
+
+                if register_type == '1':
+                    re_type = OrderUser.objects.create(
+                        user_id=form['username'],
+                        user_name=form['name'],
+                        phone_number=form['mobile'],
+                        auth_user_id=user
+                    )
+                elif register_type == '2':
+                    re_type = DeliveryUser.objects.create(
+                        user_id=form['username'],
+                        user_name=form['name'],
+                        phone_number=form['mobile'],
+                        birthday=form['birthday'],
+                        auth_user_id=user
+                    )
+                elif register_type == '3':
+                    re_type = SaleUser.objects.create(
+                        user_id=form['username'],
+                        user_name=form['name'],
+                        phone_number=form['mobile'],
+                        auth_user_id=user
+                    )
+
+                info = re_type
+
+
+                # Add Group
+                group = Group.objects.get_or_create(name=register_type)
+                group_user = Group.objects.get(id=group[0].id)
+                group_user.user_set.add(user)
+                res = {
+                    "result_code": "1",
+                    "result_msg": "Success"
+                }
+
+            except Exception as e:
+                print(e)
+                res = {
+                    "result_code": "11",
+                    "result_msg": "회원정보가 올바르지 않습니다."
+                }
+
+            return JsonResponse(res, json_dumps_params={
                 'ensure_ascii': False,
                 'indent': 4
             })
@@ -988,6 +1085,39 @@ def social_signup(profile, provider_object, access_token=None, expires_in=None):
     info.created = datetime.now()
     info.save()
     return social_user
+
+
+class LoginAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LoginAPI, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        try:
+            form = {
+                'username': request.POST['username'],
+                'password': request.POST['password'],
+            }
+            form['username'] = form['username'].lower()
+        except KeyError or ValueError:
+            res = {'result_code': '11', 'result_msg': 'Invalid Parameters'}
+            return JsonResponse(res)
+        try:
+            user = authenticate(request, username=form['username'], password=form['password'])
+            if user is not None and user.is_active:
+                login(
+                    request,
+                    user,
+                    backend="django.contrib.auth.backends.ModelBackend"
+                )
+                res = {'result_cdoe': '1', 'result_msg': 'Success'}
+                response = JsonResponse(res)
+                return response
+
+        except Exception as e:
+            print(e)
+        res = {'result_code': '-2', 'result_msg': 'Access denied'}
+        return JsonResponse(res)
 
 
 class LogoutAPI(View):
@@ -1168,6 +1298,7 @@ class SocialLoginNaver(View):
         return redirect(
             f'{url}&client_id={client_id}&redirect_uri={redirect_uri}'
         )
+
 class MyRestaurantAPI(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
