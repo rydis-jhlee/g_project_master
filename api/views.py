@@ -45,7 +45,7 @@ def authorize_session(request):
     except Exception as e:
         return None
 
-
+# TODO: permission관련 여러개를 추가해서 로그인 및 권한체크..?
 def group_user_permission(func):
     """Decorator for checking group permissions."""
     @wraps(func)
@@ -55,7 +55,8 @@ def group_user_permission(func):
             permit = user.groups.filter(name__in=[
                 'Group.User',
                 'Group.Admin',
-                'Group.Master'
+                'Group.Master',
+                '3'
             ]).exists()
             if permit:
                 response = func(request, *args, **kwargs) # view_func을 호출하도록 수정
@@ -78,7 +79,7 @@ def group_user_permission(func):
 
 class SaleAgentAPI(View):
     @method_decorator(csrf_exempt)
-    @method_decorator(group_user_permission)
+
     def dispatch(self, request, *args, **kwargs):
         return super(SaleAgentAPI, self).dispatch(request, *args, **kwargs)
 
@@ -131,6 +132,7 @@ class SaleAgentAPI(View):
             'indent': 4
         })
 
+    @method_decorator(group_user_permission)
     def post(self, request):
 
         """
@@ -985,7 +987,7 @@ class UserAPI(View):
                         birthday=form['birthday'],
                         auth_user_id=user
                     )
-                elif register_type == '3':
+                elif register_type == '3' or register_type == '4' or register_type == '5':
                     re_type = SaleUser.objects.create(
                         user_id=form['username'],
                         user_name=form['name'],
