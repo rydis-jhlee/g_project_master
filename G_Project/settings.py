@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "api",
 
     # 로그인 관련
+    'user',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
