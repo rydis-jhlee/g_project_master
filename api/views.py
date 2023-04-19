@@ -12,7 +12,6 @@ from core.decorators import group_user_permission
 
 class SaleAgentAPI(View):
     @method_decorator(csrf_exempt)
-
     def dispatch(self, request, *args, **kwargs):
         return super(SaleAgentAPI, self).dispatch(request, *args, **kwargs)
 
