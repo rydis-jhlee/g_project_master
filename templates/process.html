@@ -1,0 +1,1413 @@
+{% load static %}
+<html lang="ko">
+
+<head>
+    <base href=""/>
+    <title>LG-INSTORE SUPPORT</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The most advanced Bootstrap Admin Theme on Bootstrap Market trusted by over 4,000 beginners and professionals. Multi-demo, Dark Mode, RTL support. Grab your copy now and get life-time updates for free." />
+    <meta name="keywords" content="keen, bootstrap, bootstrap 5, bootstrap 4, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Keen - Multi-demo Bootstrap 5 HTML Admin Dashboard Theme" />
+    <meta property="og:url" content="https://keenthemes.com/keen" />
+    <meta property="og:site_name" content="Keenthemes | Keen" />
+    <link rel="canonical" href="https://preview.keenthemes.com/keen" />
+    <link rel="shortcut icon" href="/static/assets/media/logos/favicon.ico" />
+
+    <!-- Fonts(mandatory for all pages) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+
+    <!-- Vendor Stylesheets(used for this page only) -->
+    <!--<link href="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />-->
+    <link href="{% static 'assets/plugins/custom/datatables/datatables.bundle.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- Global Stylesheets Bundle(mandatory for all pages) -->
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+
+</head>
+
+<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true" data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
+
+<!-- Theme mode setup on page load -->
+<!--<script>
+    var defaultThemeMode = "light";
+    var themeMode;
+    if ( document.documentElement ) {
+        if ( document.documentElement.hasAttribute("data-bs-theme-mode")) {
+            themeMode = document.documentElement.getAttribute("data-bs-theme-mode"); }
+        else {
+            if ( localStorage.getItem("data-bs-theme") !== null ) {
+                themeMode = localStorage.getItem("data-bs-theme");
+            } else {
+                themeMode = defaultThemeMode;
+            }
+        }
+        if (themeMode === "system") {
+            themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        } document.documentElement.setAttribute("data-bs-theme", themeMode); }
+</script>-->
+
+
+<div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+
+    <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+        <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+
+            <!--begin::Sidebar-->
+            <div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="225px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
+                <!--begin::Logo-->
+                <div class="app-sidebar-logo px-6" id="kt_app_sidebar_logo">
+                    <!--begin::Logo image-->
+                    <a href="../../demo1/dist/index.html">
+                        <img alt="Logo" src="/static/assets/media/logos/default-dark.svg" class="h-30px app-sidebar-logo-default" />
+                    </a>
+                    <!--end::Logo image-->
+
+                </div>
+                <!--end::Logo-->
+                <!--begin::sidebar menu-->
+                <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
+                    <!--begin::Menu wrapper-->
+                    <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper hover-scroll-overlay-y my-5" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer" data-kt-scroll-wrappers="#kt_app_sidebar_menu" data-kt-scroll-offset="5px">
+                        <!--begin::Menu-->
+                        <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold px-3" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
+
+
+
+                            <!--begin:Menu item-->
+                            <div class="menu-item pt-5">
+                                <!--begin:Menu content-->
+                                <div class="menu-content">
+                                    <span class="menu-heading fw-bold text-uppercase fs-7">LG-INSTORE SUPPORT</span>
+                                </div>
+                                <!--end:Menu content-->
+                            </div>
+                            <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="https://preview.keenthemes.com/html/keen/docs/base/utilities" target="_blank">
+											<span class="menu-icon">
+												<!--begin::Svg Icon | path: icons/duotune/general/gen002.svg-->
+												<span class="svg-icon svg-icon-2">
+													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+														<path opacity="0.3" d="M4.05424 15.1982C8.34524 7.76818 13.5782 3.26318 20.9282 2.01418C21.0729 1.98837 21.2216 1.99789 21.3618 2.04193C21.502 2.08597 21.6294 2.16323 21.7333 2.26712C21.8372 2.37101 21.9144 2.49846 21.9585 2.63863C22.0025 2.7788 22.012 2.92754 21.9862 3.07218C20.7372 10.4222 16.2322 15.6552 8.80224 19.9462L4.05424 15.1982ZM3.81924 17.3372L2.63324 20.4482C2.58427 20.5765 2.5735 20.7163 2.6022 20.8507C2.63091 20.9851 2.69788 21.1082 2.79503 21.2054C2.89218 21.3025 3.01536 21.3695 3.14972 21.3982C3.28408 21.4269 3.42387 21.4161 3.55224 21.3672L6.66524 20.1802L3.81924 17.3372ZM16.5002 5.99818C16.2036 5.99818 15.9136 6.08615 15.6669 6.25097C15.4202 6.41579 15.228 6.65006 15.1144 6.92415C15.0009 7.19824 14.9712 7.49984 15.0291 7.79081C15.0869 8.08178 15.2298 8.34906 15.4396 8.55884C15.6494 8.76862 15.9166 8.91148 16.2076 8.96935C16.4986 9.02723 16.8002 8.99753 17.0743 8.884C17.3484 8.77046 17.5826 8.5782 17.7474 8.33153C17.9123 8.08486 18.0002 7.79485 18.0002 7.49818C18.0002 7.10035 17.8422 6.71882 17.5609 6.43752C17.2796 6.15621 16.8981 5.99818 16.5002 5.99818Z" fill="currentColor" />
+														<path d="M4.05423 15.1982L2.24723 13.3912C2.15505 13.299 2.08547 13.1867 2.04395 13.0632C2.00243 12.9396 1.9901 12.8081 2.00793 12.679C2.02575 12.5498 2.07325 12.4266 2.14669 12.3189C2.22013 12.2112 2.31752 12.1219 2.43123 12.0582L9.15323 8.28918C7.17353 10.3717 5.4607 12.6926 4.05423 15.1982ZM8.80023 19.9442L10.6072 21.7512C10.6994 21.8434 10.8117 21.9129 10.9352 21.9545C11.0588 21.996 11.1903 22.0083 11.3195 21.9905C11.4486 21.9727 11.5718 21.9252 11.6795 21.8517C11.7872 21.7783 11.8765 21.6809 11.9402 21.5672L15.7092 14.8442C13.6269 16.8245 11.3061 18.5377 8.80023 19.9442ZM7.04023 18.1832L12.5832 12.6402C12.7381 12.4759 12.8228 12.2577 12.8195 12.032C12.8161 11.8063 12.725 11.5907 12.5653 11.4311C12.4057 11.2714 12.1901 11.1803 11.9644 11.1769C11.7387 11.1736 11.5205 11.2583 11.3562 11.4132L5.81323 16.9562L7.04023 18.1832Z" fill="currentColor" />
+													</svg>
+												</span>
+                                                <!--end::Svg Icon-->
+											</span>
+                                    <span class="menu-title">제품 리스트</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+
+                            <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="https://preview.keenthemes.com/html/keen/docs" target="_blank">
+											<span class="menu-icon">
+												<!--begin::Svg Icon | path: icons/duotune/abstract/abs027.svg-->
+												<span class="svg-icon svg-icon-2">
+													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+														<path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="currentColor" />
+														<path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="currentColor" />
+													</svg>
+												</span>
+                                                <!--end::Svg Icon-->
+											</span>
+                                    <span class="menu-title">제품 등록</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="https://preview.keenthemes.com/html/keen/docs/getting-started/changelog" target="_blank">
+											<span class="menu-icon">
+												<!--begin::Svg Icon | path: icons/duotune/coding/cod003.svg-->
+												<span class="svg-icon svg-icon-2">
+													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+														<path d="M16.95 18.9688C16.75 18.9688 16.55 18.8688 16.35 18.7688C15.85 18.4688 15.75 17.8688 16.05 17.3688L19.65 11.9688L16.05 6.56876C15.75 6.06876 15.85 5.46873 16.35 5.16873C16.85 4.86873 17.45 4.96878 17.75 5.46878L21.75 11.4688C21.95 11.7688 21.95 12.2688 21.75 12.5688L17.75 18.5688C17.55 18.7688 17.25 18.9688 16.95 18.9688ZM7.55001 18.7688C8.05001 18.4688 8.15 17.8688 7.85 17.3688L4.25001 11.9688L7.85 6.56876C8.15 6.06876 8.05001 5.46873 7.55001 5.16873C7.05001 4.86873 6.45 4.96878 6.15 5.46878L2.15 11.4688C1.95 11.7688 1.95 12.2688 2.15 12.5688L6.15 18.5688C6.35 18.8688 6.65 18.9688 6.95 18.9688C7.15 18.9688 7.35001 18.8688 7.55001 18.7688Z" fill="currentColor" />
+														<path opacity="0.3" d="M10.45 18.9687C10.35 18.9687 10.25 18.9687 10.25 18.9687C9.75 18.8687 9.35 18.2688 9.55 17.7688L12.55 5.76878C12.65 5.26878 13.25 4.8687 13.75 5.0687C14.25 5.1687 14.65 5.76878 14.45 6.26878L11.45 18.2688C11.35 18.6688 10.85 18.9687 10.45 18.9687Z" fill="currentColor" />
+													</svg>
+												</span>
+                                                <!--end::Svg Icon-->
+											</span>
+                                    <span class="menu-title">다운로드 이력</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+                            <!--end:Menu item-->
+
+                            <!--begin:Menu item-->
+                            <div class="menu-item">
+                                <!--begin:Menu link-->
+                                <a class="menu-link" href="https://preview.keenthemes.com/html/keen/docs/base/utilities" target="_blank">
+											<span class="menu-icon">
+												<!--begin::Svg Icon | path: icons/duotune/general/gen002.svg-->
+												<span class="svg-icon svg-icon-2">
+													<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+														<path opacity="0.3" d="M4.05424 15.1982C8.34524 7.76818 13.5782 3.26318 20.9282 2.01418C21.0729 1.98837 21.2216 1.99789 21.3618 2.04193C21.502 2.08597 21.6294 2.16323 21.7333 2.26712C21.8372 2.37101 21.9144 2.49846 21.9585 2.63863C22.0025 2.7788 22.012 2.92754 21.9862 3.07218C20.7372 10.4222 16.2322 15.6552 8.80224 19.9462L4.05424 15.1982ZM3.81924 17.3372L2.63324 20.4482C2.58427 20.5765 2.5735 20.7163 2.6022 20.8507C2.63091 20.9851 2.69788 21.1082 2.79503 21.2054C2.89218 21.3025 3.01536 21.3695 3.14972 21.3982C3.28408 21.4269 3.42387 21.4161 3.55224 21.3672L6.66524 20.1802L3.81924 17.3372ZM16.5002 5.99818C16.2036 5.99818 15.9136 6.08615 15.6669 6.25097C15.4202 6.41579 15.228 6.65006 15.1144 6.92415C15.0009 7.19824 14.9712 7.49984 15.0291 7.79081C15.0869 8.08178 15.2298 8.34906 15.4396 8.55884C15.6494 8.76862 15.9166 8.91148 16.2076 8.96935C16.4986 9.02723 16.8002 8.99753 17.0743 8.884C17.3484 8.77046 17.5826 8.5782 17.7474 8.33153C17.9123 8.08486 18.0002 7.79485 18.0002 7.49818C18.0002 7.10035 17.8422 6.71882 17.5609 6.43752C17.2796 6.15621 16.8981 5.99818 16.5002 5.99818Z" fill="currentColor" />
+														<path d="M4.05423 15.1982L2.24723 13.3912C2.15505 13.299 2.08547 13.1867 2.04395 13.0632C2.00243 12.9396 1.9901 12.8081 2.00793 12.679C2.02575 12.5498 2.07325 12.4266 2.14669 12.3189C2.22013 12.2112 2.31752 12.1219 2.43123 12.0582L9.15323 8.28918C7.17353 10.3717 5.4607 12.6926 4.05423 15.1982ZM8.80023 19.9442L10.6072 21.7512C10.6994 21.8434 10.8117 21.9129 10.9352 21.9545C11.0588 21.996 11.1903 22.0083 11.3195 21.9905C11.4486 21.9727 11.5718 21.9252 11.6795 21.8517C11.7872 21.7783 11.8765 21.6809 11.9402 21.5672L15.7092 14.8442C13.6269 16.8245 11.3061 18.5377 8.80023 19.9442ZM7.04023 18.1832L12.5832 12.6402C12.7381 12.4759 12.8228 12.2577 12.8195 12.032C12.8161 11.8063 12.725 11.5907 12.5653 11.4311C12.4057 11.2714 12.1901 11.1803 11.9644 11.1769C11.7387 11.1736 11.5205 11.2583 11.3562 11.4132L5.81323 16.9562L7.04023 18.1832Z" fill="currentColor" />
+													</svg>
+												</span>
+                                                <!--end::Svg Icon-->
+											</span>
+                                    <span class="menu-title">이벤트 로그</span>
+                                </a>
+                                <!--end:Menu link-->
+                            </div>
+
+                            <!--end:Menu item-->
+                        </div>
+                        <!--end::Menu-->
+                    </div>
+                    <!--end::Menu wrapper-->
+                </div>
+                <!--end::sidebar menu-->
+
+            </div>
+            <!--end::Sidebar-->
+
+            <!--begin::Main-->
+            <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
+                <div id="kt_app_content_container" class="app-container container-fluid">
+                    <div class="card card-flush">
+                        <div class="card-body">
+                            <!-- Tab 구분 -->
+                            <ul class="nav nav-tabs nav-line-tabs nav-line-tabs-2x border-transparent fs-4 fw-semibold mb-15" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link text-active-primary pb-5 active" data-bs-toggle="tab" href="#kt_ecommerce_settings_general" aria-selected="true" role="tab">1. 제품 등록</a>
+                                </li>
+
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link text-active-primary pb-5" data-bs-toggle="tab" href="#kt_ecommerce_settings_store" aria-selected="false" tabindex="-1" role="tab" id="select_content_tab">2. 컨텐츠 등록</a>
+                                </li>
+                            </ul>
+                            <!-- Tab 제품/컨텐츠 -->
+                            <div class="tab-content" id="myTabContent">
+                                <!-- Tab 제품 등록 -->
+                                <div class="tab-pane fade show active" id="kt_ecommerce_settings_general" role="tabpanel">
+
+                                    <!--begin::Form-->
+                                    <form id="kt_ecommerce_settings_general_form" class="form fv-plugins-bootstrap5 fv-plugins-framework" action="#">
+
+                                        <div class="row mb-7">
+                                            <div class="col-md-9 offset-md-3">
+                                                <h2>제품 등록</h2>
+                                            </div>
+                                        </div>
+
+                                        <div class="row fv-row mb-7 fv-plugins-icon-container">
+                                            <div class="col-md-3 text-md-end">
+                                                <label class="fs-6 fw-semibold form-label mt-3">
+                                                    <span class="fw-bold text-gray-600 required">제품군</span>
+                                                    <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set the title of the store for SEO." data-bs-original-title="Set the title of the store for SEO." data-kt-initialized="1"></i>-->
+                                                </label>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="w-100">
+                                                    <select class="form-select form-select-solid fw-bold" data-control="select2" aria-label="제품군 선택" data-placeholder="제품군 선택" data-hide-search="true" id="select_product">
+                                                        <option></option>
+                                                        <option value="TV">TV</option>
+                                                        <option value="AV">AV</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row fv-row mb-7">
+                                            <div class="col-md-3 text-md-end">
+                                                <label class="fs-6 fw-semibold form-label mt-3">
+                                                    <span class="fw-bold text-gray-600 required">모델명</span>
+                                                    <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set the description of the store for SEO." data-bs-original-title="Set the description of the store for SEO." data-kt-initialized="1"></i>-->
+                                                </label>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control form-control-solid" value="" id="product_name"/>
+                                                <!--<div class="fv-plugins-message-container invalid-feedback"></div>-->
+                                            </div>
+                                        </div>
+
+
+                                        <div class="row fv-row mb-7">
+                                            <div class="col-md-3 text-md-end">
+                                                <label class="fs-6 fw-semibold form-label mt-3">
+                                                    <span class="fw-bold text-gray-600 required">이미지</span>
+                                                    <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set keywords for the store separated by a comma." data-bs-original-title="Set keywords for the store separated by a comma." data-kt-initialized="1"></i>-->
+                                                </label>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="image-input image-input-outline image-input-changed" data-kt-image-input="true" style="background-image: url('/static/assets/media/svg/avatars/blank.svg')" id="kt_image">
+                                                    <div class="image-input-wrapper w-125px h-125px bgi-position-center" style="background-size: 75%;"></div>
+                                                    <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" aria-label="Change avatar" data-bs-original-title="Change avatar" data-kt-initialized="1">
+                                                        <i class="bi bi-pencil-fill fs-7"></i>
+
+                                                        <input type="file" accept=".png, .jpg, .jpeg" id="product_image">
+                                                        <input type="hidden" value="0">
+                                                    </label>
+
+
+                                                    <!--begin::Cancel-->
+                                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip"
+                                                          aria-label="Cancel avatar" data-bs-original-title="Cancel avatar" data-kt-initialized="1">
+                                                        <i class="bi bi-x fs-2"></i>
+                                                    </span>
+                                                    <!--end::Cancel-->
+
+                                                    <!--begin::Remove-->
+                                                    <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-white shadow" data-kt-image-input-action="remove" data-bs-toggle="tooltip"
+                                                          aria-label="Remove avatar" data-bs-original-title="Remove avatar" data-kt-initialized="1" id="avatarRemoveBtn">
+                                                        <i class="bi bi-x fs-2"></i>
+                                                    </span>
+                                                    <!--end::Remove-->
+
+                                                </div>
+
+                                                <!--begin::Hint-->
+                                                <div class="form-text">Allowed file types:  png, jpg, jpeg.</div>
+                                                <!--end::Hint-->
+
+                                            </div>
+                                        </div>
+
+                                        <!--begin::제품 등록 footer-->
+                                        <div class="row fv-row mb-7">
+                                            <div class="col-md-3 text-md-end">
+
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="d-flex justify-content-end">
+                                                    <!--begin::Button-->
+                                                    <button class="btn btn-light me-3" onclick="productCancel();">취소</button>
+                                                    <!--end::Button-->
+
+
+
+
+                                                    <button class="btn btn-primary">
+                                                        <span class="indicator-label" onclick="btnNext();">다음</span>
+                                                        <!--<span class="indicator-progress">Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>-->
+                                                    </button>
+
+
+                                                </div>
+                                                <button class="btn btn-primary" onclick="productSave();">
+                                                    <span class="indicator-label">제품 저장 버튼 (삭제예정)</span>
+                                                    <!--<span class="indicator-progress">Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>-->
+                                                </button>
+                                            </div>
+
+
+                                        </div>
+
+
+
+                                        <!--end::제품 등록 footer-->
+
+
+
+                                    </form>
+                                    <!--end::Form-->
+                                </div>
+                                <!-- Tab 컨텐츠 등록 -->
+                                <div class="tab-pane fade" id="kt_ecommerce_settings_store" role="tabpanel">
+                                    <!--begin::Form-->
+                                    <form id="kt_ecommerce_settings_general_store" class="form fv-plugins-bootstrap5 fv-plugins-framework" action="#">
+
+
+                                        <div class="row fv-row mb-7">
+
+                                            <div class="d-flex justify-content-start col-md-3 ps-15">
+                                                <div class="col-md-8"></div>
+                                                <div class="d-flex justify-content-start col-md-4">
+                                                    <label class="form-check form-check-custom form-check-solid">
+                                                        <input class="form-check-input me-3" type="checkbox" name="" value="1" checked>
+                                                        <span class="fw-bold text-gray-600">적용 국가</span>
+                                                        <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set the title of the store for SEO." data-bs-original-title="Set the title of the store for SEO." data-kt-initialized="1"></i>-->
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center text-center">
+                                                    <select name="country" multiple="multiple" class="form-select form-select-solid fw-bold" aria-label="국가 선택" data-placeholder="국가 선택" data-control="select2">
+                                                        <option value="">국가 선택</option>
+                                                        <option value="AF">Afghanistan</option>
+                                                        <option value="AX">Aland Islands</option>
+                                                        <option value="AL">Albania</option>
+                                                        <option value="DZ">Algeria</option>
+                                                        <option value="AS">American Samoa</option>
+                                                        <option value="AD">Andorra</option>
+                                                        <option value="AO">Angola</option>
+                                                        <option value="AI">Anguilla</option>
+                                                        <option value="AG">Antigua and Barbuda</option>
+                                                        <option value="AR">Argentina</option>
+                                                        <option value="AM">Armenia</option>
+                                                        <option value="AW">Aruba</option>
+                                                        <option value="AU">Australia</option>
+                                                        <option value="AT">Austria</option>
+                                                        <option value="AZ">Azerbaijan</option>
+                                                        <option value="BS">Bahamas</option>
+                                                        <option value="BH">Bahrain</option>
+                                                        <option value="BD">Bangladesh</option>
+                                                        <option value="BB">Barbados</option>
+                                                        <option value="BY">Belarus</option>
+                                                        <option value="BE">Belgium</option>
+                                                        <option value="BZ">Belize</option>
+                                                        <option value="BJ">Benin</option>
+                                                        <option value="BM">Bermuda</option>
+                                                        <option value="BT">Bhutan</option>
+                                                        <option value="BO">Bolivia, Plurinational State of</option>
+                                                        <option value="BQ">Bonaire, Sint Eustatius and Saba</option>
+                                                        <option value="BA">Bosnia and Herzegovina</option>
+                                                        <option value="BW">Botswana</option>
+                                                        <option value="BR">Brazil</option>
+                                                        <option value="IO">British Indian Ocean Territory</option>
+                                                        <option value="BN">Brunei Darussalam</option>
+                                                        <option value="BG">Bulgaria</option>
+                                                        <option value="BF">Burkina Faso</option>
+                                                        <option value="BI">Burundi</option>
+                                                        <option value="KH">Cambodia</option>
+                                                        <option value="CM">Cameroon</option>
+                                                        <option value="CA">Canada</option>
+                                                        <option value="CV">Cape Verde</option>
+                                                        <option value="KY">Cayman Islands</option>
+                                                        <option value="CF">Central African Republic</option>
+                                                        <option value="TD">Chad</option>
+                                                        <option value="CL">Chile</option>
+                                                        <option value="CN">China</option>
+                                                        <option value="CX">Christmas Island</option>
+                                                        <option value="CC">Cocos (Keeling) Islands</option>
+                                                        <option value="CO">Colombia</option>
+                                                        <option value="KM">Comoros</option>
+                                                        <option value="CK">Cook Islands</option>
+                                                        <option value="CR">Costa Rica</option>
+                                                        <option value="CI">Côte d'Ivoire</option>
+                                                        <option value="HR">Croatia</option>
+                                                        <option value="CU">Cuba</option>
+                                                        <option value="CW">Curaçao</option>
+                                                        <option value="CZ">Czech Republic</option>
+                                                        <option value="DK">Denmark</option>
+                                                        <option value="DJ">Djibouti</option>
+                                                        <option value="DM">Dominica</option>
+                                                        <option value="DO">Dominican Republic</option>
+                                                        <option value="EC">Ecuador</option>
+                                                        <option value="EG">Egypt</option>
+                                                        <option value="SV">El Salvador</option>
+                                                        <option value="GQ">Equatorial Guinea</option>
+                                                        <option value="ER">Eritrea</option>
+                                                        <option value="EE">Estonia</option>
+                                                        <option value="ET">Ethiopia</option>
+                                                        <option value="FK">Falkland Islands (Malvinas)</option>
+                                                        <option value="FJ">Fiji</option>
+                                                        <option value="FI">Finland</option>
+                                                        <option value="FR">France</option>
+                                                        <option value="PF">French Polynesia</option>
+                                                        <option value="GA">Gabon</option>
+                                                        <option value="GM">Gambia</option>
+                                                        <option value="GE">Georgia</option>
+                                                        <option value="DE">Germany</option>
+                                                        <option value="GH">Ghana</option>
+                                                        <option value="GI">Gibraltar</option>
+                                                        <option value="GR">Greece</option>
+                                                        <option value="GL">Greenland</option>
+                                                        <option value="GD">Grenada</option>
+                                                        <option value="GU">Guam</option>
+                                                        <option value="GT">Guatemala</option>
+                                                        <option value="GG">Guernsey</option>
+                                                        <option value="GN">Guinea</option>
+                                                        <option value="GW">Guinea-Bissau</option>
+                                                        <option value="HT">Haiti</option>
+                                                        <option value="VA">Holy See (Vatican City State)</option>
+                                                        <option value="HN">Honduras</option>
+                                                        <option value="HK">Hong Kong</option>
+                                                        <option value="HU">Hungary</option>
+                                                        <option value="IS">Iceland</option>
+                                                        <option value="IN">India</option>
+                                                        <option value="ID">Indonesia</option>
+                                                        <option value="IR">Iran, Islamic Republic of</option>
+                                                        <option value="IQ">Iraq</option>
+                                                        <option value="IE">Ireland</option>
+                                                        <option value="IM">Isle of Man</option>
+                                                        <option value="IL">Israel</option>
+                                                        <option value="IT">Italy</option>
+                                                        <option value="JM">Jamaica</option>
+                                                        <option value="JP">Japan</option>
+                                                        <option value="JE">Jersey</option>
+                                                        <option value="JO">Jordan</option>
+                                                        <option value="KZ">Kazakhstan</option>
+                                                        <option value="KE">Kenya</option>
+                                                        <option value="KI">Kiribati</option>
+                                                        <option value="KP">Korea, Democratic People's Republic of</option>
+                                                        <option value="KW">Kuwait</option>
+                                                        <option value="KG">Kyrgyzstan</option>
+                                                        <option value="LA">Lao People's Democratic Republic</option>
+                                                        <option value="LV">Latvia</option>
+                                                        <option value="LB">Lebanon</option>
+                                                        <option value="LS">Lesotho</option>
+                                                        <option value="LR">Liberia</option>
+                                                        <option value="LY">Libya</option>
+                                                        <option value="LI">Liechtenstein</option>
+                                                        <option value="LT">Lithuania</option>
+                                                        <option value="LU">Luxembourg</option>
+                                                        <option value="MO">Macao</option>
+                                                        <option value="MG">Madagascar</option>
+                                                        <option value="MW">Malawi</option>
+                                                        <option value="MY">Malaysia</option>
+                                                        <option value="MV">Maldives</option>
+                                                        <option value="ML">Mali</option>
+                                                        <option value="MT">Malta</option>
+                                                        <option value="MH">Marshall Islands</option>
+                                                        <option value="MQ">Martinique</option>
+                                                        <option value="MR">Mauritania</option>
+                                                        <option value="MU">Mauritius</option>
+                                                        <option value="MX">Mexico</option>
+                                                        <option value="FM">Micronesia, Federated States of</option>
+                                                        <option value="MD">Moldova, Republic of</option>
+                                                        <option value="MC">Monaco</option>
+                                                        <option value="MN">Mongolia</option>
+                                                        <option value="ME">Montenegro</option>
+                                                        <option value="MS">Montserrat</option>
+                                                        <option value="MA">Morocco</option>
+                                                        <option value="MZ">Mozambique</option>
+                                                        <option value="MM">Myanmar</option>
+                                                        <option value="NA">Namibia</option>
+                                                        <option value="NR">Nauru</option>
+                                                        <option value="NP">Nepal</option>
+                                                        <option value="NL">Netherlands</option>
+                                                        <option value="NZ">New Zealand</option>
+                                                        <option value="NI">Nicaragua</option>
+                                                        <option value="NE">Niger</option>
+                                                        <option value="NG">Nigeria</option>
+                                                        <option value="NU">Niue</option>
+                                                        <option value="NF">Norfolk Island</option>
+                                                        <option value="MP">Northern Mariana Islands</option>
+                                                        <option value="NO">Norway</option>
+                                                        <option value="OM">Oman</option>
+                                                        <option value="PK">Pakistan</option>
+                                                        <option value="PW">Palau</option>
+                                                        <option value="PS">Palestinian Territory, Occupied</option>
+                                                        <option value="PA">Panama</option>
+                                                        <option value="PG">Papua New Guinea</option>
+                                                        <option value="PY">Paraguay</option>
+                                                        <option value="PE">Peru</option>
+                                                        <option value="PH">Philippines</option>
+                                                        <option value="PL">Poland</option>
+                                                        <option value="PT">Portugal</option>
+                                                        <option value="PR">Puerto Rico</option>
+                                                        <option value="QA">Qatar</option>
+                                                        <option value="RO">Romania</option>
+                                                        <option value="RU">Russian Federation</option>
+                                                        <option value="RW">Rwanda</option>
+                                                        <option value="BL">Saint Barthélemy</option>
+                                                        <option value="KN">Saint Kitts and Nevis</option>
+                                                        <option value="LC">Saint Lucia</option>
+                                                        <option value="MF">Saint Martin (French part)</option>
+                                                        <option value="VC">Saint Vincent and the Grenadines</option>
+                                                        <option value="WS">Samoa</option>
+                                                        <option value="SM">San Marino</option>
+                                                        <option value="ST">Sao Tome and Principe</option>
+                                                        <option value="SA">Saudi Arabia</option>
+                                                        <option value="SN">Senegal</option>
+                                                        <option value="RS">Serbia</option>
+                                                        <option value="SC">Seychelles</option>
+                                                        <option value="SL">Sierra Leone</option>
+                                                        <option value="SG">Singapore</option>
+                                                        <option value="SX">Sint Maarten (Dutch part)</option>
+                                                        <option value="SK">Slovakia</option>
+                                                        <option value="SI">Slovenia</option>
+                                                        <option value="SB">Solomon Islands</option>
+                                                        <option value="SO">Somalia</option>
+                                                        <option value="ZA">South Africa</option>
+                                                        <option value="KR">South Korea</option>
+                                                        <option value="SS">South Sudan</option>
+                                                        <option value="ES">Spain</option>
+                                                        <option value="LK">Sri Lanka</option>
+                                                        <option value="SD">Sudan</option>
+                                                        <option value="SR">Suriname</option>
+                                                        <option value="SZ">Swaziland</option>
+                                                        <option value="SE">Sweden</option>
+                                                        <option value="CH">Switzerland</option>
+                                                        <option value="SY">Syrian Arab Republic</option>
+                                                        <option value="TW">Taiwan, Province of China</option>
+                                                        <option value="TJ">Tajikistan</option>
+                                                        <option value="TZ">Tanzania, United Republic of</option>
+                                                        <option value="TH">Thailand</option>
+                                                        <option value="TG">Togo</option>
+                                                        <option value="TK">Tokelau</option>
+                                                        <option value="TO">Tonga</option>
+                                                        <option value="TT">Trinidad and Tobago</option>
+                                                        <option value="TN">Tunisia</option>
+                                                        <option value="TR">Turkey</option>
+                                                        <option value="TM">Turkmenistan</option>
+                                                        <option value="TC">Turks and Caicos Islands</option>
+                                                        <option value="TV">Tuvalu</option>
+                                                        <option value="UG">Uganda</option>
+                                                        <option value="UA">Ukraine</option>
+                                                        <option value="AE">United Arab Emirates</option>
+                                                        <option value="GB">United Kingdom</option>
+                                                        <option value="US">United States</option>
+                                                        <option value="UY">Uruguay</option>
+                                                        <option value="UZ">Uzbekistan</option>
+                                                        <option value="VU">Vanuatu</option>
+                                                        <option value="VE">Venezuela, Bolivarian Republic of</option>
+                                                        <option value="VN">Vietnam</option>
+                                                        <option value="VI">Virgin Islands</option>
+                                                        <option value="YE">Yemen</option>
+                                                        <option value="ZM">Zambia</option>
+                                                        <option value="ZW">Zimbabwe</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="row fv-row mb-7">
+
+                                            <div class="d-flex justify-content-start col-md-3 ps-15">
+                                                <div class="col-md-8"></div>
+                                                <div class="d-flex justify-content-start col-md-4">
+                                                    <label class="form-check form-check-custom form-check-solid">
+                                                        <input class="form-check-input me-3" type="checkbox" name="" value="1" checked>
+                                                        <span class="fw-bold text-gray-600">F/W</span>
+                                                        <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set the title of the store for SEO." data-bs-original-title="Set the title of the store for SEO." data-kt-initialized="1"></i>-->
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="d-flex align-items-center col-md-9">
+                                                <div class="dropzone dropzone-queue" id="fw_main_dropzone">
+                                                    <!--begin::Controls-->
+                                                    <div class="dropzone-panel mb-lg-0 mb-2">
+                                                        <a class="dropzone-select btn btn-sm btn-light btn-active-light-primary me-2">
+                                                                        <span class="svg-icon svg-icon-3">
+                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                <path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" fill="currentColor" />
+                                                                                <path d="M10.4 3.60001L12 6H21C21.6 6 22 6.4 22 7V19C22 19.6 21.6 20 21 20H3C2.4 20 2 19.6 2 19V4C2 3.4 2.4 3 3 3H9.20001C9.70001 3 10.2 3.20001 10.4 3.60001ZM16 11.6L12.7 8.29999C12.3 7.89999 11.7 7.89999 11.3 8.29999L8 11.6H11V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H16Z" fill="currentColor" />
+                                                                                <path opacity="0.3" d="M11 11.6V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H11Z" fill="currentColor" />
+                                                                            </svg>
+                                                                        </span>
+                                                            Attach files</a>
+                                                        <a class="dropzone-upload btn btn-sm btn-light-primary me-2">Upload All</a>
+                                                        <a class="dropzone-remove-all btn btn-sm btn-light-primary">Remove All</a>
+                                                    </div>
+                                                    <!--end::Controls-->
+
+                                                    <!--begin::Items-->
+                                                    <div class="dropzone-items w-md-500px">
+                                                        <div class="dropzone-item" style="display:none">
+                                                            <!--begin::File-->
+                                                            <div class="dropzone-file">
+                                                                <div class="dropzone-filename" title="some_image_file_name.jpg">
+                                                                    <span data-dz-name>some_image_file_name.jpg</span>
+                                                                    <!--span data-dz-size>5000000</span>-->
+                                                                </div>
+
+                                                                <div class="dropzone-error" data-dz-errormessage></div>
+                                                            </div>
+                                                            <!--end::File-->
+
+                                                            <!--begin::Progress-->
+                                                            <div class="dropzone-progress">
+                                                                <div class="progress">
+                                                                    <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress></div>
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Progress-->
+
+                                                            <!--begin::Toolbar-->
+                                                            <div class="dropzone-toolbar">
+                                                                <span class="dropzone-start"><i class="bi bi-play-fill fs-3"></i></span>
+                                                                <span class="dropzone-cancel" data-dz-remove style="display: none;"><i class="bi bi-x fs-3"></i></span>
+                                                                <span class="dropzone-delete" data-dz-remove><i class="bi bi-x fs-1"></i></span>
+                                                            </div>
+                                                            <!--end::Toolbar-->
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Items-->
+                                                </div>
+                                            </div>
+
+
+
+
+                                        </div>
+
+                                        <div class="row fv-row mb-7">
+                                            <div class="d-flex justify-content-start col-md-3 ps-15">
+                                                <div class="col-md-8"></div>
+                                                <div class="d-flex justify-content-start col-md-4">
+                                                    <label class="form-check form-check-custom form-check-solid">
+                                                        <input class="form-check-input me-3" type="checkbox" name="" value="1" checked>
+                                                        <span class="fw-bold text-gray-600">UI</span>
+                                                        <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set the title of the store for SEO." data-bs-original-title="Set the title of the store for SEO." data-kt-initialized="1"></i>-->
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="d-flex align-items-center col-md-9">
+                                                <div class="dropzone dropzone-queue" id="ui_main_dropzone">
+                                                    <!--begin::Controls-->
+                                                    <div class="dropzone-panel mb-lg-0 mb-2">
+                                                        <a class="dropzone-select btn btn-sm btn-light btn-active-light-primary me-2">
+                                                                        <span class="svg-icon svg-icon-3">
+                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                <path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" fill="currentColor" />
+                                                                                <path d="M10.4 3.60001L12 6H21C21.6 6 22 6.4 22 7V19C22 19.6 21.6 20 21 20H3C2.4 20 2 19.6 2 19V4C2 3.4 2.4 3 3 3H9.20001C9.70001 3 10.2 3.20001 10.4 3.60001ZM16 11.6L12.7 8.29999C12.3 7.89999 11.7 7.89999 11.3 8.29999L8 11.6H11V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H16Z" fill="currentColor" />
+                                                                                <path opacity="0.3" d="M11 11.6V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H11Z" fill="currentColor" />
+                                                                            </svg>
+                                                                        </span>
+                                                            Attach files</a>
+                                                        <a class="dropzone-upload btn btn-sm btn-light-primary me-2">Upload All</a>
+                                                        <a class="dropzone-remove-all btn btn-sm btn-light-primary">Remove All</a>
+                                                    </div>
+                                                    <!--end::Controls-->
+
+                                                    <!--begin::Items-->
+                                                    <div class="dropzone-items w-md-500px">
+                                                        <div class="dropzone-item" style="display:none">
+                                                            <!--begin::File-->
+                                                            <div class="dropzone-file">
+                                                                <div class="dropzone-filename" title="some_image_file_name.jpg">
+                                                                    <span data-dz-name>some_image_file_name.jpg</span>
+                                                                    <!--span data-dz-size>5000000</span>-->
+                                                                </div>
+
+                                                                <div class="dropzone-error" data-dz-errormessage></div>
+                                                            </div>
+                                                            <!--end::File-->
+
+                                                            <!--begin::Progress-->
+                                                            <div class="dropzone-progress">
+                                                                <div class="progress">
+                                                                    <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress></div>
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Progress-->
+
+                                                            <!--begin::Toolbar-->
+                                                            <div class="dropzone-toolbar">
+                                                                <span class="dropzone-start"><i class="bi bi-play-fill fs-3"></i></span>
+                                                                <span class="dropzone-cancel" data-dz-remove style="display: none;"><i class="bi bi-x fs-3"></i></span>
+                                                                <span class="dropzone-delete" data-dz-remove><i class="bi bi-x fs-1"></i></span>
+                                                            </div>
+                                                            <!--end::Toolbar-->
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Items-->
+                                                </div>
+
+                                            </div>
+                                            <!--
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control form-control-solid" name="meta_title" value="">
+                                            </div>
+
+                                            <div class="d-flex align-items-center col-md-3">
+                                                <button type="button" class="btn btn-light btn-active-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_upload">
+                                                    <span class="svg-icon svg-icon-3">
+														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" fill="currentColor" />
+															<path d="M10.4 3.60001L12 6H21C21.6 6 22 6.4 22 7V19C22 19.6 21.6 20 21 20H3C2.4 20 2 19.6 2 19V4C2 3.4 2.4 3 3 3H9.20001C9.70001 3 10.2 3.20001 10.4 3.60001ZM16 11.6L12.7 8.29999C12.3 7.89999 11.7 7.89999 11.3 8.29999L8 11.6H11V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H16Z" fill="currentColor" />
+															<path opacity="0.3" d="M11 11.6V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H11Z" fill="currentColor" />
+														</svg>
+													</span>
+                                                    Upload Files</button>
+                                            </div>
+                                            -->
+
+
+                                        </div>
+
+                                        <div class="row fv-row mb-7">
+                                            <div class="d-flex justify-content-start col-md-3 ps-15">
+                                                <div class="col-md-8"></div>
+                                                <div class="d-flex justify-content-start col-md-4">
+                                                    <label class="form-check form-check-custom form-check-solid">
+                                                        <input class="form-check-input me-3" type="checkbox" name="" value="1" checked>
+                                                        <span class="fw-bold text-gray-600">컨텐츠</span>
+                                                        <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set the title of the store for SEO." data-bs-original-title="Set the title of the store for SEO." data-kt-initialized="1"></i>-->
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="d-flex align-items-center col-md-9">
+                                                <div class="dropzone dropzone-queue" id="content_main_dropzone">
+                                                    <!--begin::Controls-->
+                                                    <div class="dropzone-panel mb-lg-0 mb-2">
+                                                        <a class="dropzone-select btn btn-sm btn-light btn-active-light-primary me-2">
+                                                                        <span class="svg-icon svg-icon-3">
+                                                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                <path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" fill="currentColor" />
+                                                                                <path d="M10.4 3.60001L12 6H21C21.6 6 22 6.4 22 7V19C22 19.6 21.6 20 21 20H3C2.4 20 2 19.6 2 19V4C2 3.4 2.4 3 3 3H9.20001C9.70001 3 10.2 3.20001 10.4 3.60001ZM16 11.6L12.7 8.29999C12.3 7.89999 11.7 7.89999 11.3 8.29999L8 11.6H11V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H16Z" fill="currentColor" />
+                                                                                <path opacity="0.3" d="M11 11.6V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H11Z" fill="currentColor" />
+                                                                            </svg>
+                                                                        </span>
+                                                            Attach files</a>
+                                                        <a class="dropzone-upload btn btn-sm btn-light-primary me-2">Upload All</a>
+                                                        <a class="dropzone-remove-all btn btn-sm btn-light-primary">Remove All</a>
+                                                    </div>
+                                                    <!--end::Controls-->
+
+                                                    <!--begin::Items-->
+                                                    <div class="dropzone-items w-md-500px">
+                                                        <div class="dropzone-item" style="display:none">
+                                                            <!--begin::File-->
+                                                            <div class="dropzone-file">
+                                                                <div class="dropzone-filename" title="some_image_file_name.jpg">
+                                                                    <span data-dz-name>some_image_file_name.jpg</span>
+                                                                    <!--span data-dz-size>5000000</span>-->
+                                                                </div>
+
+                                                                <div class="dropzone-error" data-dz-errormessage></div>
+                                                            </div>
+                                                            <!--end::File-->
+
+                                                            <!--begin::Progress-->
+                                                            <div class="dropzone-progress">
+                                                                <div class="progress">
+                                                                    <div class="progress-bar bg-primary" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-dz-uploadprogress></div>
+                                                                </div>
+                                                            </div>
+                                                            <!--end::Progress-->
+
+                                                            <!--begin::Toolbar-->
+                                                            <div class="dropzone-toolbar">
+                                                                <span class="dropzone-start"><i class="bi bi-play-fill fs-3"></i></span>
+                                                                <span class="dropzone-cancel" data-dz-remove style="display: none;"><i class="bi bi-x fs-3"></i></span>
+                                                                <span class="dropzone-delete" data-dz-remove><i class="bi bi-x fs-1"></i></span>
+                                                            </div>
+                                                            <!--end::Toolbar-->
+                                                        </div>
+                                                    </div>
+                                                    <!--end::Items-->
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row fv-row mb-7">
+                                            <div class="d-flex justify-content-start col-md-3 ps-15">
+                                                <div class="col-md-8"></div>
+                                                <div class="d-flex justify-content-start col-md-4">
+                                                    <label class="form-check form-check-custom form-check-solid">
+                                                        <input class="form-check-input me-3" type="checkbox" name="" value="1" checked>
+                                                        <span class="fw-bold text-gray-600">APP</span>
+                                                        <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set the title of the store for SEO." data-bs-original-title="Set the title of the store for SEO." data-kt-initialized="1"></i>-->
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control form-control-solid" name="meta_title" value="">
+                                            </div>
+
+                                            <div class="d-flex align-items-center col-md-3">
+                                                <button type="button" class="btn btn-light btn-active-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_upload">
+                                                    <span class="svg-icon svg-icon-3">
+														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" fill="currentColor" />
+															<path d="M10.4 3.60001L12 6H21C21.6 6 22 6.4 22 7V19C22 19.6 21.6 20 21 20H3C2.4 20 2 19.6 2 19V4C2 3.4 2.4 3 3 3H9.20001C9.70001 3 10.2 3.20001 10.4 3.60001ZM16 11.6L12.7 8.29999C12.3 7.89999 11.7 7.89999 11.3 8.29999L8 11.6H11V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H16Z" fill="currentColor" />
+															<path opacity="0.3" d="M11 11.6V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H11Z" fill="currentColor" />
+														</svg>
+													</span>
+                                                    Upload Files</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row fv-row mb-7">
+                                            <div class="d-flex justify-content-start col-md-3 ps-15">
+                                                <div class="col-md-8"></div>
+                                                <div class="d-flex justify-content-start col-md-4">
+                                                    <label class="form-check form-check-custom form-check-solid">
+                                                        <input class="form-check-input me-3" type="checkbox" name="" value="1" checked>
+                                                        <span class="fw-bold text-gray-600">매뉴얼</span>
+                                                        <!--<i class="fas fa-exclamation-circle ms-1 fs-7" data-bs-toggle="tooltip" aria-label="Set the title of the store for SEO." data-bs-original-title="Set the title of the store for SEO." data-kt-initialized="1"></i>-->
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control form-control-solid" name="meta_title" value="">
+                                            </div>
+
+                                            <div class="d-flex align-items-center col-md-3">
+                                                <button type="button" class="btn btn-light btn-active-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_upload">
+                                                    <span class="svg-icon svg-icon-3">
+														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<path opacity="0.3" d="M10 4H21C21.6 4 22 4.4 22 5V7H10V4Z" fill="currentColor" />
+															<path d="M10.4 3.60001L12 6H21C21.6 6 22 6.4 22 7V19C22 19.6 21.6 20 21 20H3C2.4 20 2 19.6 2 19V4C2 3.4 2.4 3 3 3H9.20001C9.70001 3 10.2 3.20001 10.4 3.60001ZM16 11.6L12.7 8.29999C12.3 7.89999 11.7 7.89999 11.3 8.29999L8 11.6H11V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H16Z" fill="currentColor" />
+															<path opacity="0.3" d="M11 11.6V17C11 17.6 11.4 18 12 18C12.6 18 13 17.6 13 17V11.6H11Z" fill="currentColor" />
+														</svg>
+													</span>
+                                                    Upload Files</button>
+                                            </div>
+                                        </div>
+
+
+
+                                    </form>
+                                    <!--end::Form-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Main-->
+        </div>
+    </div>
+
+    <!-- Modal Upload File -->
+    <div class="modal fade" id="kt_modal_upload" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h2 class="fw-bold">Upload files</h2>
+                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                        <span class="svg-icon svg-icon-1">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                                <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="modal-body pt-10 pb-15 px-lg-17">
+                    <form method="post" enctype="multipart/form-data" class="dropzone" id="MultiFileUpload">
+                        <div class="fv-row">
+                            <div class="dz-message needsclick">
+                                <i class="bi bi-file-earmark-arrow-up text-primary fs-3x"></i>
+
+                                <div class="ms-4">
+                                    <h3 class="fs-5 fw-bold text-gray-900 mb-1" id="file">Drop files here or click to upload.</h3>
+                                    <span class="fs-7 fw-semibold text-gray-400">Upload up to 1 files</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Scrolltop -->
+    <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+        <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
+        <span class="svg-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="currentColor" />
+                <path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="currentColor" />
+            </svg>
+        </span>
+    </div>
+
+
+</div>
+
+
+
+
+
+<script>var hostUrl = "assets/";</script>
+
+<!-- Global Javascript Bundle(mandatory for all pages) -->
+<script src="/static/assets/plugins/global/plugins.bundle.js"></script>
+<script src="/static/js/scripts.bundle.js"></script>
+
+<!--Vendors Javascript(used for this page only) -->
+<script src="/static/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+<!-- <script src="assets/plugins/custom/datatables/datatables.bundle.js"></script> -->
+
+<!-- Custom Javascript(used for this page only) -->
+<script src="/static/js/widgets.bundle.js"></script>
+<!--<script src="/static/js/custom/apps/chat/chat.js"></script>-->
+<!--<script src="/static/js/custom/utilities/modals/upgrade-plan.js"></script>-->
+<!--<script src="/static/js/custom/utilities/modals/create-campaign.js"></script>-->
+<script src="/static/js/custom/utilities/modals/users-search.js"></script>
+
+<script>
+
+    addLoadEvent(funLoad);
+
+    function addLoadEvent(func){
+        var oldonload = window.onload;
+        if(typeof window.onload != 'function'){
+            window.onload = func;
+        }else{
+            window.onload = function(){
+                oldonload();
+                func();
+            };
+        }
+    }
+    function funLoad(){
+        btnInit();
+    }
+
+    function btnInit() {
+        $("#avatarRemoveBtn").click();
+    }
+
+    function btnNext() {
+        console.log("btnNext");
+        $("#select_content_tab").click();
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+    console.log("csrftoken : ", csrftoken)
+
+    Dropzone.autoDiscover = false;
+    $('#MultiFileUpload').dropzone({
+        url: "/fileupload/",
+        crossDomain: false,
+        paramName: "file",
+        parallelUploads: 1,
+        autoProcessQueue: true,
+        filesizeBase: 1024,
+        maxFilesize: 100000,
+        addRemoveLinks: true,
+        dictRemoveFileConfirmation: null,
+        init: function () {
+
+            this.on("uploadprogress", function (file, progress, bytesSent) {
+                progress = bytesSent / file.size * 100;
+                console.log(filesizecalculation(bytesSent))
+            });
+            this.on("maxfilesexceeded", function (data) {
+                var res = eval('(' + data.xhr.responseText + ')');
+                console.log(res)
+
+            });
+            /*this.on("addedfile", function (file) {
+                var removeButton = Dropzone.createElement("<button data-dz-remove " +
+                    "class='del_thumbnail btn btn-default'><span class='glyphicon glyphicon-trash'></span>X</button>");
+                var _this = this;
+                removeButton.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    _this.removeFile(file);
+                });
+                file.previewElement.appendChild(removeButton);
+            });*/
+            this.on("error", function (file, message) {
+                console.log(message);
+                this.removeFile(file);
+            });
+            this.on('sending', function (file, xhr, formData) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            });
+        }
+    });
+
+    Dropzone.prototype.filesize = function (size) {
+        filesizecalculation(size)
+    };
+
+    function filesizecalculation(size) {
+        if (size < 1024 * 1024) {
+            return "<strong>" + (Math.round(Math.round(size / 1024) * 10) / 10) + " KB</strong>";
+        } else if (size < 1024 * 1024 * 1024) {
+            return "<strong>" + (Math.round((size / 1024 / 1024) * 10) / 10) + " MB</strong>";
+        } else if (size < 1024 * 1024 * 1024 * 1024) {
+            return "<strong>" + (Math.round((size / 1024 / 1024 / 1024) * 10) / 10) + " GB</strong>";
+        }
+    }
+</script>
+
+
+<script>
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    function productSave() {
+
+        let tags = [];
+        var content = "";
+
+        let select_product = $("#select_product").val(); // 제품군
+        let product_name = $("#product_name").val(); // 모델명
+        let product_image = $("#product_image")[0]; // 모델명
+
+        console.log("select_product : ", select_product)
+        console.log("product_name : ", product_name)
+        console.log("product_image : ", product_image.files)
+
+        var formData = new FormData();
+
+        formData.append("product_image", product_image.files[0]);
+        formData.append("product_name", product_name);
+        formData.append("select_product", select_product);
+
+        console.log("formData : ", formData)
+
+        $.ajax({
+            method: "POST",
+            url: "/fileupload2/",
+            data: formData,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            // beforeSend: function(xhr, settings) {
+            //     if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            //         xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            //     }
+            // },
+            success: function (data) {
+
+            },
+        });
+    }
+
+    function productCancel() {
+        console.log("취소");
+
+
+        $("#select_product").val("").select2({minimumResultsForSearch: Infinity}); // 제품군
+        $("#product_name").val("");         // 모델명
+        $("#avatarRemoveBtn").click();      // 이미지
+
+
+    }
+</script>
+
+
+<script>
+    // set the dropzone container id
+    const id = "#fw_main_dropzone";
+    console.log(id);
+    const dropzone = document.querySelector(id);
+
+    // set the preview element template
+    var previewNode = dropzone.querySelector(".dropzone-item");
+    previewNode.id = "";
+    var previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
+
+    var myDropzone = new Dropzone(id, { // Make the whole body a dropzone
+        url: "/fileupload/", // Set the url for your upload script location
+        maxFilesize: 10000000, // Max filesize in MB
+        parallelUploads: 1,
+        paramName: "file",
+        timeout:300000,
+        maxFiles:1,
+        autoQueue: false, // Make sure the files aren't queued until manually added
+        previewTemplate: previewTemplate,
+        previewsContainer: id + " .dropzone-items", // Define the container to display the previews
+        clickable: id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+
+    });
+
+    myDropzone.on("addedfile", function (file) {
+        // Hookup the start button
+        file.previewElement.querySelector(id + " .dropzone-start").onclick = function () { myDropzone.enqueueFile(file); };
+        const dropzoneItems = dropzone.querySelectorAll('.dropzone-item');
+        dropzoneItems.forEach(dropzoneItem => {
+            dropzoneItem.style.display = '';
+        });
+        dropzone.querySelector('.dropzone-upload').style.display = "inline-block";
+        dropzone.querySelector('.dropzone-remove-all').style.display = "inline-block";
+    });
+
+    // Update the total progress bar
+    myDropzone.on("totaluploadprogress", function (progress) {
+        const progressBars = dropzone.querySelectorAll('.progress-bar');
+        progressBars.forEach(progressBar => {
+            progressBar.style.width = progress + "%";
+        });
+    });
+
+    myDropzone.on("sending", function (file, xhr, formData) {
+        // Show the total progress bar when upload starts
+        const progressBars = dropzone.querySelectorAll('.progress-bar');
+        progressBars.forEach(progressBar => {
+            progressBar.style.opacity = "1";
+        });
+        // And disable the start button
+        file.previewElement.querySelector(id + " .dropzone-start").setAttribute("disabled", "disabled");
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    });
+
+
+
+    // Hide the total progress bar when nothing's uploading anymore
+    myDropzone.on("complete", function (progress) {
+        const progressBars = dropzone.querySelectorAll('.dz-complete');
+
+        setTimeout(function () {
+            progressBars.forEach(progressBar => {
+                progressBar.querySelector('.progress-bar').style.opacity = "0";
+                progressBar.querySelector('.progress').style.opacity = "0";
+                progressBar.querySelector('.dropzone-start').style.opacity = "0";
+            });
+        }, 300);
+    });
+
+    // Setup the buttons for all transfers
+    dropzone.querySelector(".dropzone-upload").addEventListener('click', function () {
+        myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+    });
+
+    // Setup the button for remove all files
+    dropzone.querySelector(".dropzone-remove-all").addEventListener('click', function () {
+        dropzone.querySelector('.dropzone-upload').style.display = "none";
+        dropzone.querySelector('.dropzone-remove-all').style.display = "none";
+        myDropzone.removeAllFiles(true);
+    });
+
+    // On all files completed upload
+    myDropzone.on("queuecomplete", function (progress) {
+        const uploadIcons = dropzone.querySelectorAll('.dropzone-upload');
+        uploadIcons.forEach(uploadIcon => {
+            uploadIcon.style.display = "none";
+        });
+    });
+
+    // On all files removed
+    myDropzone.on("removedfile", function (file) {
+        if (myDropzone.files.length < 1) {
+            dropzone.querySelector('.dropzone-upload').style.display = "none";
+            dropzone.querySelector('.dropzone-remove-all').style.display = "none";
+        }
+    });
+</script>
+
+<script>
+    // set the dropzone container id
+    const ui_id = "#ui_main_dropzone";
+    console.log(ui_id);
+    const ui_dropzone = document.querySelector(ui_id);
+
+    // set the preview element template
+    var ui_previewNode = ui_dropzone.querySelector(".dropzone-item");
+    ui_previewNode.ui_id = "";
+    var ui_previewTemplate = ui_previewNode.parentNode.innerHTML;
+    ui_previewNode.parentNode.removeChild(ui_previewNode);
+
+    var ui_myDropzone = new Dropzone(ui_id, { // Make the whole body a dropzone
+        url: "/fileupload/", // Set the url for your upload script location
+        maxFilesize: 10000000, // Max filesize in MB
+        parallelUploads: 1,
+        paramName: "file",
+        timeout:300000,
+        maxFiles:1,
+        autoQueue: false, // Make sure the files aren't queued until manually added
+        previewTemplate: ui_previewTemplate,
+        previewsContainer: ui_id + " .dropzone-items", // Define the container to display the previews
+        clickable: ui_id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+
+    });
+
+    ui_myDropzone.on("addedfile", function (file) {
+        // Hookup the start button
+        file.previewElement.querySelector(ui_id + " .dropzone-start").onclick = function () { ui_myDropzone.enqueueFile(file); };
+        const dropzoneItems = ui_dropzone.querySelectorAll('.dropzone-item');
+        dropzoneItems.forEach(dropzoneItem => {
+            dropzoneItem.style.display = '';
+        });
+        ui_dropzone.querySelector('.dropzone-upload').style.display = "inline-block";
+        ui_dropzone.querySelector('.dropzone-remove-all').style.display = "inline-block";
+    });
+
+    // Update the total progress bar
+    ui_myDropzone.on("totaluploadprogress", function (progress) {
+        const progressBars = ui_dropzone.querySelectorAll('.progress-bar');
+        progressBars.forEach(progressBar => {
+            progressBar.style.width = progress + "%";
+        });
+    });
+
+    ui_myDropzone.on("sending", function (file, xhr, formData) {
+        // Show the total progress bar when upload starts
+        const progressBars = ui_dropzone.querySelectorAll('.progress-bar');
+        progressBars.forEach(progressBar => {
+            progressBar.style.opacity = "1";
+        });
+        // And disable the start button
+        file.previewElement.querySelector(ui_id + " .dropzone-start").setAttribute("disabled", "disabled");
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    });
+
+
+
+    // Hide the total progress bar when nothing's uploading anymore
+    ui_myDropzone.on("complete", function (progress) {
+        const progressBars = ui_dropzone.querySelectorAll('.dz-complete');
+
+        setTimeout(function () {
+            progressBars.forEach(progressBar => {
+                progressBar.querySelector('.progress-bar').style.opacity = "0";
+                progressBar.querySelector('.progress').style.opacity = "0";
+                progressBar.querySelector('.dropzone-start').style.opacity = "0";
+            });
+        }, 300);
+    });
+
+    // Setup the buttons for all transfers
+    ui_dropzone.querySelector(".dropzone-upload").addEventListener('click', function () {
+        ui_myDropzone.enqueueFiles(ui_myDropzone.getFilesWithStatus(Dropzone.ADDED));
+    });
+
+    // Setup the button for remove all files
+    ui_dropzone.querySelector(".dropzone-remove-all").addEventListener('click', function () {
+        ui_dropzone.querySelector('.dropzone-upload').style.display = "none";
+        ui_dropzone.querySelector('.dropzone-remove-all').style.display = "none";
+        ui_myDropzone.removeAllFiles(true);
+    });
+
+    // On all files completed upload
+    ui_myDropzone.on("queuecomplete", function (progress) {
+        const uploadIcons = ui_dropzone.querySelectorAll('.dropzone-upload');
+        uploadIcons.forEach(uploadIcon => {
+            uploadIcon.style.display = "none";
+        });
+    });
+
+    // On all files removed
+    ui_myDropzone.on("removedfile", function (file) {
+        if (ui_myDropzone.files.length < 1) {
+            ui_dropzone.querySelector('.dropzone-upload').style.display = "none";
+            ui_dropzone.querySelector('.dropzone-remove-all').style.display = "none";
+        }
+    });
+</script>
+
+<script>
+    // set the dropzone container id
+    const content_id = "#content_main_dropzone";
+    console.log(content_id);
+    const content_dropzone = document.querySelector(content_id);
+
+    // set the preview element template
+    var content_previewNode = content_dropzone.querySelector(".dropzone-item");
+    content_previewNode.content_id = "";
+    var content_previewTemplate = content_previewNode.parentNode.innerHTML;
+    content_previewNode.parentNode.removeChild(content_previewNode);
+
+    var content_myDropzone = new Dropzone(content_id, { // Make the whole body a dropzone
+        url: "/fileupload/", // Set the url for your upload script location
+        maxFilesize: 10000000, // Max filesize in MB
+        parallelUploads: 1,
+        paramName: "file",
+        timeout:300000,
+        maxFiles:1,
+        autoQueue: false, // Make sure the files aren't queued until manually added
+        previewTemplate: content_previewTemplate,
+        previewsContainer: content_id + " .dropzone-items", // Define the container to display the previews
+        clickable: content_id + " .dropzone-select" // Define the element that should be used as click trigger to select files.
+
+    });
+
+    content_myDropzone.on("addedfile", function (file) {
+        // Hookup the start button
+        file.previewElement.querySelector(content_id + " .dropzone-start").onclick = function () { content_myDropzone.enqueueFile(file); };
+        const dropzoneItems = content_dropzone.querySelectorAll('.dropzone-item');
+        dropzoneItems.forEach(dropzoneItem => {
+            dropzoneItem.style.display = '';
+        });
+        content_dropzone.querySelector('.dropzone-upload').style.display = "inline-block";
+        content_dropzone.querySelector('.dropzone-remove-all').style.display = "inline-block";
+    });
+
+    // Update the total progress bar
+    content_myDropzone.on("totaluploadprogress", function (progress) {
+        const progressBars = content_dropzone.querySelectorAll('.progress-bar');
+        progressBars.forEach(progressBar => {
+            progressBar.style.width = progress + "%";
+        });
+    });
+
+    content_myDropzone.on("sending", function (file, xhr, formData) {
+        // Show the total progress bar when upload starts
+        const progressBars = content_dropzone.querySelectorAll('.progress-bar');
+        progressBars.forEach(progressBar => {
+            progressBar.style.opacity = "1";
+        });
+        // And disable the start button
+        file.previewElement.querySelector(content_id + " .dropzone-start").setAttribute("disabled", "disabled");
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    });
+
+
+
+    // Hide the total progress bar when nothing's uploading anymore
+    content_myDropzone.on("complete", function (progress) {
+        const progressBars = content_dropzone.querySelectorAll('.dz-complete');
+
+        setTimeout(function () {
+            progressBars.forEach(progressBar => {
+                progressBar.querySelector('.progress-bar').style.opacity = "0";
+                progressBar.querySelector('.progress').style.opacity = "0";
+                progressBar.querySelector('.dropzone-start').style.opacity = "0";
+            });
+        }, 300);
+    });
+
+    // Setup the buttons for all transfers
+    content_dropzone.querySelector(".dropzone-upload").addEventListener('click', function () {
+        content_myDropzone.enqueueFiles(content_myDropzone.getFilesWithStatus(Dropzone.ADDED));
+    });
+
+    // Setup the button for remove all files
+    content_dropzone.querySelector(".dropzone-remove-all").addEventListener('click', function () {
+        content_dropzone.querySelector('.dropzone-upload').style.display = "none";
+        content_dropzone.querySelector('.dropzone-remove-all').style.display = "none";
+        content_myDropzone.removeAllFiles(true);
+    });
+
+    // On all files completed upload
+    content_myDropzone.on("queuecomplete", function (progress) {
+        const uploadIcons = content_dropzone.querySelectorAll('.dropzone-upload');
+        uploadIcons.forEach(uploadIcon => {
+            uploadIcon.style.display = "none";
+        });
+    });
+
+    // On all files removed
+    content_myDropzone.on("removedfile", function (file) {
+        if (content_myDropzone.files.length < 1) {
+            content_dropzone.querySelector('.dropzone-upload').style.display = "none";
+            content_dropzone.querySelector('.dropzone-remove-all').style.display = "none";
+        }
+    });
+</script>
+
+
+</body>
+
+</html>

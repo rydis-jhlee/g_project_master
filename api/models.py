@@ -31,6 +31,7 @@ class SaleAgent(models.Model):
     memo = models.CharField(max_length=150, null=True)           # 판매사 메모
     created = models.DateTimeField(auto_now_add=True)            # 판매사 등록 일시
     updated = models.DateTimeField(auto_now=True, null=True)     # 판매사 수정 일시
+    status = models.CharField(max_length=150, default=0)         # 상태(0:미사용, 1:사용)
 
     @staticmethod
     def create(**kwargs):

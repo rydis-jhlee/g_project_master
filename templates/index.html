@@ -1,0 +1,142 @@
+{% load static %}
+<!--begin::Head-->
+<head>
+    <base href=""/>
+    <title>LG-INSTORE SUPPORT</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The most advanced Bootstrap Admin Theme on Bootstrap Market trusted by over 4,000 beginners and professionals. Multi-demo, Dark Mode, RTL support. Grab your copy now and get life-time updates for free." />
+    <meta name="keywords" content="keen, bootstrap, bootstrap 5, bootstrap 4, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Keen - Multi-demo Bootstrap 5 HTML Admin Dashboard Theme" />
+    <meta property="og:url" content="https://keenthemes.com/keen" />
+    <meta property="og:site_name" content="Keenthemes | Keen" />
+    <link rel="canonical" href="https://preview.keenthemes.com/keen" />
+    <link rel="shortcut icon" href="/static/assets/media/logos/favicon.ico" />
+
+    <!--begin::Fonts(mandatory for all pages)-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+    <!--end::Fonts-->
+    <!--begin::Vendor Stylesheets(used for this page only)-->
+    <link href="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/custom/datatables/datatables.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <!--end::Vendor Stylesheets-->
+    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <!--end::Global Stylesheets Bundle-->
+
+
+
+
+
+</head>
+<!--end::Head-->
+
+<body>
+
+<form method="post" enctype="multipart/form-data" class="dropzone" id="MultiFileUpload">
+    <div class="fallback">
+        <input id="file" name="file" type="file" multiple="multiple"/>
+        <input type="submit" value="Upload"/>
+    </div>
+</form>
+</body>
+
+<script>var hostUrl = "assets/";</script>
+<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+<script src="/static/assets/plugins/global/plugins.bundle.js"></script>
+<script src="/static/js/scripts.bundle.js"></script>
+<!--end::Global Javascript Bundle-->
+<!--begin::Vendors Javascript(used for this page only)-->
+<script src="/static/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+<!-- <script src="https://cdn.amcharts.com/lib/5/index.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/xy.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/percent.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/radar.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/map.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/geodata/worldLow.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/geodata/continentsLow.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/geodata/usaLow.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZonesLow.js"></script> -->
+<!-- <script src="https://cdn.amcharts.com/lib/5/geodata/worldTimeZoneAreasLow.js"></script> -->
+<!-- <script src="assets/plugins/custom/datatables/datatables.bundle.js"></script> -->
+<!--end::Vendors Javascript-->
+<!--begin::Custom Javascript(used for this page only)-->
+
+
+
+<script>
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+    Dropzone.autoDiscover = false;
+    $('#MultiFileUpload').dropzone({
+        url: "/fileupload/",
+        crossDomain: false,
+        paramName: "file",
+        parallelUploads: 1,
+        autoProcessQueue: true,
+        filesizeBase: 1024,
+        maxFilesize: 100000,
+        dictRemoveFileConfirmation: null,
+        init: function () {
+            this.on("uploadprogress", function (file, progress, bytesSent) {
+                progress = bytesSent / file.size * 100;
+                console.log(filesizecalculation(bytesSent))
+            });
+            this.on("maxfilesexceeded", function (data) {
+                var res = eval('(' + data.xhr.responseText + ')');
+            });
+            this.on("addedfile", function (file) {
+                var removeButton = Dropzone.createElement("<button data-dz-remove " +
+                    "class='del_thumbnail btn btn-default'><span class='glyphicon glyphicon-trash'></span> Sil</button>");
+                var _this = this;
+                removeButton.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    _this.removeFile(file);
+                });
+                file.previewElement.appendChild(removeButton);
+            });
+            this.on("error", function (file, message) {
+
+                console.log(message);
+                this.removeFile(file);
+            });
+            this.on('sending', function (file, xhr, formData) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            });
+        }
+    });
+
+    Dropzone.prototype.filesize = function (size) {
+       filesizecalculation(size)
+    };
+
+    function filesizecalculation(size) {
+        if (size < 1024 * 1024) {
+            return "<strong>" + (Math.round(Math.round(size / 1024) * 10) / 10) + " KB</strong>";
+        } else if (size < 1024 * 1024 * 1024) {
+            return "<strong>" + (Math.round((size / 1024 / 1024) * 10) / 10) + " MB</strong>";
+        } else if (size < 1024 * 1024 * 1024 * 1024) {
+            return "<strong>" + (Math.round((size / 1024 / 1024 / 1024) * 10) / 10) + " GB</strong>";
+        }
+    }
+</script>

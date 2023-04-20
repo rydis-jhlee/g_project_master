@@ -54,7 +54,9 @@ urlpatterns = [
 
     # 판매 현황 테스트
     path("api/order_stat", OrderStatAPI.as_view(), name='order_stat'),
-
+    
+    # 관리자페이지 search 호출
+    path("api/admin_dashboard", AdminDashboardAPI.as_view(), name='admin_dashboard'),
 
     # OrderModifyAPI 주문수정하는 api인데 수량변경 같은건 front에서 하면될것 같아서 사용 중지
 
