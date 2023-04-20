@@ -9,71 +9,71 @@ import os
 
 from core.decorators import group_user_permission
 
-class OrderModifyAPI(View):
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super(OrderModifyAPI, self).dispatch(request, *args, **kwargs)
-
-    def post(self, request):
-        try:
-            data = json.loads(request.body)
-
-            """ 필수 파라미터 예시
-            {
-                "name_list": {"고구마튀김": 2, "감자튀김": 2},
-                "payment_id": "2"
-            }
-            """
-
-            name_list = data.get('name_list')  # 제품 리스트
-            payment_id = data.get('payment_id')  # 결제ID
-
-            for name, quantity in name_list.items():
-                # 결제ID에 종속된 제품명이 있는지 체크
-                if name and payment_id:
-                    order_item = Order.objects.filter(Q(product_id__name=name) & Q(payment_id=payment_id)).first()
-                    if order_item:
-                        # 제품 수량 변경
-                        tb_product = Product.objects.get(product_id=order_item.product_id_id)
-                        # 총제품수량 + (변경할수량 - 기존선택수량)
-                        tb_product.quantity = int(tb_product.quantity) + (int(order_item.quantity) - int(quantity))
-                        tb_product.save()
-
-                        # 수량을 0으로 바꾸면 삭제할건지 0으로 남겨놓을건지 정해야함.
-
-                        # 아이템 수량 변경
-                        order_item.quantity = quantity
-                        order_item.updated = datetime.now()
-                        order_item.save()
-
-                    else:
-                        # '수정취소': "조회된 제품이 존재 하지 않습니다."
-                        result_data = {
-                            'result_code': '2',
-                            'result_msg': 'Fail'
-                            # 'token': request.session.session_key
-                        }
-                        return JsonResponse(result_data)
-                else:
-                    # '수정취소': "필수 입력값이 존재하지 않습니다."
-                    result_data = {
-                        'result_code': '2',
-                        'result_msg': 'Fail'
-                        # 'token': request.session.session_key
-                    }
-                    return JsonResponse(result_data)
-
-            result_data = {
-                'result_code': '1',
-                'result_msg': 'Success'
-                # 'token': request.session.session_key
-            }
-            return JsonResponse(result_data)
-        except Exception as e:
-            return JsonResponse({
-                'error': "exception",
-                'e': str(e)
-            })
+# class OrderModifyAPI(View):
+#     @method_decorator(csrf_exempt)
+#     def dispatch(self, request, *args, **kwargs):
+#         return super(OrderModifyAPI, self).dispatch(request, *args, **kwargs)
+#
+#     def post(self, request):
+#         try:
+#             data = json.loads(request.body)
+#
+#             """ 필수 파라미터 예시
+#             {
+#                 "name_list": {"고구마튀김": 2, "감자튀김": 2},
+#                 "payment_id": "2"
+#             }
+#             """
+#
+#             name_list = data.get('name_list')  # 제품 리스트
+#             payment_id = data.get('payment_id')  # 결제ID
+#
+#             for name, quantity in name_list.items():
+#                 # 결제ID에 종속된 제품명이 있는지 체크
+#                 if name and payment_id:
+#                     order_item = Order.objects.filter(Q(product_id__name=name) & Q(payment_id=payment_id)).first()
+#                     if order_item:
+#                         # 제품 수량 변경
+#                         tb_product = Product.objects.get(product_id=order_item.product_id_id)
+#                         # 총제품수량 + (변경할수량 - 기존선택수량)
+#                         tb_product.quantity = int(tb_product.quantity) + (int(order_item.quantity) - int(quantity))
+#                         tb_product.save()
+#
+#                         # 수량을 0으로 바꾸면 삭제할건지 0으로 남겨놓을건지 정해야함.
+#
+#                         # 아이템 수량 변경
+#                         order_item.quantity = quantity
+#                         order_item.updated = datetime.now()
+#                         order_item.save()
+#
+#                     else:
+#                         # '수정취소': "조회된 제품이 존재 하지 않습니다."
+#                         result_data = {
+#                             'result_code': '2',
+#                             'result_msg': 'Fail'
+#                             # 'token': request.session.session_key
+#                         }
+#                         return JsonResponse(result_data)
+#                 else:
+#                     # '수정취소': "필수 입력값이 존재하지 않습니다."
+#                     result_data = {
+#                         'result_code': '2',
+#                         'result_msg': 'Fail'
+#                         # 'token': request.session.session_key
+#                     }
+#                     return JsonResponse(result_data)
+#
+#             result_data = {
+#                 'result_code': '1',
+#                 'result_msg': 'Success'
+#                 # 'token': request.session.session_key
+#             }
+#             return JsonResponse(result_data)
+#         except Exception as e:
+#             return JsonResponse({
+#                 'error': "exception",
+#                 'e': str(e)
+#             })
 
 
 

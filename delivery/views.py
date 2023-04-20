@@ -135,7 +135,7 @@ class DeliveryPickUpAPI(View):
         try:
             # 필수 파라미터
             man_id = request.POST.get('man_id')  # 배달기사ID
-            man_number = request.POST.get('man_number')  # 배달기사 전화번호
+            #man_number = request.POST.get('man_number')  # 배달기사 전화번호
             addr1 = request.POST.get('addr1')  # 배송할 빌딜명
 
             # user_id로 해당 메서드 사용할 수 있는 등급인지 체크할것.
@@ -147,8 +147,8 @@ class DeliveryPickUpAPI(View):
                         _delivery = Delivery.objects.get(delivery_id=delivery.delivery_id)
                         _delivery.type = 3  # 배달기사 접수
                         _delivery.status = 2  # 배송중
-                        _delivery.man_id = man_id
-                        _delivery.man_number = man_number
+                        #_delivery.man_id = man_id
+                        #_delivery.man_number = man_number
                         _delivery.updated = datetime.now()
                         _delivery.save()
                     result_data = {
@@ -199,6 +199,45 @@ class DeliveryCompleteAPI(View):
                 delivery.desc = desc  # 배송완료 요약
                 delivery.completed_date = datetime.now()
                 delivery.save()
+                result_data = {
+                    'result_code': '1',
+                    'result_msg': 'Success'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+            else:
+                # '등록실패': "조회된 배달건이 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+
+        except Exception as e:
+            return JsonResponse({
+                'error': "exception",
+                'e': str(e)
+            })
+
+
+class DeliveryCallUpAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeliveryCallUpAPI, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        try:
+            # 필수 파라미터
+            delivery_id = request.POST.get('delivery_id')
+
+            _delivery = Delivery.objects.filter(delivery_id=delivery_id).first()
+
+            if _delivery:
+                _delivery.type = 4  # 배달기사 호출
+                _delivery.updated = datetime.now()
+                _delivery.save()
+
                 result_data = {
                     'result_code': '1',
                     'result_msg': 'Success'

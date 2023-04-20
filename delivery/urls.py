@@ -15,5 +15,8 @@ urlpatterns = [
     # POST(배달기사 배송완료)
     path("api/delivery_complete", DeliveryCompleteAPI.as_view(), name='delivery_complete'),
 
+    # POST(배달기사 콜업)
+    path("api/delivery_callup", DeliveryCallUpAPI.as_view(), name='delivery_callup'),
+
 ]
 

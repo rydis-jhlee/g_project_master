@@ -8,6 +8,7 @@ from payments.models import *
 from sale.models import *
 from user.models import *
 from delivery.models import *
+from datetime import datetime
 
 
 from core.decorators import group_user_permission
@@ -110,16 +111,18 @@ class PaymentAPI(View):
 
             is_executed = False  # 결제테이블 1회 생성 초기화
 
-            for name, quantity in name_list:
+            for row in name_list:
+                product_id_value = row['product_id']
+                quantity_value = row['quantity']
 
                 # 판매업체에 구매하려는 제품이 있고 판매중인 제품인지 체크
-                if name and sale_agent_id:
+                if product_id_value and sale_agent_id:
                     product = Product.objects.filter(
-                        Q(name=name) & Q(sale_agent_id=sale_agent_id) & Q(type=1)
+                        Q(product_id=product_id_value) & Q(sale_agent_id=sale_agent_id) & Q(type=1)
                     ).first()
 
                     # 제품수량이 구매수량보다 많은지 체크
-                    if product and int(product.quantity) >= int(quantity):
+                    if product and int(product.quantity) >= int(quantity_value):
 
                         # 1회만 결제테이블 생성되도록 초기화
                         if not is_executed:
@@ -138,12 +141,21 @@ class PaymentAPI(View):
                             Order.objects.create(
                                 payment_id=tb_payment,
                                 product_id=product,
-                                quantity=quantity
+                                quantity=quantity_value
                             )
                     else:
+                        if not is_executed:
+                            result_data = {
+                                'result_code': '2',
+                                'result_msg': 'Fail'
+                                # 'token': request.session.session_key
+                            }
+                            return JsonResponse(result_data)
+
                         if tb_payment:
                             tb_payment.status = 3  # 결제취소
                             tb_payment.memo = "구매수량 부족으로 인한 취소"
+                            tb_payment.total_price
                             tb_payment.save()
                         # '구매취소': "제품 보유 수량이 구매 수량 보다 많습니다."
                         result_data = {
@@ -348,91 +360,76 @@ class AdminDashboardAPI(View):
 
     def get(self, request):
 
-            init_type = request.GET.get('init_type')
+        startYmd = request.GET.get('startYmd')
+        endYmd = request.GET.get('endYmd')
+        send_pay_status = request.GET.get('send_pay_status')
+        send_pay_type = request.GET.get('send_pay_type')
+        send_delivery_type = request.GET.get('send_delivery_type')
+        send_sale_agent_select = request.GET.get('send_sale_agent_select')
 
-            if init_type is None:
-                init_type = 1
+        q = Q()
 
-            sale_agent_list = list()
+        if startYmd and endYmd:
+            # 결제 취소이면 등록일시로 조회
+            start_date_obj = datetime.strptime(startYmd, '%Y-%m-%d')
+            start_time = start_date_obj.replace(hour=00, minute=00, second=00)
 
-            # init_type 0이면 초기 식당 선택 value set
-            if int(init_type) == 0:
-                sale_agents = SaleAgent.objects.filter(status=1)
-                for sale_agent in sale_agents:
-                    sale_agent_list.append({
-                        'sale_agent_id': sale_agent.sale_agent_id,
-                        'sale_agent_name': sale_agent.name,
-                        'sale_agent_building_name': sale_agent.building_name
+            end_date_obj = datetime.strptime(endYmd, '%Y-%m-%d')
+            end_time = end_date_obj.replace(hour=23, minute=59, second=59)
+
+            if send_pay_status == '3':
+                q.add(Q(created__range=(start_time, end_time)), q.AND)
+            else:
+                q.add(Q(payment_date__range=(start_time, end_time)), q.AND)
+
+        if send_pay_status:
+            q.add(Q(status=send_pay_status), q.AND)
+
+        if send_pay_type:
+            q.add(Q(payment_type=send_pay_type), q.AND)
+
+        if send_delivery_type:
+            q.add(Q(delivery_type=send_delivery_type), q.AND)
+
+        payment_list = list()
+        total_price = 0
+        total_row = 0
+        payments = Payment.objects.filter(q)
+
+        for payment in payments:
+            if payment.payment_date:
+                payment_date_modi = payment.payment_date.strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                payment_date_modi = None
+
+            order = Order.objects.filter(payment_id=payment.payment_id).first()
+
+            if order:
+                sale_agent_name = order.product_id.sale_agent_id.name
+                if sale_agent_name == send_sale_agent_select or send_sale_agent_select == '전체':
+                    if payment.price:
+                        payment_price = payment.price
+                    else:
+                        payment_price = 0
+
+                    payment_list.append({
+                        'payment_id': payment.payment_id,
+                        'user_id': payment.user_id,
+                        'price': payment_price,
+                        'payment_date': payment_date_modi,
+                        'status': payment.status,
+                        'delivery_type': payment.delivery_type,
+                        'payment_type': payment.payment_type,
+                        'desc': payment.desc,
+                        'memo': payment.memo,
+                        'sale_agent_name': sale_agent_name
                     })
 
-                return JsonResponse({
-                    'sale_agent_list': sale_agent_list
-                })
-            else:
-                startYmd = request.GET.get('startYmd')
-                endYmd = request.GET.get('endYmd')
-                send_pay_status = request.GET.get('send_pay_status')
-                send_pay_type = request.GET.get('send_pay_type')
-                send_delivery_type = request.GET.get('send_delivery_type')
-                send_sale_agent_select = request.GET.get('send_sale_agent_select')
+                    total_price += int(payment_price)
+                    total_row += 1
 
-                q = Q()
-
-                if startYmd and endYmd:
-                    # 결제 취소이면 등록일시로 조회
-                    if send_pay_status == '3':
-                        q.add(Q(created__range=(startYmd, endYmd)), q.AND)
-                    else:
-                        q.add(Q(payment_date__range=(startYmd, endYmd)), q.AND)
-
-                if send_pay_status:
-                    q.add(Q(status=send_pay_status), q.AND)
-
-                if send_pay_type:
-                    q.add(Q(payment_type=send_pay_type), q.AND)
-
-                if send_delivery_type:
-                    q.add(Q(delivery_type=send_delivery_type), q.AND)
-
-                payment_list = list()
-                total_price = 0
-                total_row = 0
-                payments = Payment.objects.filter(q)
-
-                for payment in payments:
-                    if payment.payment_date:
-                        payment_date_modi = payment.payment_date.strftime("%Y-%m-%d %H:%M:%S")
-                    else:
-                        payment_date_modi = None
-
-                    order = Order.objects.filter(payment_id=payment.payment_id).first()
-
-                    if order:
-                        sale_agent_name = order.product_id.sale_agent_id.name
-                        if sale_agent_name == send_sale_agent_select or send_sale_agent_select == '전체':
-                            if payment.price:
-                                payment_price = payment.price
-                            else:
-                                payment_price = 0
-
-                            payment_list.append({
-                                'payment_id': payment.payment_id,
-                                'user_id': payment.user_id,
-                                'price': payment_price,
-                                'payment_date': payment_date_modi,
-                                'status': payment.status,
-                                'delivery_type': payment.delivery_type,
-                                'payment_type': payment.payment_type,
-                                'desc': payment.desc,
-                                'memo': payment.memo,
-                                'sale_agent_name': sale_agent_name
-                            })
-
-                            total_price += int(payment_price)
-                            total_row += 1
-
-                return JsonResponse({
-                    'total_price': total_price,
-                    'total_row': total_row,
-                    'list': payment_list
-                })
+        return JsonResponse({
+            'total_price': total_price,
+            'total_row': total_row,
+            'list': payment_list
+        })

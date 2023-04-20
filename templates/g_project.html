@@ -99,6 +99,9 @@
                         <label class="form-label">식당 선택</label>
                         <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" id="send_sale_agent_select">
                             <option value="전체">전체</option>
+                            {% for agent in sale_agent_list %}
+                                <option value="{{ agent.sale_agent_name }}">{{ agent.sale_agent_name }}</option>
+                            {% endfor %}
                             <!--<option value="더반푸드">더반푸드</option>
                             <option value="푸드팩토리">푸드팩토리</option>-->
                         </select>
@@ -152,7 +155,7 @@
                 <!--begin::Col-->
                 <div class="col">
                     <div class="card card-dashed flex-center min-w-175px my-3 p-6">
-                        <span class="fs-4 fw-semibold text-success pb-1 px-2">결제 건수</span>
+                        <span class="fs-4 fw-semibold text-success pb-1 px-2">전체 건수</span>
                         <span class="fs-lg-2tx fw-bold d-flex justify-content-center">
                         <span id="res_total_row">0</span>
                     </span>
@@ -217,7 +220,7 @@
 
 <script>
     $(document).ready( function() {
-        initPage();
+        //initPage();
     })
 
     function initPage() {
