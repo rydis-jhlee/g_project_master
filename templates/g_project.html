@@ -1,0 +1,395 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<!--begin::Head-->
+<head>
+    <base href=""/>
+    <title>G식</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The most advanced Bootstrap Admin Theme on Bootstrap Market trusted by over 4,000 beginners and professionals. Multi-demo, Dark Mode, RTL support. Grab your copy now and get life-time updates for free." />
+    <meta name="keywords" content="keen, bootstrap, bootstrap 5, bootstrap 4, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Keen - Multi-demo Bootstrap 5 HTML Admin Dashboard Theme" />
+    <meta property="og:url" content="https://keenthemes.com/keen" />
+    <meta property="og:site_name" content="Keenthemes | Keen" />
+    <link rel="canonical" href="https://preview.keenthemes.com/keen" />
+    <link rel="shortcut icon" href="/static/assets/media/logos/favicon.ico" />
+
+    <!--begin::Fonts(mandatory for all pages)-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+    <!--end::Fonts-->
+    <!--begin::Vendor Stylesheets(used for this page only)-->
+    <link href="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/custom/datatables/datatables.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <!--end::Vendor Stylesheets-->
+    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <!--end::Global Stylesheets Bundle-->
+
+
+
+
+
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true" data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
+<!--begin::Theme mode setup on page load-->
+<script>var defaultThemeMode = "light"; var themeMode; if ( document.documentElement ) { if ( document.documentElement.hasAttribute("data-bs-theme-mode")) { themeMode = document.documentElement.getAttribute("data-bs-theme-mode"); } else { if ( localStorage.getItem("data-bs-theme") !== null ) { themeMode = localStorage.getItem("data-bs-theme"); } else { themeMode = defaultThemeMode; } } if (themeMode === "system") { themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-bs-theme", themeMode); }</script>
+<!--end::Theme mode setup on page load-->
+<!--begin::App-->
+<!--begin::Main-->
+<div class="app-main flex-column flex-row-fluid mt-10" id="kt_app_main">
+    <!--begin::Content wrapper-->
+    <!--<div class="d-flex flex-column flex-column-fluid">-->
+
+    <!--<div id="kt_app_content" class="app-content flex-column-fluid">-->
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-fluid">
+
+        <!-- START CARD -->
+        <div class="card pt-4 mb-6 mb-xl-9">
+            <!-- START CARD HEADER -->
+            <div class="card-header border-0">
+
+                <div class="card-title">
+                    <h2 class="fw-bold mb-0">결제 현황</h2>
+                </div>
+
+
+                <div class="card-toolbar">
+
+                    <div class="mb-0 me-5">
+                        <label class="form-label">결제일시</label>
+                        <input class="form-control form-control-solid" placeholder="" id="send_pay_date"/>
+                    </div>
+
+                    <div class="mb-0 me-5">
+                        <label class="form-label">결제상태</label>
+                        <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" id="send_pay_status">
+                            <option value="">전체</option>
+                            <option value="1">미결제</option>
+                            <option value="2">결제</option>
+                            <option value="3">결제취소</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-0 me-5">
+                        <label class="form-label">제품 결제 방식</label>
+                        <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" id="send_pay_type">
+                            <option value="">전체</option>
+                            <option value="1">신용카드</option>
+                            <option value="3">현금</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-0 me-5">
+                        <label class="form-label">제품 수령 방식</label>
+                        <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" id="send_delivery_type">
+                            <option value="">전체</option>
+                            <option value="1">직접수령</option>
+                            <option value="2">배송</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-0 me-5">
+                        <label class="form-label">식당 선택</label>
+                        <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" id="send_sale_agent_select">
+                            <option value="전체">전체</option>
+                            <!--<option value="더반푸드">더반푸드</option>
+                            <option value="푸드팩토리">푸드팩토리</option>-->
+                        </select>
+                    </div>
+
+                    <div class="mt-7">
+                        <button href="#" class="btn btn-primary" onclick="onSearch();"><i class="bi bi-search fs-4 me-2"></i>Search</button>
+                    </div>
+
+
+
+
+                </div>
+
+
+            </div>
+            <!-- END CARD HEADER -->
+
+
+            <div class="card-body pt-10">
+                <table id="kt_datatable_fixed_header" class="table table-striped table-row-bordered">
+                    <thead>
+                    <tr class="fw-semibold fs-6 text-gray-800 text-center">
+                        <th>이용자ID</th>
+                        <th>결제 일자</th>
+                        <th>결제액</th>
+                        <th>결제 상태</th>
+                        <th>제품 결제 방식</th>
+                        <th>제품 수령 방식</th>
+                        <th>구매 요약</th>
+                        <th>구매 메모</th>
+                        <th>구매 식당</th>
+                    </tr>
+                    </thead>
+
+                </table>
+            </div>
+
+            <div class="row">
+                <!--begin::Col-->
+                <div class="col">
+                    <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                        <span class="fs-4 fw-semibold text-info pb-1 px-2">판매 금액</span>
+                        <span class="fs-lg-2tx fw-bold d-flex justify-content-center">
+                            <span id="res_total_price">0</span>
+                        </span>
+                    </div>
+                </div>
+                <!--end::Col-->
+
+                <!--begin::Col-->
+                <div class="col">
+                    <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                        <span class="fs-4 fw-semibold text-success pb-1 px-2">결제 건수</span>
+                        <span class="fs-lg-2tx fw-bold d-flex justify-content-center">
+                        <span id="res_total_row">0</span>
+                    </span>
+                    </div>
+                </div>
+                <!--end::Col-->
+
+                <!--
+                <div class="col">
+                    <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                        <span class="fs-4 fw-semibold text-danger pb-1 px-2">결제 취소 건수(미반영)</span>
+                        <span class="fs-lg-2tx fw-bold d-flex justify-content-center">
+                        <span data-kt-countup="true" data-kt-countup-value="2,600" class="counted" data-kt-initialized="1">0</span>
+                    </span>
+                    </div>
+                </div>
+                -->
+
+
+                <!--
+                <div class="col">
+                    <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                        <span class="fs-4 fw-semibold text-primary pb-1 px-2">미결제 건수(미반영)</span>
+                        <span class="fs-lg-2tx fw-bold d-flex justify-content-center">
+                        <span data-kt-countup="true" data-kt-countup-value="783&quot;" class="counted" data-kt-initialized="1">0</span>
+                    </span>
+                    </div>
+                </div>
+                -->
+            </div>
+
+            <div class="card-body pt-0">
+                <div class="separator separator-dashed"></div>
+            </div>
+
+
+        </div>
+        <!-- END CARD -->
+
+
+    </div>
+
+
+    <!--</div>-->
+    <!--end::Card-->
+    <!--</div>-->
+    <!--end::Content container-->
+</div>
+
+
+
+<script>var hostUrl = "assets/";</script>
+<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+<script src="/static/assets/plugins/global/plugins.bundle.js"></script>
+<script src="/static/js/scripts.bundle.js"></script>
+<!--end::Global Javascript Bundle-->
+<!--begin::Vendors Javascript(used for this page only)-->
+<script src="/static/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+<script src="/static/js/widgets.bundle.js"></script>
+<script src="/static/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+
+
+<script>
+    $(document).ready( function() {
+        initPage();
+    })
+
+    function initPage() {
+        $.ajax({
+            method: "GET",
+            url: `/api/admin_dashboard?init_type=0`,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                console.log(data);
+                for (var i = 0; i < data.sale_agent_list.length; i++) {
+                    $('#send_sale_agent_select').append(
+                        $('<option>').text(data.sale_agent_list[i].sale_agent_name)
+                    );
+                }
+            }
+        });
+    }
+
+    var start = moment().subtract(0, "days");
+    var end = moment();
+
+    function cb(start, end) {
+        $("#send_pay_date").html(start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD"));
+    }
+
+    $("#send_pay_date").daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            "Today": [moment(), moment()],
+            "Yesterday": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+            "Last 7 Days": [moment().subtract(6, "days"), moment()],
+            "Last 30 Days": [moment().subtract(29, "days"), moment()],
+            "This Month": [moment().startOf("month"), moment().endOf("month")],
+            "Last Month": [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")]
+        },
+        timePicker: false,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        singleDatePicker: false,
+        locale :{
+            format: 'YYYY-MM-DD',
+            separator: ' ~ '
+        }
+
+    }, cb);
+
+    cb(start, end);
+
+    let dt = $("#kt_datatable_fixed_header").DataTable({
+        "columnDefs": [
+            { "className": "text-center align-middle", "targets": "_all" }
+        ]
+    });
+
+    function onSearch() {
+
+        let send_pay_date = document.getElementById('send_pay_date').value;
+        const arr = send_pay_date.split("~");
+        //let startYmd = arr[0] + "00:00:00";
+        //let endYmd = arr[1].replaceAll(' ','') + " 23:59:59";
+
+        let startYmd = arr[0].replaceAll(' ','');
+        let endYmd = arr[1].replaceAll(' ','');
+
+
+        let send_pay_status = document.getElementById('send_pay_status').value;
+        let send_pay_type = document.getElementById('send_pay_type').value;
+        let send_delivery_type = document.getElementById('send_delivery_type').value;
+        let send_sale_agent_select = document.getElementById('send_sale_agent_select').value;
+
+        $.ajax({
+            method: "GET",
+            url: `/api/admin_dashboard?` +
+                `startYmd=${startYmd}&` +
+                `endYmd=${endYmd}&` +
+                `send_pay_status=${send_pay_status}&` +
+                `send_pay_type=${send_pay_type}&` +
+                `send_delivery_type=${send_delivery_type}&` +
+                `send_sale_agent_select=${send_sale_agent_select}`,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                console.log(data);
+                pageOnLoad(data);
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+
+    function pageOnLoad(data) {
+
+        dt.clear();
+
+        document.getElementById("res_total_price").innerHTML = addCommas(data.total_price);
+        document.getElementById("res_total_row").innerHTML = addCommas(data.total_row);
+
+
+        for (var i=0; i<data.list.length; i++) {
+
+            payment_id = data.list[i].payment_id;
+            user_id = data.list[i].user_id;
+            payment_date = data.list[i].payment_date;
+            if(payment_date == null) { payment_date = "" }
+            price = data.list[i].price;
+            if(price == null) { price = "" }
+            sale_agent_name = data.list[i].sale_agent_name;
+
+            payment_status = data.list[i].status;
+            if(payment_status == null) { payment_status = "" }
+            else if(payment_status == '1' || payment_status == 1) { payment_status = "미결제"}
+            else if(payment_status == '2' || payment_status == 2) { payment_status = "결제" }
+            else if(payment_status == '3' || payment_status == 3) { payment_status = "결제취소"}
+
+            delivery_type = data.list[i].delivery_type;
+            if(delivery_type == null) { delivery_type = "" }
+            else if(delivery_type == '1' || delivery_type == 1) { delivery_type = "직접수령"}
+            else if(delivery_type == '2' || delivery_type == 2) { delivery_type = "배송" }
+
+            payment_type = data.list[i].payment_type;
+            if(payment_type == null) { payment_type = "" }
+            else if(payment_type == '1' || payment_type == 1) { payment_type = "신용카드"}
+            else if(payment_type == '2' || payment_type == 2) { payment_type = "계좌이체" }
+            else if(payment_type == '3' || payment_type == 3) { payment_type = "현금"}
+
+            desc = data.list[i].desc;
+            if(desc == null) { desc = "" }
+            memo = data.list[i].memo;
+            if(memo == null) { memo = "" }
+
+
+            //hits = data.hits[i].hits;
+            //detectTime = data.hits[i].detect_time.replaceAll("T", " ");
+            //hash = data.hits[i].hash.substring(0,8);
+            //channel = data.hits[i].channel;
+
+            dt.row.add([
+                `${user_id}`,
+                `${payment_date}`,
+                `${price}`,
+                `${payment_status}`,
+                `${payment_type}`,
+                `${delivery_type}`,
+                `${desc}`,
+                `${memo}`,
+                `${sale_agent_name}`
+            ]);
+        }
+        dt.draw();
+    }
+
+    function addCommas(nStr) {
+        nStr += '';
+        var x = nStr.split('.');
+        var x1 = x[0];
+        var x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
+
+</script>
+
+
+</body>
+<!--end::Body-->
+</html>

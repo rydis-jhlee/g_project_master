@@ -1710,3 +1710,99 @@ class OrderStatAPI(View):
 
             return JsonResponse({"Success": total_quantity})
 
+
+class AdminDashboardAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AdminDashboardAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+            init_type = request.GET.get('init_type')
+
+            if init_type is None:
+                init_type = 1
+
+            sale_agent_list = list()
+
+            # init_type 0이면 초기 식당 선택 value set
+            if int(init_type) == 0:
+                sale_agents = SaleAgent.objects.filter(status=1)
+                for sale_agent in sale_agents:
+                    sale_agent_list.append({
+                        'sale_agent_id': sale_agent.sale_agent_id,
+                        'sale_agent_name': sale_agent.name,
+                        'sale_agent_building_name': sale_agent.building_name
+                    })
+
+                return JsonResponse({
+                    'sale_agent_list': sale_agent_list
+                })
+            else:
+                startYmd = request.GET.get('startYmd')
+                endYmd = request.GET.get('endYmd')
+                send_pay_status = request.GET.get('send_pay_status')
+                send_pay_type = request.GET.get('send_pay_type')
+                send_delivery_type = request.GET.get('send_delivery_type')
+                send_sale_agent_select = request.GET.get('send_sale_agent_select')
+
+                q = Q()
+
+                if startYmd and endYmd:
+                    # 결제 취소이면 등록일시로 조회
+                    if send_pay_status == '3':
+                        q.add(Q(created__range=(startYmd, endYmd)), q.AND)
+                    else:
+                        q.add(Q(payment_date__range=(startYmd, endYmd)), q.AND)
+
+                if send_pay_status:
+                    q.add(Q(status=send_pay_status), q.AND)
+
+                if send_pay_type:
+                    q.add(Q(payment_type=send_pay_type), q.AND)
+
+                if send_delivery_type:
+                    q.add(Q(delivery_type=send_delivery_type), q.AND)
+
+                payment_list = list()
+                total_price = 0
+                total_row = 0
+                payments = Payment.objects.filter(q)
+
+                for payment in payments:
+                    if payment.payment_date:
+                        payment_date_modi = payment.payment_date.strftime("%Y-%m-%d %H:%M:%S")
+                    else:
+                        payment_date_modi = None
+
+                    order = Order.objects.filter(payment_id=payment.payment_id).first()
+
+                    if order:
+                        sale_agent_name = order.product_id.sale_agent_id.name
+                        if sale_agent_name == send_sale_agent_select or send_sale_agent_select == '전체':
+                            if payment.price:
+                                payment_price = payment.price
+                            else:
+                                payment_price = 0
+
+                            payment_list.append({
+                                'payment_id': payment.payment_id,
+                                'user_id': payment.user_id,
+                                'price': payment_price,
+                                'payment_date': payment_date_modi,
+                                'status': payment.status,
+                                'delivery_type': payment.delivery_type,
+                                'payment_type': payment.payment_type,
+                                'desc': payment.desc,
+                                'memo': payment.memo,
+                                'sale_agent_name': sale_agent_name
+                            })
+
+                            total_price += int(payment_price)
+                            total_row += 1
+
+                return JsonResponse({
+                    'total_price': total_price,
+                    'total_row': total_row,
+                    'list': payment_list
+                })
