@@ -18,7 +18,10 @@ urlpatterns = [
     path('login/social/callback/kakao', SocialLoginKakaoCallbackAPI.as_view()),
     path('login/social/callback/naver', SocialLoginNaverCallbackAPI.as_view()),
     # path('login/social/callback/apple', SocialLoginAppleCallbackAPI.as_view()),
-    # 이용자 생성 테스트
-    path("api/user", UserAPI.as_view(), name='user'),
+    # 이용자 생성
+    path('signup', UserRegisterAPI.as_view()),
+    # POST(마이식당 등록, 수정)
+    # GET(마이식당 등록된 이용자 조회) --> 판매 관리자가 볼 수 있는 화면
+    path('api/my_restaurant', MyRestaurantAPI.as_view(), name='my_restaurant'),
 
 ]

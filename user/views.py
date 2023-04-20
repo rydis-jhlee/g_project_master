@@ -1,16 +1,12 @@
-from django.shortcuts import render
-
-# Create your views here.
-import json
-from django.db.models import Q
+import hashlib
 from django.shortcuts import render, redirect
 from django.db.models import Q, Sum
-from django.shortcuts import render
 from django.views.generic import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
-from api.models import *
+from .models import *
+from sale.models import *
 from django.contrib.auth.models import *
 import requests
 
@@ -18,23 +14,16 @@ from allauth.socialaccount.models import SocialAccount
 from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.models import SocialToken
 from django.contrib.auth import authenticate, login, logout
-from functools import wraps
-
-import os
 
 import jwt
 
 from core.payload.validator import *
 
 
-
-
-
-
-class UserAPI(View):
+class UserRegisterAPI(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
-        return super(UserAPI, self).dispatch(request, *args, **kwargs)
+        return super(UserRegisterAPI, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
 
@@ -537,3 +526,104 @@ class SocialLoginNaver(View):
         return redirect(
             f'{url}&client_id={client_id}&redirect_uri={redirect_uri}'
         )
+
+class MyRestaurantAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(MyRestaurantAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        # 필수 파라미터
+        sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
+
+        # 등급으로 판매관리자만 볼수있도록 수정할것.
+
+        user_list = list()
+        data = {}
+
+        if sale_agent_id:
+            sale_agent = SaleAgent.objects.filter(Q(sale_agent_id=sale_agent_id))
+            if sale_agent:
+                my_restraurant_list = OrderUser.objects.filter(Q(my_restaurant1=sale_agent_id))
+                for my_restraurant in my_restraurant_list:
+                    if my_restraurant:
+                        user_list.append({
+                            "user_id": my_restraurant.user_id,
+                            "user_name": my_restraurant.user_name
+                        })
+
+                data.update({'user_list': user_list})
+                return JsonResponse(data, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
+
+            else:
+                # '조회실패': "등록된 판매업체가 없습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+        else:
+            # '조회실패': "입력된 판매업체가 존재하지 않습니다."
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Fail'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
+
+    def post(self, request):
+        try:
+            # 필수 파라미터
+            name = request.POST.get('name')        # 판매업체명
+            user_id = request.POST.get('user_id')  # 이용자ID
+
+            if name:
+                sale_agent = SaleAgent.objects.filter(Q(name=name)).first()
+                if sale_agent:
+                    tb_order_user = OrderUser.objects.get(user_id=user_id)
+                    if tb_order_user:
+                        tb_order_user.my_restaurant1 = sale_agent.sale_agent_id
+                        tb_order_user.updated = datetime.now()
+                        tb_order_user.save()
+
+                        result_data = {
+                            'result_code': '1',
+                            'result_msg': 'Success'
+                            # 'token': request.session.session_key
+                        }
+                        return JsonResponse(result_data)
+                    else:
+                        # '등록취소': "조회된 이용자가 존재하지 않습니다."
+                        result_data = {
+                            'result_code': '2',
+                            'result_msg': 'Fail'
+                            # 'token': request.session.session_key
+                        }
+                        return JsonResponse(result_data)
+                else:
+                    # '등록취소': "조회된 식당이 존재하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
+            else:
+                # '등록취소': "조회된 식당이 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+
+        except Exception as e:
+            return JsonResponse({
+                'error': "exception",
+                'e': str(e)
+            })
