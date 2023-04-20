@@ -143,7 +143,6 @@ class UserAPI(View):
                         user_id=form['username'],
                         user_name=form['name'],
                         phone_number=form['mobile'],
-                        birthday=form['birthday'],
                         auth_user_id=user
                     )
                 elif register_type == '3' or register_type == '4' or register_type == '5':
