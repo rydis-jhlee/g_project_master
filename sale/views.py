@@ -10,7 +10,7 @@ from django.http import JsonResponse, HttpResponse
 from .models import *
 import os
 from user.models import *
-from core.decorators import group_user_permission
+from core.decorators import sale_group_user_permission
 
 class SaleAgentAPI(View):
     @method_decorator(csrf_exempt)
@@ -66,7 +66,7 @@ class SaleAgentAPI(View):
             'indent': 4
         })
 
-    @method_decorator(group_user_permission)
+    @method_decorator(sale_group_user_permission)
     def post(self, request):
 
         """

@@ -11,7 +11,7 @@ from delivery.models import *
 from datetime import datetime
 
 
-from core.decorators import group_user_permission
+from core.decorators import sale_group_user_permission
 
 
 class PaymentAPI(View):

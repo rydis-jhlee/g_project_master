@@ -10,7 +10,7 @@ from django.http import JsonResponse, HttpResponse
 from .models import *
 import os
 
-from core.decorators import group_user_permission
+from core.decorators import sale_group_user_permission
 
 
 class DeliveryAPI(View):

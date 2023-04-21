@@ -10,10 +10,12 @@ from django.views.generic import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from sale.models import *
+from core.decorators import *
 
 
 class AdminPageView(View):
     @method_decorator(csrf_exempt)
+    @method_decorator(group_master_permission)
     def dispatch(self, request, *args, **kwargs):
         return super(AdminPageView, self).dispatch(request, *args, **kwargs)
 

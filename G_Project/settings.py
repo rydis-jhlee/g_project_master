@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "api",
 
     # 로그인 관련
     'user',
@@ -137,7 +136,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+#ic files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "/static/"
@@ -225,8 +224,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
-LOGIN_REDIRECT_URL = 'sale_agent'
-ACCOUNT_LOGOUT_REDIRECT_URL = 'product'
+LOGIN_REDIRECT_URL = 'g_project'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'g_project'
 ACCOUNT_LOGOUT_ON_GET = True
 
 

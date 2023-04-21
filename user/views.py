@@ -116,43 +116,67 @@ class UserRegisterAPI(View):
 
         # 그룹 생성
             try:
-                user = User.objects.create(username=form['username'])
-                user.set_password(form['password'])
-                user.save()
+                if register_type:
+                    user = User.objects.create(username=form['username'])
+                    user.set_password(form['password'])
+                    user.save()
 
-                if register_type == '1':
-                    re_type = OrderUser.objects.create(
-                        user_id=form['username'],
-                        user_name=form['name'],
-                        phone_number=form['mobile'],
-                        auth_user_id=user
-                    )
-                elif register_type == '2':
-                    re_type = DeliveryUser.objects.create(
-                        user_id=form['username'],
-                        user_name=form['name'],
-                        phone_number=form['mobile'],
-                        auth_user_id=user
-                    )
-                elif register_type == '3' or register_type == '4' or register_type == '5':
-                    re_type = SaleUser.objects.create(
-                        user_id=form['username'],
-                        user_name=form['name'],
-                        phone_number=form['mobile'],
-                        auth_user_id=user
-                    )
+                    if register_type == '9':
+                        OrderUser.objects.create(
+                            user_id=form['username'],
+                            user_name=form['name'],
+                            phone_number=form['mobile'],
+                            auth_user_id=user
+                        )
+                    elif register_type == '2' or register_type == '3' or register_type == '4':
+                         DeliveryUser.objects.create(
+                            user_id=form['username'],
+                            user_name=form['name'],
+                            phone_number=form['mobile'],
+                            auth_user_id=user
+                        )
+                    elif register_type == '5' or register_type == '6' or register_type == '7' or register_type == '8':
+                        SaleUser.objects.create(
+                            user_id=form['username'],
+                            user_name=form['name'],
+                            phone_number=form['mobile'],
+                            auth_user_id=user
+                        )
+                    elif register_type == '1':
+                        OrderUser.objects.create(
+                            user_id=form['username'],
+                            user_name=form['name'],
+                            phone_number=form['mobile'],
+                            auth_user_id=user
+                        )
+                        DeliveryUser.objects.create(
+                            user_id=form['username'],
+                            user_name=form['name'],
+                            phone_number=form['mobile'],
+                            auth_user_id=user
+                        )
+                        SaleUser.objects.create(
+                            user_id=form['username'],
+                            user_name=form['name'],
+                            phone_number=form['mobile'],
+                            auth_user_id=user
+                        )
 
-                info = re_type
 
+                    # Add Group
+                    group = Group.objects.get_or_create(id=register_type)
+                    group_user = Group.objects.get(id=group[0].id)
+                    group_user.user_set.add(user)
+                    res = {
+                        "result_code": "1",
+                        "result_msg": "Success"
+                    }
+                else:
+                    res = {
+                        "result_code": "2",
+                        "result_msg": "Access denied"
+                    }
 
-                # Add Group
-                group = Group.objects.get_or_create(name=register_type)
-                group_user = Group.objects.get(id=group[0].id)
-                group_user.user_set.add(user)
-                res = {
-                    "result_code": "1",
-                    "result_msg": "Success"
-                }
 
             except Exception as e:
                 print(e)
@@ -627,3 +651,14 @@ class MyRestaurantAPI(View):
                 'error': "exception",
                 'e': str(e)
             })
+
+
+class AdminBKELogoutView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AdminBKELogoutView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+        return redirect('admin-login')

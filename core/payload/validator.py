@@ -36,6 +36,8 @@ patterns = Patterns()
 
 def IDRules(value):
 	if value:
+		if value == 'dev':
+			return True
 		if len(value) > 20 or len(value) < 4:
 			return False
 		for username in patterns.usernames:
@@ -43,6 +45,7 @@ def IDRules(value):
 				return False
 		if value.__contains__(' '):
 			return False
+
 	else:
 		return False
 
