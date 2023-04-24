@@ -10,7 +10,7 @@ urlpatterns = [
 
     # POST(배달기사 픽업 수령)
     # GET(배달기사 픽업 조회)
-    path("api/delivery_pickup", DeliveryPickUpAPI.as_view(), name='delivery_pickup'),
+    path("api/delivery/management", DeliveryManagementAPI.as_view(), name='delivery_pickup'),
 
     # POST(배달기사 배송완료)
     path("api/delivery_complete", DeliveryCompleteAPI.as_view(), name='delivery_complete'),

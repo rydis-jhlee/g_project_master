@@ -22,7 +22,7 @@ class DeliveryAPI(View):
 
         # 필수 파라미터
         payment_id = request.GET.get('payment_id')  # 결제ID
-        user_id = request.GET.get('user_id')        # 사용자ID
+        user_id = request.user.username       # 사용자ID
 
         _payment = {}
 
@@ -68,7 +68,7 @@ class DeliveryAPI(View):
                 # '조회실패': "조회된 구매건이 없습니다."
                 result_data = {
                     'result_code': '2',
-                    'result_msg': 'Fail'
+                    'result_msg': 'Payment does not exists'
                     # 'token': request.session.session_key
                 }
                 return JsonResponse(result_data)
@@ -76,97 +76,85 @@ class DeliveryAPI(View):
             # '조회실패': "입력값이 존재하지 않습니다."
             result_data = {
                 'result_code': '2',
-                'result_msg': 'Fail'
+                'result_msg': 'Invalid Parameters'
                 # 'token': request.session.session_key
             }
             return JsonResponse(result_data)
 
 
-class DeliveryPickUpAPI(View):
+class DeliveryManagementAPI(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
-        return super(DeliveryPickUpAPI, self).dispatch(request, *args, **kwargs)
+        return super(DeliveryManagementAPI, self).dispatch(request, *args, **kwargs)
 
     def get(self, request):
 
         # 필수 파라미터
-        # sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
         addr1 = request.GET.get('addr1')  # 배송 가능한 빌딩
-        # addr2 = request.GET.get('addr2')
 
         set_list = list()
         data = {}
 
         if addr1:
-            delivery_list = Delivery.objects.filter(Q(addr1=addr1))
-            if delivery_list:
-                for delivery in delivery_list:
-                    set_list.append({
-                        "addr1": delivery.addr1,
-                        "addr2": delivery.addr2,
-                        "memo": delivery.memo,
-                        "desc": delivery.desc
-                    })
-
-                data.update({'delivery_list': set_list})
-                return JsonResponse(data, json_dumps_params={
-                    'ensure_ascii': False,
-                    'indent': 4
+            delivery_list = Delivery.objects.filter(Q(type=4) & Q(addr1=addr1))
+        else:
+            delivery_list = Delivery.objects.filter(Q(type=4))
+        if delivery_list:
+            for delivery in delivery_list:
+                set_list.append({
+                    "delivery_id": delivery.delivery_id,
+                    "addr1": delivery.addr1,
+                    "addr2": delivery.addr2,
+                    "memo": delivery.memo,
+                    "desc": delivery.desc,
+                    "type": delivery.type
                 })
 
-            else:
-                # '조회': "배달 가능한 제품이 없습니다."
-                result_data = {
-                    'result_code': '2',
-                    'result_msg': 'Fail'
-                    # 'token': request.session.session_key
-                }
-                return JsonResponse(result_data)
+            data.update({'delivery_list': set_list})
+            return JsonResponse(data, json_dumps_params={
+                'ensure_ascii': False,
+                'indent': 4
+            })
+
         else:
-            # '조회실패': "입력된 주소가 존재하지 않습니다."
+            # '조회': "배달 가능한 제품이 없습니다."
             result_data = {
                 'result_code': '2',
-                'result_msg': 'Fail'
+                'result_msg': 'Delivery does not exist'
                 # 'token': request.session.session_key
             }
             return JsonResponse(result_data)
+        # else:
+        #     # '조회실패': "입력된 주소가 존재하지 않습니다."
+        #     result_data = {
+        #         'result_code': '2',
+        #         'result_msg': 'Address does not exist.'
+        #         # 'token': request.session.session_key
+        #     }
+        #     return JsonResponse(result_data)
 
     def post(self, request):
         try:
+
             # 필수 파라미터
-            man_id = request.POST.get('man_id')  # 배달기사ID
-            #man_number = request.POST.get('man_number')  # 배달기사 전화번호
-            addr1 = request.POST.get('addr1')  # 배송할 빌딜명
+            delivery_id = request.POST.get('delivery_id')  # 배송ID
+            # addr1 = request.POST.get('addr1')  # 배송할 빌딜명
 
-            # user_id로 해당 메서드 사용할 수 있는 등급인지 체크할것.
+            if delivery_id: # and addr1:
+                delivery = Delivery.objects.get(Q(delivery_id=delivery_id)) #& Q(addr1=addr1)).first()
+                delivery.type = 3  # 배달기사 접수
+                delivery.status = 2  # 배송중
+                delivery.updated = datetime.now()
+                delivery.save()
 
-            if addr1:
-                delivery_list = Delivery.objects.filter(Q(addr1=addr1))
-                if delivery_list:
-                    for delivery in delivery_list:
-                        _delivery = Delivery.objects.get(delivery_id=delivery.delivery_id)
-                        _delivery.type = 3  # 배달기사 접수
-                        _delivery.status = 2  # 배송중
-                        #_delivery.man_id = man_id
-                        #_delivery.man_number = man_number
-                        _delivery.updated = datetime.now()
-                        _delivery.save()
-                    result_data = {
-                        'result_code': '1',
-                        'result_msg': 'Success'
-                        # 'token': request.session.session_key
-                    }
-                    return JsonResponse(result_data)
-                else:
-                    # '등록실패': "조회된 배달건이 존재하지 않습니다."
-                    result_data = {
-                        'result_code': '2',
-                        'result_msg': 'Fail'
-                        # 'token': request.session.session_key
-                    }
-                    return JsonResponse(result_data)
+                result_data = {
+                    'result_code': '1',
+                    'result_msg': 'Success'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
             else:
-                # '등록실패': "조회된 주소가 존재하지 않습니다."
+            # '등록실패': "조회된 주소가 존재하지 않습니다."
                 result_data = {
                     'result_code': '2',
                     'result_msg': 'Fail'
@@ -179,6 +167,53 @@ class DeliveryPickUpAPI(View):
                 'error': "exception",
                 'e': str(e)
             })
+        # try:
+        #     # 필수 파라미터
+        #     man_id = request.POST.get('man_id')  # 배달기사ID
+        #     #man_number = request.POST.get('man_number')  # 배달기사 전화번호
+        #     addr1 = request.POST.get('addr1')  # 배송할 빌딜명
+        #
+        #     # user_id로 해당 메서드 사용할 수 있는 등급인지 체크할것.
+        #
+        #     if addr1:
+        #         delivery_list = Delivery.objects.filter(Q(addr1=addr1))
+        #         if delivery_list:
+        #             for delivery in delivery_list:
+        #                 _delivery = Delivery.objects.get(delivery_id=delivery.delivery_id)
+        #                 _delivery.type = 3  # 배달기사 접수
+        #                 _delivery.status = 2  # 배송중
+        #                 #_delivery.man_id = man_id
+        #                 #_delivery.man_number = man_number
+        #                 _delivery.updated = datetime.now()
+        #                 _delivery.save()
+        #             result_data = {
+        #                 'result_code': '1',
+        #                 'result_msg': 'Success'
+        #                 # 'token': request.session.session_key
+        #             }
+        #             return JsonResponse(result_data)
+        #         else:
+        #             # '등록실패': "조회된 배달건이 존재하지 않습니다."
+        #             result_data = {
+        #                 'result_code': '2',
+        #                 'result_msg': 'Fail'
+        #                 # 'token': request.session.session_key
+        #             }
+        #             return JsonResponse(result_data)
+        #     else:
+        #         # '등록실패': "조회된 주소가 존재하지 않습니다."
+        #         result_data = {
+        #             'result_code': '2',
+        #             'result_msg': 'Fail'
+        #             # 'token': request.session.session_key
+        #         }
+        #         return JsonResponse(result_data)
+        #
+        # except Exception as e:
+        #     return JsonResponse({
+        #         'error': "exception",
+        #         'e': str(e)
+        #     })
 
 
 class DeliveryCompleteAPI(View):
