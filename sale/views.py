@@ -500,7 +500,7 @@ class SaleConnectAgentAPI(View):
         try:
             # 필수 파라미터
             sale_agent_name = request.POST.get('sale_agent_name')  # 판매업체명
-            user_id = request.POST.get('user_id')                  # 등록한 관리자ID
+            user_id = request.user.username                # 등록한 관리자ID
             name = request.POST.get('name')                        # 배송받을 건물명
             addr = request.POST.get('addr')                        # 배송받을 주소
 

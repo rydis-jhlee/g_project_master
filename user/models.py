@@ -1,7 +1,4 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.conf import settings
 from datetime import datetime
 from datetime import timedelta
@@ -52,3 +49,4 @@ class SaleUser(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, null=True)
     auth_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='auth_user_id')
+    sale_agent_id = models.ForeignKey('sale.SaleAgent', null=True, on_delete=models.SET_NULL, db_column='sale_agent_id')

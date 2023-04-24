@@ -18,6 +18,7 @@ from django.contrib.auth import authenticate, login, logout
 import jwt
 
 from core.payload.validator import *
+from core.decorators import *
 
 
 class UserRegisterAPI(View):
@@ -29,6 +30,7 @@ class UserRegisterAPI(View):
 
         try:
             register_type = request.POST.get('register_type')
+            sale_agent = request.POST.get('sale_agent')
 
             form_msg_dict = {
                 'username': '아이디',
@@ -136,6 +138,14 @@ class UserRegisterAPI(View):
                             auth_user_id=user
                         )
                     elif register_type == '5' or register_type == '6' or register_type == '7' or register_type == '8':
+                        SaleUser.objects.create(
+                            user_id=form['username'],
+                            user_name=form['name'],
+                            phone_number=form['mobile'],
+                            auth_user_id=user,
+                            sale_agent_id=sale_agent
+                        )
+                    elif register_type == '8':
                         SaleUser.objects.create(
                             user_id=form['username'],
                             user_name=form['name'],
@@ -551,11 +561,13 @@ class SocialLoginNaver(View):
             f'{url}&client_id={client_id}&redirect_uri={redirect_uri}'
         )
 
+
 class MyRestaurantAPI(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super(MyRestaurantAPI, self).dispatch(request, *args, **kwargs)
 
+    @method_decorator(sale_group_user_permission)
     def get(self, request):
 
         # 필수 파라미터
@@ -604,14 +616,14 @@ class MyRestaurantAPI(View):
         try:
             # 필수 파라미터
             name = request.POST.get('name')        # 판매업체명
-            user_id = request.POST.get('user_id')  # 이용자ID
+            user_id = request.user.username # 이용자ID
 
             if name:
                 sale_agent = SaleAgent.objects.filter(Q(name=name)).first()
                 if sale_agent:
                     tb_order_user = OrderUser.objects.get(user_id=user_id)
                     if tb_order_user:
-                        tb_order_user.my_restaurant1 = sale_agent.sale_agent_id
+                        tb_order_user.my_restaurant1 = sale_agent.name
                         tb_order_user.updated = datetime.now()
                         tb_order_user.save()
 
@@ -625,7 +637,7 @@ class MyRestaurantAPI(View):
                         # '등록취소': "조회된 이용자가 존재하지 않습니다."
                         result_data = {
                             'result_code': '2',
-                            'result_msg': 'Fail'
+                            'result_msg': 'User does not exist'
                             # 'token': request.session.session_key
                         }
                         return JsonResponse(result_data)
@@ -633,7 +645,7 @@ class MyRestaurantAPI(View):
                     # '등록취소': "조회된 식당이 존재하지 않습니다."
                     result_data = {
                         'result_code': '2',
-                        'result_msg': 'Fail'
+                        'result_msg': 'Restaurant does not exist'
                         # 'token': request.session.session_key
                     }
                     return JsonResponse(result_data)
@@ -641,7 +653,7 @@ class MyRestaurantAPI(View):
                 # '등록취소': "조회된 식당이 존재하지 않습니다."
                 result_data = {
                     'result_code': '2',
-                    'result_msg': 'Fail'
+                    'result_msg': 'Restaurant does not exist.'
                     # 'token': request.session.session_key
                 }
                 return JsonResponse(result_data)
@@ -653,12 +665,27 @@ class MyRestaurantAPI(View):
             })
 
 
-class AdminBKELogoutView(View):
+class ProfileAPI(View):
     @method_decorator(csrf_exempt)
+    @method_decorator(sale_group_user_permission)
     def dispatch(self, request, *args, **kwargs):
-        return super(AdminBKELogoutView, self).dispatch(request, *args, **kwargs)
+        return super(ProfileAPI, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request):
-        if request.user.is_authenticated:
-            logout(request)
-        return redirect('admin-login')
+    def get(slef, request):
+        try:
+            user = request.user.username
+            profile = OrderUser.objects.get(user_id=user)
+            data = {'UserInfo': {
+                'username': profile.user_id,
+                'name': profile.user_name,
+                'mobile': profile.phone_number,
+                'my_restaurant1': profile.my_restaurant1,
+                'my_restaurant2': profile.my_restaurant2
+            }}
+        except OrderUser.DoesNotExist:
+            data = {'code': -2, 'msg': 'Access denied'}
+        return JsonResponse(data, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
+

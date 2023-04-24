@@ -24,4 +24,7 @@ urlpatterns = [
     # GET(마이식당 등록된 이용자 조회) --> 판매 관리자가 볼 수 있는 화면
     path('api/my_restaurant', MyRestaurantAPI.as_view(), name='my_restaurant'),
 
+    # GET(회원정보 조회)
+    path('profile', ProfileAPI.as_view()),
+
 ]
