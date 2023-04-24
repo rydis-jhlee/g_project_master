@@ -9,6 +9,9 @@ urlpatterns = [
     # POST(결제 하기)
     path("api/payment", PaymentAPI.as_view(), name='payment'),
 
+    # POST(결제 완료)
+    path("api/payment_completion", PaymentCompletion.as_view()),
+
     # POST(결제 취소)
     path("api/payment_cancel", PaymentCancelAPI.as_view(), name='payment_cancel'),
 

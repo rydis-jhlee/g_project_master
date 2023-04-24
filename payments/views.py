@@ -23,7 +23,7 @@ class PaymentAPI(View):
 
         # 필수 파라미터
         payment_id = request.GET.get('payment_id')  # 결제ID
-        user_id = request.GET.get('user_id')  # 사용자ID
+        user_id = request.user.username  # 사용자ID
 
         payment_dict = {}
 
@@ -94,13 +94,12 @@ class PaymentAPI(View):
             {
                 "name_list": {"새우튀김": 1, "감자튀김": 5},
                 "sale_agent_name": "더반푸드",
-                "user_id": "rydis_jhlee",
                 "status": "미결제"
             }
             """
             name_list = data.get('name_list')  # 제품 리스트
             sale_agent_id = data.get('sale_agent_id')  # 판매업체ID
-            user_id = data.get('user_id')  # 구매자ID
+            user_id = request.user.username  # 구매자ID
             delivery_type = data.get('delivery_type')  # 제품 수령 방식(1:직접수령, 2:배송)
             payment_type = data.get('payment_type')  # 제품 결제 방식(1:신용카드, 2:계좌이체, 3:현금)
             desc = data.get('desc')  # 구매 요약(판매자에 대한 요청)
@@ -137,26 +136,29 @@ class PaymentAPI(View):
                             is_executed = True
 
                         # 구매 테이블 제품 추가
-                        if product:
-                            Order.objects.create(
-                                payment_id=tb_payment,
-                                product_id=product,
-                                quantity=quantity_value
-                            )
+                        # if product:
+                        Order.objects.create(
+                            payment_id=tb_payment,
+                            product_id=product,
+                            quantity=quantity_value
+                        )
                     else:
-                        if not is_executed:
-                            result_data = {
-                                'result_code': '2',
-                                'result_msg': 'Fail'
-                                # 'token': request.session.session_key
-                            }
-                            return JsonResponse(result_data)
+                        try:
+                            if tb_payment:
+                                tb_payment.status = 3  # 결제취소
+                                tb_payment.memo = "구매수량 부족으로 인한 취소"
+                                tb_payment.price = total_price
+                                tb_payment.save()
 
-                        if tb_payment:
-                            tb_payment.status = 3  # 결제취소
-                            tb_payment.memo = "구매수량 부족으로 인한 취소"
-                            tb_payment.total_price
-                            tb_payment.save()
+                        except Exception as e:
+                            print(e)
+                            Payment.objects.create(
+                                user_id=user_id,
+                                status=3,
+                                memo="구매수량 부족으로 인한 취소",
+                                price=total_price
+
+                            )
                         # '구매취소': "제품 보유 수량이 구매 수량 보다 많습니다."
                         result_data = {
                             'result_code': '2',
@@ -191,6 +193,22 @@ class PaymentAPI(View):
                     product.quantity = int(product.quantity) - int(row.quantity)
                     own_total_price += int(row.product_id.price) * int(row.quantity)
                     product.save()
+
+            if payment_type == '3':  # 방문 수령일 경우
+                payment.price = own_total_price  # 총결제금액
+                payment.delivery_type = delivery_type
+                payment.payment_type = payment_type
+                payment.desc = desc
+                payment.payment_date = datetime.now()
+                payment.save()
+
+                result_data = {
+                    'result_code': '1',
+                    'result_msg': 'Success'
+                    # 'token': request.session.session_key
+                }
+
+                return JsonResponse(result_data)
 
             # 내가 계산한 전체금액과 프론트에서 넘어온 금액이 같으면 pass, 다르면 결제취소
             if int(own_total_price) == int(total_price):
@@ -230,18 +248,48 @@ class PaymentAPI(View):
                 }
                 return JsonResponse(result_data)
 
-            result_data = {
-                'result_code': '1',
-                'result_msg': 'Success'
-                # 'token': request.session.session_key
-            }
-            return JsonResponse(result_data)
+
 
         except Exception as e:
             return JsonResponse({
                 'error': "exception",
                 'e': str(e)
             })
+
+
+class PaymentCompletion(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PaymentCompletion, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        payment_id = request.POST.get('payment_id')
+        payment_type = request.POST.get('payment_type')
+        payment_status = request.POST.get('payment_status')
+        data = None
+        if payment_type == '3' and payment_status == '1':
+            payment = Payment.objects.get(payment_id=payment_id)
+            if payment.status == '1':
+                payment.status = 2  # 결제
+                payment.payment_date = datetime.now()
+                payment.save()
+                delivery_id = payment.delivery_id
+                if delivery_id.status != '3':
+                    delivery_id.status = 3
+                    delivery_id.completed_date = datetime.now()
+                    delivery_id.man_id = request.user.username
+                    delivery_id.save()
+                    data = {'result_code': '1', 'result_msg': 'Success'}
+                else:
+                    data = {'result_code': '2', 'result_msg': 'Completed Delivery'}
+            else:
+                data = {'result_code': '3', 'result_msg': 'Payment Duplication'}
+        elif payment_type != '3':  # 현금 결제만 가능
+            data = {'result_code': '4', 'result_msg': 'Invalid Parameters (payment_type)'}
+        elif payment_status != '1':  # 미결제 인 상태만 가능
+            data = {'result_code': '5', 'result_msg': 'Invalid Parameters (payment_status)'}
+
+        return JsonResponse(data)
 
 
 class PaymentCancelAPI(View):
@@ -253,6 +301,7 @@ class PaymentCancelAPI(View):
         try:
             # 필수 파라미터
             payment_id = request.POST.get('payment_id')  # 결제ID
+            memo = request.POST.get('memo')
 
             """
             신용카드/현금에 대한 결제방식에 따라 어떻게 돌려줄건지 고민해야함.
@@ -269,13 +318,13 @@ class PaymentCancelAPI(View):
 
                 # 결제테이블 취소
                 payment.status = 3  # 결제취소
-                payment.memo = "이용자 취소"
+                payment.memo = memo
                 payment.save()
 
                 # 배송테이블 취소
                 delivery = Delivery.objects.get(delivery_id=payment.delivery_id_id)
                 delivery.status = 4  # 배송취소
-                delivery.memo = "이용자 취소"
+                delivery.memo = memo
                 delivery.save()
 
                 result_data = {
@@ -309,7 +358,7 @@ class PaymentListAPI(View):
     def get(self, request):
 
         # 필수 파라미터
-        user_id = request.GET.get('user_id')  # 사용자ID
+        user_id = request.user.username  # 사용자ID
 
         # 선택 파라미터
         status = request.GET.get('status')  # 결제상태(1:미결제, 2:결제, 3:결제취소)
