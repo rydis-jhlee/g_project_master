@@ -510,8 +510,8 @@ class SaleConnectAgentAPI(View):
                 sale_agent = SaleAgent.objects.filter(Q(name=sale_agent_name)).first()
                 if sale_agent:
                     # user_id가 해당 메서드 사용할 수 있는 등급인지 같이 체크
-                    order_user = OrderUser.objects.get(Q(user_id=user_id) & Q(grade=0))
-                    if order_user:
+                    sale_user = SaleUser.objects.get(Q(user_id=user_id) & Q(grade=0))
+                    if sale_user:
                         SaleConnectAgent.objects.create(
                             user_id=user_id,
                             name=name,

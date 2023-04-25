@@ -429,10 +429,10 @@ class AdminDashboardAPI(View):
             if send_pay_status == '3':
                 q.add(Q(created__range=(start_time, end_time)), q.AND)
             else:
-                q.add(Q(payment_date__range=(start_time, end_time)), q.AND)
+                q.add(Q(payment_date__range=(start_time, end_time)) | Q(created__range=(start_time, end_time)), q.AND)
 
-        if send_pay_status:
-            q.add(Q(status=send_pay_status), q.AND)
+        # if send_pay_status:
+        #     q.add(Q(status=send_pay_status), q.AND)
 
         if send_pay_type:
             q.add(Q(payment_type=send_pay_type), q.AND)
