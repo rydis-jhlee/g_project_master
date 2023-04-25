@@ -174,13 +174,15 @@ class PaymentAPI(View):
             if not payment.delivery_id:
                 if not int(delivery_type) == 1:  # 직접수령이 아니면
                     delivery_type = 2  # 배달기사 미접수
-
+                group_id = SaleConnectAgent.objects.get(sale_agent_id=sale_agent_id)
                 tb_delivery = Delivery.objects.create(
                     type=delivery_type,  # 직접수령 or 배송
                     status=1,  # 배송준비
                     addr1=addr1,
                     addr2=addr2,
-                    memo=delivery_memo
+                    memo=delivery_memo,
+                    sale_agent_id=group_id.sale_agent_id,
+                    group_id=group_id.delivery_group_id
                 )
                 payment.delivery_id = tb_delivery
 
