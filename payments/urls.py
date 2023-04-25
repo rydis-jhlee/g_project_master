@@ -18,6 +18,7 @@ urlpatterns = [
     # GET(주문 내용 확인)
     path("api/payment_list", PaymentListAPI.as_view(), name='payment_list'),
 
-    # 관리자페이지 search 호출
+    # 관리자페이지 결제현황 호출
     path("api/admin_dashboard", AdminDashboardAPI.as_view(), name='admin_dashboard'),
+
 ]

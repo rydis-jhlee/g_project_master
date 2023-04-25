@@ -17,6 +17,9 @@ urlpatterns = [
 
     # POST(배달기사 콜업)
     path("api/delivery_callup", DeliveryCallUpAPI.as_view(), name='delivery_callup'),
+    
+    # 관리자페이지 배송현황 호출
+    path("api/delivery_dashboard", DeliveryDashboardAPI.as_view(), name='delivery_dashboard'),
 
 ]
 

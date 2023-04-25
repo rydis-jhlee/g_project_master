@@ -10,9 +10,6 @@ from django.http import JsonResponse, HttpResponse
 from .models import *
 import os
 
-from core.decorators import sale_group_user_permission
-
-
 class DeliveryAPI(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -90,7 +87,8 @@ class DeliveryManagementAPI(View):
     def get(self, request):
 
         # 필수 파라미터
-        addr1 = request.GET.get('addr1')  # 배송 가능한 빌딩
+        addr1 = request.GET.get('addr1')              # 배송 가능한 빌딩
+
 
         set_list = list()
         data = {}
@@ -99,6 +97,7 @@ class DeliveryManagementAPI(View):
             delivery_list = Delivery.objects.filter(Q(type=4) & Q(addr1=addr1))
         else:
             delivery_list = Delivery.objects.filter(Q(type=4))
+
         if delivery_list:
             for delivery in delivery_list:
                 set_list.append({
@@ -293,3 +292,79 @@ class DeliveryCallUpAPI(View):
                 'error': "exception",
                 'e': str(e)
             })
+
+
+class DeliveryDashboardAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeliveryDashboardAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        delivery_startYmd = request.GET.get('delivery_startYmd')
+        delivery_endYmd = request.GET.get('delivery_endYmd')
+        delivery_type = request.GET.get('send_delivery_type')
+        delivery_status = request.GET.get('send_delivery_status')
+
+        q = Q()
+
+        if delivery_startYmd and delivery_endYmd:
+            # 결제 취소이면 등록일시로 조회
+            start_date_obj = datetime.strptime(delivery_startYmd, '%Y-%m-%d')
+            start_time = start_date_obj.replace(hour=00, minute=00, second=00)
+
+            end_date_obj = datetime.strptime(delivery_endYmd, '%Y-%m-%d')
+            end_time = end_date_obj.replace(hour=23, minute=59, second=59)
+
+            q.add(Q(created__range=(start_time, end_time)), q.AND)
+
+            #if send_pay_status == '3':
+            #    q.add(Q(created__range=(start_time, end_time)), q.AND)
+            #else:
+            #    q.add(Q(payment_date__range=(start_time, end_time)) | Q(created__range=(start_time, end_time)), q.AND)
+
+        if delivery_type:
+            q.add(Q(type=delivery_type), q.AND)
+
+        if delivery_status:
+            q.add(Q(status=delivery_status), q.AND)
+
+        delivery_list = list()
+        total_price = 0
+        delivery_total_row = 0
+        deliverys = Delivery.objects.filter(q)
+
+        for delivery in deliverys:
+            if delivery.completed_date:
+                complete_date_modi = delivery.completed_date.strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                complete_date_modi = None
+
+            if delivery.created:
+                created_date_modi = delivery.created.strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                created_date_modi = None
+
+            delivery_list.append({
+                        'delivery_id': delivery.delivery_id,
+                        'delivery_type': delivery.type,
+                        'delivery_status': delivery.status,
+                        'man_id': delivery.man_id,
+                        'man_number': delivery.man_id,
+                        'delivery_created': created_date_modi,
+                        'delivery_completed': complete_date_modi,
+                        'building_addr': delivery.addr1,
+                        'detail_addr': delivery.addr2,
+                        'user_memo': delivery.memo,
+                        'rider_desc': delivery.desc
+                    })
+
+            delivery_total_row += 1
+
+        return JsonResponse({
+            #'total_price': total_price,
+            'delivery_total_row': delivery_total_row,
+            'list': delivery_list
+        })
+
+
