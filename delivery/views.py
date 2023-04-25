@@ -397,8 +397,8 @@ class DeliveryUserAPI(View):
         work_dict = dict()
         counts = dict()
         try:
-            group = DeliveryUser2.objects.get(username=user)
-            groups_user = DeliveryUser2.objects.filter(Q(group_id=group.group_id_id) & ~Q(username=user))
+            group = DeliveryUser.objects.get(username=user)
+            groups_user = DeliveryUser.objects.filter(Q(group_id=group.group_id_id) & ~Q(username=user))
             for g_user in groups_user:
                 group_list.append(g_user.name)
             group_addr = group.group_id.main_addr

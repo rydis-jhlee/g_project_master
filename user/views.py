@@ -51,7 +51,7 @@ class UserRegisterAPI(View):
                 form['username'] = form['username'].lower()
 
             # TODO: 사업자번호 추가
-            if register_type == '3':
+            if register_type == '7':
                 form.update({
                                 '사업자번호': request.POST.get('사업자번호'),
                 })
@@ -132,8 +132,8 @@ class UserRegisterAPI(View):
                         )
                     elif register_type == '2' or register_type == '3' or register_type == '4':
                          DeliveryUser.objects.create(
-                            user_id=form['username'],
-                            user_name=form['name'],
+                            username=form['username'],
+                            name=form['name'],
                             phone_number=form['mobile'],
                             auth_user_id=user
                         )

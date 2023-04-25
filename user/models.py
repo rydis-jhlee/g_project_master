@@ -5,13 +5,13 @@ from datetime import timedelta
 from django.contrib.auth.models import AbstractUser
 
 
-class DeliveryUser(models.Model):
+class DeliveryUser2(models.Model):
     class Meta:
-        db_table = 'tb_delivery_user'
+        db_table = 'tb_delivery_user2'
 
     id = models.BigAutoField(primary_key=True)
-    user_id = models.CharField(max_length=150)
-    user_name = models.CharField(max_length=150)
+    username = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
     phone_number = models.CharField(max_length=150)
     grade = models.CharField(max_length=20, null=False, default=3)
     created = models.DateTimeField(auto_now_add=True)
@@ -50,3 +50,26 @@ class SaleUser(models.Model):
     updated = models.DateTimeField(auto_now=True, null=True)
     auth_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='auth_user_id')
     sale_agent_id = models.ForeignKey('sale.SaleAgent', null=True, on_delete=models.SET_NULL, db_column='sale_agent_id')
+
+
+class DeliveryUser(models.Model):
+    class Meta:
+        db_table = 'tb_delivery_user'
+
+    id = models.BigAutoField(primary_key=True)
+    username = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
+    phone_number = models.CharField(max_length=150)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, null=True)
+    auth_user_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='auth_user_id')
+    group_id = models.ForeignKey('DeliveryGroup', null=True, on_delete=models.SET_NULL, db_column='group_id')
+
+
+class DeliveryGroup(models.Model):
+    class Meta:
+        db_table = 'tb_delivery_group'
+
+    id = models.BigAutoField(primary_key=True)
+    main_addr = models.CharField(max_length=150)
+

@@ -73,3 +73,4 @@ class SaleConnectAgent(models.Model):
     created = models.DateTimeField(auto_now_add=True)  # 등록 일시
     updated = models.DateTimeField(auto_now=True, null=True)  # 수정 일시
     sale_agent_id = models.ForeignKey("SaleAgent", on_delete=models.SET_NULL, db_column='sale_agent_id', null=True)  # 판매업체PK
+    delivery_group_id = models.ForeignKey("user.DeliveryGroup", on_delete=models.SET_NULL, db_column='delivery_group_id', null=True)
