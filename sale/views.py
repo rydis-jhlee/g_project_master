@@ -12,6 +12,7 @@ import os
 from user.models import *
 from core.decorators import sale_group_user_permission
 
+
 class SaleAgentAPI(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -43,6 +44,10 @@ class SaleAgentAPI(View):
 
         for sale_agent in sale_agents:
             if sale_agent:
+                addrs = SaleConnectAgent.objects.filter(sale_agent_id=sale_agent.sale_agent_id)
+                addr_list = list()
+                for addr in addrs:
+                    addr_list.append(addr.name)
                 set_list.append({
                     "sale_agent_id": sale_agent.sale_agent_id,
                     "name": sale_agent.name,
@@ -52,7 +57,8 @@ class SaleAgentAPI(View):
                     "owner_number": sale_agent.owner_number,
                     "desc": sale_agent.desc,
                     "memo": sale_agent.memo,
-                    "building_name": sale_agent.building_name
+                    "building_name": sale_agent.building_name,
+                    "sale_addrs": addr_list
                 })
         sale_agent_list.update({'sale_agent_list': set_list})
         return JsonResponse(sale_agent_list,
@@ -60,11 +66,6 @@ class SaleAgentAPI(View):
                                 'ensure_ascii': False,
                                 'indent': 4
                             })
-
-        return JsonResponse(sale_agent_list, json_dumps_params={
-            'ensure_ascii': False,
-            'indent': 4
-        })
 
     @method_decorator(sale_group_user_permission)
     def post(self, request):
@@ -190,23 +191,28 @@ class ProductAPI(View):
         sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
         # 선택 파라미터
         type = request.GET.get('type')  # 타입(0: 판매준비, 1: 판매증)
-
+        products = None
         if type is None:
             type = -1
 
         product_list = list()
         sale_agent_list = {}
+        now = datetime.now()
+        start_of_day = datetime(now.year, now.month, now.day, 0, 0, 0)
+        end_of_day = datetime(now.year, now.month, now.day, 23, 59, 59)
 
         # 오늘 식단
         if sale_agent_id and int(type) == 0:
-            products = Product.objects.filter(Q(sale_agent_id=sale_agent_id) & Q(type=0))
+            products = Product.objects.filter(Q(sale_agent_id=sale_agent_id) & ~Q(type=2) & Q(created__gte=start_of_day) & Q(created__lte=end_of_day))
         # 반찬 메뉴
         elif sale_agent_id and int(type) == 1:
-            products = Product.objects.filter(Q(sale_agent_id=sale_agent_id) & Q(type=1))
-        else:
-            products = Product.objects.filter(Q(sale_agent_id=sale_agent_id))
+            products = Product.objects.filter(Q(sale_agent_id=sale_agent_id) & Q(type=1) & Q(created__gte=start_of_day) & Q(created__lte=end_of_day))
 
         if products:
+            addrs = SaleConnectAgent.objects.filter(sale_agent_id=sale_agent_id)
+            addr_list = list()
+            for addr in addrs:
+                addr_list.append(addr.name)
             for product in products:
                 if product:
                     product_list.append({
@@ -219,7 +225,8 @@ class ProductAPI(View):
                         "type": product.type,
                         "desc": product.desc,
                         "sale_agent_id": product.sale_agent_id_id,
-                        "sale_agent_name": product.sale_agent_id.name
+                        "sale_agent_name": product.sale_agent_id.name,
+                        "sale_addrs": addr_list
                     })
 
             sale_agent_list.update({'product_list': product_list})
