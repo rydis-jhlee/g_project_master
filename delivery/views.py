@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
 from .models import *
+from sale.models import *
 import os
 
 class DeliveryAPI(View):
@@ -215,6 +216,22 @@ class DeliveryManagementAPI(View):
         #     })
 
 
+class DeliveryPickUpAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeliveryPickUpAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        user = request.user.username
+
+        data = dict()
+        return JsonResponse(data)
+
+    def post(self, request):
+        data = dict()
+        return JsonResponse(data)
+
+
 class DeliveryCompleteAPI(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -366,5 +383,53 @@ class DeliveryDashboardAPI(View):
             'delivery_total_row': delivery_total_row,
             'list': delivery_list
         })
+
+
+class DeliveryUserAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeliveryUserAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        user = request.user.username
+        data = dict()
+        group_list = list()
+        work_dict = dict()
+        counts = dict()
+        try:
+            group = DeliveryUser2.objects.get(username=user)
+            groups_user = DeliveryUser2.objects.filter(Q(group_id=group.group_id_id) & ~Q(username=user))
+            for g_user in groups_user:
+                group_list.append(g_user.name)
+            group_addr = group.group_id.main_addr
+            today_work = Delivery.objects.filter(username=user)  # TODO:날짜 조건 추가
+            completed_work = today_work.filter(status='3')
+            incomplete_work = today_work.filter(Q(status=1) | Q(status=2))
+            all_work = Delivery.objects.filter(group_id=group.group_id, status=1)
+
+            for work in all_work:
+                name = work.sale_agent_id.name
+                addr = work.addr1 + ' ' + work.addr2
+                if name in work_dict:
+                    work_dict[name].append(addr)
+                else:
+                    work_dict[name] = [addr]
+
+            for key, value in work_dict.items():
+                counts[key] = len(value)
+
+            data = {
+                'group_addr': group_addr,
+                'group_list': group_list,
+                'today_work': today_work.count(),
+                'completed_work': completed_work.count(),
+                'incomplete_work': incomplete_work.count(),
+                'works': work_dict,
+                'counts': counts
+            }
+        except Exception as e:
+            print(e)
+            return JsonResponse(data)
+        return JsonResponse(data)
 
 

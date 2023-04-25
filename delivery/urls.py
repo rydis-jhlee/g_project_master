@@ -21,5 +21,8 @@ urlpatterns = [
     # 관리자페이지 배송현황 호출
     path("api/delivery_dashboard", DeliveryDashboardAPI.as_view(), name='delivery_dashboard'),
 
+    # 배달기사 현황조회
+    path("api/delivery/user", DeliveryUserAPI.as_view()),
+
 ]
 
