@@ -24,5 +24,9 @@ urlpatterns = [
     # 배달기사 현황조회
     path("api/delivery/user", DeliveryUserAPI.as_view()),
 
+    # 배송 할당할 라이더 조회
+    path("api/rider_search", DeliveryGrantAPI.as_view()),
+
+
 ]
 

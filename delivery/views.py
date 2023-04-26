@@ -301,7 +301,7 @@ class DeliveryDashboardAPI(View):
                         'delivery_type': delivery.type,
                         'delivery_status': delivery.status,
                         'man_id': delivery.man_id,
-                        'man_number': delivery.man_id,
+                        'man_number': delivery.man_number,
                         'delivery_created': created_date_modi,
                         'delivery_completed': complete_date_modi,
                         'building_addr': delivery.addr1,
@@ -316,6 +316,38 @@ class DeliveryDashboardAPI(View):
             #'total_price': total_price,
             'delivery_total_row': delivery_total_row,
             'list': delivery_list
+        })
+
+
+class DeliveryGrantAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(DeliveryGrantAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        #delivery_startYmd = request.GET.get('delivery_startYmd')
+        #delivery_endYmd = request.GET.get('delivery_endYmd')
+        #delivery_type = request.GET.get('send_delivery_type')
+        #delivery_status = request.GET.get('send_delivery_status')
+
+        q = Q()
+
+        delivery_user_list = list()
+
+        users = DeliveryUser.objects.filter(q)
+
+        for user in users:
+
+            delivery_user_list.append({
+                        'id': user.id,
+                        'user_id': user.user_id,
+                        'user_name': user.user_name,
+                        'phone_number': user.phone_number
+                    })
+
+        return JsonResponse({
+            'list': delivery_user_list
         })
 
 

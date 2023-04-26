@@ -275,7 +275,6 @@
                         <th>상세 주소</th>
                         <th>이용자 메모</th>
                         <th>배달기사 메모</th>
-                        <th>배달기사 할당</th>
                     </tr>
                     </thead>
 
@@ -335,44 +334,6 @@
     <!--end::Card-->
     <!--</div>-->
     <!--end::Content container-->
-</div>
-
-<div class="modal fade" tabindex="-1" id="modal-pop">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">배달기사 할당</h3>
-
-                <!--begin::Close-->
-                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="ki-duotone ki-cross fs-1"><i class="path1"></i><i class="path2"></i></i>
-                </div>
-                <!--end::Close-->
-            </div>
-
-            <div class="modal-body">
-                <table id="kt_datatable_modal" class="table table-striped table-row-bordered">
-                    <thead>
-                    <tr class="fw-semibold fs-6 text-gray-800 text-center">
-                        <th>라이더ID</th>
-                        <th>성명</th>
-                        <th>휴대폰 번호</th>
-                        <th>현재 상태</th>
-                        <th>담당 식당</th>
-                        <th>담당 위치</th>
-                        <th> </th>
-                    </tr>
-                    </thead>
-
-                </table>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
-            </div>
-        </div>
-    </div>
 </div>
 
 
@@ -481,11 +442,7 @@
         ]
     });
 
-    let dt3 = $("#kt_datatable_modal").DataTable({
-        "columnDefs": [
-            { "className": "text-center align-middle", "targets": "_all" }
-        ]
-    });
+
 
 
 
@@ -586,7 +543,6 @@
                 `${desc}`,
                 `${memo}`,
                 `${sale_agent_name}`
-                ``
             ]);
         }
         dt.draw();
@@ -681,12 +637,6 @@
             else if(delivery_status == '3' || delivery_status == 3) { delivery_status = "배송완료"}
             else if(delivery_status == '4' || delivery_status == 4) { delivery_status = "배송취소"}
 
-            let modal_data = '';
-
-            if(delivery_type == '배달기사 호출') {
-                modal_data = `<a href="#" class="btn btn-success btn-sm" onclick="modal_pop(${delivery_id})">배달기사 할당</a>`;
-            }
-
 
             dt2.row.add([
                 `${delivery_id}`,
@@ -699,24 +649,11 @@
                 `${building_addr}`,
                 `${detail_addr}`,
                 `${user_memo}`,
-                `${rider_desc}`,
-                `${modal_data}`
+                `${rider_desc}`
             ]);
         }
         dt2.draw();
 
-    }
-
-    function modal_pop(data) {
-        dt3.clear();
-
-        const delivery_modal_id = data;
-
-
-        dt3.draw();
-
-
-         $("#modal-pop").modal("show");
     }
 
 

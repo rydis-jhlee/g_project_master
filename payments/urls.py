@@ -24,4 +24,6 @@ urlpatterns = [
     # 관리자페이지 결제현황 호출
     path("api/admin_dashboard", AdminDashboardAPI.as_view(), name='admin_dashboard'),
 
+
+
 ]
