@@ -67,6 +67,12 @@ class SaleAgentAPI(View):
                                 'indent': 4
                             })
 
+
+class SaleAgentCreateAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SaleAgentCreateAPI, self).dispatch(request, *args, **kwargs)
+
     @method_decorator(sale_group_user_permission)
     def post(self, request):
 
@@ -122,24 +128,30 @@ class SaleAgentAPI(View):
                 'e': str(e)
             })
 
-    def put(self, request):
+
+class SaleAgentUpdateAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SaleAgentUpdateAPI, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request):
 
         """
            1. 관리자 등급일 경우에만 식당 수정이 되도록 할것.
         """
 
         # 필수 파라미터
-        sale_agent_id = request.GET.get('sale_agent_id')  # 판매업체ID
+        sale_agent_id = request.POST.get('sale_agent_id')  # 판매업체ID
 
         # 선택 파라미터(수정 대상)
-        name = request.GET.get('name')  # 판매업체명
-        building_name = request.GET.get('building_name')  # 건물명(판매업체가 소속된 건물)
-        business_info = request.GET.get('business_info')  # 사업자정보
-        addr = request.GET.get('addr')  # 주소
-        owner_name = request.GET.get('owner_name')  # 대표자명
-        owner_number = request.GET.get('owner_number')  # 대표자번호
-        desc = request.GET.get('desc')  # 설명
-        memo = request.GET.get('memo')  # 메모
+        name = request.POST.get('name')  # 판매업체명
+        building_name = request.POST.get('building_name')  # 건물명(판매업체가 소속된 건물)
+        business_info = request.POST.get('business_info')  # 사업자정보
+        addr = request.POST.get('addr')  # 주소
+        owner_name = request.POST.get('owner_name')  # 대표자명
+        owner_number = request.POST.get('owner_number')  # 대표자번호
+        desc = request.POST.get('desc')  # 설명
+        memo = request.POST.get('memo')  # 메모
 
         try:
             # 판매업체ID로 수정항목 조회
@@ -178,7 +190,6 @@ class SaleAgentAPI(View):
                 'error': "exception",
                 'e': str(e)
             })
-
 
 class ProductAPI(View):
     @method_decorator(csrf_exempt)
@@ -244,6 +255,12 @@ class ProductAPI(View):
                 # 'token': request.session.session_key
             }
             return JsonResponse(result_data)
+
+
+class ProductCreateAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProductCreateAPI, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
 
@@ -313,58 +330,6 @@ class ProductAPI(View):
                     }
                     return JsonResponse(result_data)
 
-        except Exception as e:
-            return JsonResponse({
-                'error': "exception",
-                'e': str(e)
-            })
-
-    def put(self, request):
-
-        """
-           1. 판매 관리자(2등급)?인 특정 판매자만 등록할 수 있도록 수정
-           2. 이미지 경로에 맞게 서버에 저장 시킬수 있도록 수정 --> 기존에 있는 경우 덮어씌워야함.
-        """
-
-        # 필수 항목
-        product_id = request.GET.get('product_id')  # 제품ID
-
-        # 수정 항목
-        name = request.GET.get('name')          # 제품명
-        image = request.GET.get('image')        # 제품이미지
-
-        try:
-            # 제품ID로 수정항목 조회
-            if product_id:
-                product = Product.objects.filter(product_id=product_id).first()
-
-                if product:
-                    product.name = name
-                    product.image = image
-                    product.updated = datetime.now()
-                    product.save()
-                    result_data = {
-                        'result_code': '1',
-                        'result_msg': 'Success'
-                        # 'token': request.session.session_key
-                    }
-                    return JsonResponse(result_data)
-                else:
-                    # '제품 수정 실패': "조회된 제품이 존재하지 않습니다."
-                    result_data = {
-                        'result_code': '2',
-                        'result_msg': 'Fail'
-                        # 'token': request.session.session_key
-                    }
-                    return JsonResponse(result_data)
-            else:
-                # '제품 수정 실패': "조회된 제품이 존재하지 않습니다."
-                result_data = {
-                    'result_code': '2',
-                    'result_msg': 'Fail'
-                    # 'token': request.session.session_key
-                }
-                return JsonResponse(result_data)
         except Exception as e:
             return JsonResponse({
                 'error': "exception",
@@ -455,6 +420,58 @@ class ProductUpdateAPI(View):
                 'e': str(e)
             })
 
+    def put(self, request):
+
+        """
+           1. 판매 관리자(2등급)?인 특정 판매자만 등록할 수 있도록 수정
+           2. 이미지 경로에 맞게 서버에 저장 시킬수 있도록 수정 --> 기존에 있는 경우 덮어씌워야함.
+        """
+
+        # 필수 항목
+        product_id = request.GET.get('product_id')  # 제품ID
+
+        # 수정 항목
+        name = request.GET.get('name')          # 제품명
+        image = request.GET.get('image')        # 제품이미지
+
+        try:
+            # 제품ID로 수정항목 조회
+            if product_id:
+                product = Product.objects.filter(product_id=product_id).first()
+
+                if product:
+                    product.name = name
+                    product.image = image
+                    product.updated = datetime.now()
+                    product.save()
+                    result_data = {
+                        'result_code': '1',
+                        'result_msg': 'Success'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
+                else:
+                    # '제품 수정 실패': "조회된 제품이 존재하지 않습니다."
+                    result_data = {
+                        'result_code': '2',
+                        'result_msg': 'Fail'
+                        # 'token': request.session.session_key
+                    }
+                    return JsonResponse(result_data)
+            else:
+                # '제품 수정 실패': "조회된 제품이 존재하지 않습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Fail'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+        except Exception as e:
+            return JsonResponse({
+                'error': "exception",
+                'e': str(e)
+            })
+
 
 class SaleConnectAgentAPI(View):
     @method_decorator(csrf_exempt)
@@ -503,6 +520,12 @@ class SaleConnectAgentAPI(View):
             }
             return JsonResponse(result_data)
 
+
+class StoreAddrCreate(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(StoreAddrCreate, self).dispatch(request, *args, **kwargs)
+
     def post(self, request):
         try:
             # 필수 파라미터
@@ -516,9 +539,9 @@ class SaleConnectAgentAPI(View):
             if sale_agent_name:
                 sale_agent = SaleAgent.objects.filter(Q(name=sale_agent_name)).first()
                 if sale_agent:
-                    # user_id가 해당 메서드 사용할 수 있는 등급인지 같이 체크
-                    sale_user = SaleUser.objects.get(Q(user_id=user_id) & Q(grade=0))
-                    if sale_user:
+                    # # user_id가 해당 메서드 사용할 수 있는 등급인지 같이 체크
+                    # sale_user = SaleUser.objects.get(Q(user_id=user_id) & Q(grade=0))
+                    if user_id:
                         SaleConnectAgent.objects.create(
                             user_id=user_id,
                             name=name,
