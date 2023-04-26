@@ -13,11 +13,11 @@ from sale.models import *
 from core.decorators import *
 
 
-class AdminPageView(View):
+class AdminSearchView(View):
     @method_decorator(csrf_exempt)
-    @method_decorator(group_master_permission)
+    #@method_decorator(group_master_permission)
     def dispatch(self, request, *args, **kwargs):
-        return super(AdminPageView, self).dispatch(request, *args, **kwargs)
+        return super(AdminSearchView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request):
 
@@ -31,5 +31,43 @@ class AdminPageView(View):
                 'sale_agent_building_name': sale_agent.building_name
             })
 
-        return render(request, "g_project.html", {'sale_agent_list': sale_agent_list})
+        return render(request, "admin_search.html", {'sale_agent_list': sale_agent_list})
+
+
+class RiderGrantView(View):
+    @method_decorator(csrf_exempt)
+    #@method_decorator(group_master_permission)
+    def dispatch(self, request, *args, **kwargs):
+        return super(RiderGrantView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        data = {
+            "works" : {
+                "더반푸드": [
+                    "대륭14 605호",
+                    "대륭14 605호"
+                ],
+                "푸드팩토리": [
+                    "대륭14 605호",
+                    "대륭14 605호"
+                ]
+            },
+            "counts" : {
+                "더반푸드": 4,
+                "푸드팩토리": 5
+            }
+        }
+
+        return render(request, "rider_grant.html", data)
+
+
+class InchSimulatorView(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(InchSimulatorView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        return render(request, "simulator.html")
 

@@ -1,0 +1,484 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<!--begin::Head-->
+<head>
+    <base href=""/>
+    <title>G식</title>
+    <meta charset="utf-8" />
+    <meta name="description" content="The most advanced Bootstrap Admin Theme on Bootstrap Market trusted by over 4,000 beginners and professionals. Multi-demo, Dark Mode, RTL support. Grab your copy now and get life-time updates for free." />
+    <meta name="keywords" content="keen, bootstrap, bootstrap 5, bootstrap 4, admin themes, web design, figma, web development, free templates, free admin themes, bootstrap theme, bootstrap template, bootstrap dashboard, bootstrap dak mode, bootstrap button, bootstrap datepicker, bootstrap timepicker, fullcalendar, datatables, flaticon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Keen - Multi-demo Bootstrap 5 HTML Admin Dashboard Theme" />
+    <meta property="og:url" content="https://keenthemes.com/keen" />
+    <meta property="og:site_name" content="Keenthemes | Keen" />
+    <link rel="canonical" href="https://preview.keenthemes.com/keen" />
+    <link rel="shortcut icon" href="/static/assets/media/logos/favicon.ico" />
+
+    <!--begin::Fonts(mandatory for all pages)-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+    <!--end::Fonts-->
+    <!--begin::Vendor Stylesheets(used for this page only)-->
+    <link href="{% static 'assets/plugins/custom/fullcalendar/fullcalendar.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/custom/datatables/datatables.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <!--end::Vendor Stylesheets-->
+    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
+    <link href="{% static 'assets/plugins/global/plugins.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/style.bundle.css' %}" rel="stylesheet" type="text/css" />
+    <!--end::Global Stylesheets Bundle-->
+
+
+
+
+
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+<body id="kt_app_body" data-kt-app-layout="dark-sidebar" data-kt-app-header-fixed="true" data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
+<!--begin::Theme mode setup on page load-->
+<script>var defaultThemeMode = "light"; var themeMode; if ( document.documentElement ) { if ( document.documentElement.hasAttribute("data-bs-theme-mode")) { themeMode = document.documentElement.getAttribute("data-bs-theme-mode"); } else { if ( localStorage.getItem("data-bs-theme") !== null ) { themeMode = localStorage.getItem("data-bs-theme"); } else { themeMode = defaultThemeMode; } } if (themeMode === "system") { themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-bs-theme", themeMode); }</script>
+<!--end::Theme mode setup on page load-->
+<!--begin::App-->
+<!--begin::Main-->
+<div class="app-main flex-column flex-row-fluid mt-10" id="kt_app_main">
+    <!--begin::Content wrapper-->
+    <!--<div class="d-flex flex-column flex-column-fluid">-->
+
+    <!--<div id="kt_app_content" class="app-content flex-column-fluid">-->
+    <!--begin::Content container-->
+    <div id="kt_app_content_container" class="app-container container-fluid">
+
+
+        <!-- DELIVERY START CARD -->
+        <div class="card pt-4 mb-6 mb-xl-9">
+            <!-- START CARD HEADER -->
+            <div class="card-header border-0">
+
+                <div class="card-title">
+                    <h2 class="fw-bold mb-0">배송 현황</h2>
+                </div>
+
+
+                <div class="card-toolbar">
+
+                    <div class="mb-0 me-5">
+                        <label class="form-label">배송일시</label>
+                        <input class="form-control form-control-solid" placeholder="" id="send_delivery_date"/>
+                    </div>
+
+                    <div class="mb-0 me-5">
+                        <label class="form-label">배송 타입</label>
+                        <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" id="send_delivery_type2">
+                            <option value="">전체</option>
+                            <option value="1">직접수령</option>
+                            <option value="2">배달기사 미접수</option>
+                            <option value="3">배달기사 접수</option>
+                            <option value="4">배달기사 호출</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-0 me-5">
+                        <label class="form-label">배송 상태</label>
+                        <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" id="send_delivery_status">
+                            <option value="">전체</option>
+                            <option value="1">배송준비</option>
+                            <option value="2">배송중</option>
+                            <option value="3">배송완료</option>
+                            <option value="4">배송취소</option>
+                        </select>
+                    </div>
+
+{#                    <div class="mb-0 me-5">#}
+{#                        <label class="form-label">식당 선택</label>#}
+{#                        <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" id="send_sale_agent_select">#}
+{#                            <option value="전체">전체</option>#}
+{#                            {% for agent in sale_agent_list %}#}
+{#                                <option value="{{ agent.sale_agent_name }}">{{ agent.sale_agent_name }}</option>#}
+{#                            {% endfor %}#}
+{#                            <!--<option value="더반푸드">더반푸드</option>#}
+{#                            <option value="푸드팩토리">푸드팩토리</option>-->#}
+{#                        </select>#}
+{#                    </div>#}
+{#                    #}
+                    <div class="mt-7">
+                        <button href="#" class="btn btn-primary" onclick="onDeliverySearch();"><i class="bi bi-search fs-4 me-2"></i>Search</button>
+                    </div>
+
+
+
+
+                </div>
+
+
+            </div>
+            <!-- END CARD HEADER -->
+
+
+            <div class="card-body pt-10">
+                <table id="kt_datatable_delivery" class="table table-striped table-row-bordered">
+                    <thead>
+                    <tr class="fw-semibold fs-6 text-gray-800 text-center">
+                        <th>배송ID</th>
+                        <th>배송 타입</th>
+                        <th>배송 상태</th>
+                        <th>배달기사 ID</th>
+                        <th>배달기사 전화번호</th>
+                        <th>배송 시작 일시</th>
+                        <th>배송 완료 일시</th>
+                        <th>빌딩 주소</th>
+                        <th>상세 주소</th>
+                        <th>이용자 메모</th>
+                        <th>배달기사 메모</th>
+                        <th>배달기사 할당</th>
+                    </tr>
+                    </thead>
+
+                </table>
+            </div>
+
+            <div class="row">
+
+                <!--begin::Col-->
+                <div class="col">
+                    <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                        <span class="fs-4 fw-semibold text-success pb-1 px-2">전체 건수</span>
+                        <span class="fs-lg-2tx fw-bold d-flex justify-content-center">
+                        <span id="res_total_deli_row">0</span>
+                    </span>
+                    </div>
+                </div>
+                <!--end::Col-->
+
+                <!--
+                <div class="col">
+                    <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                        <span class="fs-4 fw-semibold text-danger pb-1 px-2">결제 취소 건수(미반영)</span>
+                        <span class="fs-lg-2tx fw-bold d-flex justify-content-center">
+                        <span data-kt-countup="true" data-kt-countup-value="2,600" class="counted" data-kt-initialized="1">0</span>
+                    </span>
+                    </div>
+                </div>
+                -->
+
+
+                <!--
+                <div class="col">
+                    <div class="card card-dashed flex-center min-w-175px my-3 p-6">
+                        <span class="fs-4 fw-semibold text-primary pb-1 px-2">미결제 건수(미반영)</span>
+                        <span class="fs-lg-2tx fw-bold d-flex justify-content-center">
+                        <span data-kt-countup="true" data-kt-countup-value="783&quot;" class="counted" data-kt-initialized="1">0</span>
+                    </span>
+                    </div>
+                </div>
+                -->
+            </div>
+
+            <div class="card-body pt-0">
+                <div class="separator separator-dashed"></div>
+            </div>
+
+
+        </div>
+        <!-- DELIVERY END CARD -->
+
+
+    </div>
+
+
+    <!--</div>-->
+    <!--end::Card-->
+    <!--</div>-->
+    <!--end::Content container-->
+</div>
+
+<div class="modal fade" tabindex="-1" id="modal-pop">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">배달기사 할당</h3>
+
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="ki-duotone ki-cross fs-1"><i class="path1"></i><i class="path2"></i></i>
+                </div>
+                <!--end::Close-->
+            </div>
+
+            <div class="modal-body">
+                <table id="kt_datatable_modal" class="table table-striped table-row-bordered">
+                    <thead>
+                    <tr class="fw-semibold fs-6 text-gray-800 text-center">
+                        <th>라이더ID</th>
+                        <th>성명</th>
+                        <th>휴대폰 번호</th>
+                        <th>현재 상태</th>
+                        <th>담당 식당</th>
+                        <th>담당 위치</th>
+                        <th>　</th>
+                    </tr>
+                    </thead>
+
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>var hostUrl = "assets/";</script>
+<!--begin::Global Javascript Bundle(mandatory for all pages)-->
+<script src="/static/assets/plugins/global/plugins.bundle.js"></script>
+<script src="/static/js/scripts.bundle.js"></script>
+<!--end::Global Javascript Bundle-->
+<!--begin::Vendors Javascript(used for this page only)-->
+<script src="/static/assets/plugins/custom/fullcalendar/fullcalendar.bundle.js"></script>
+<script src="/static/js/widgets.bundle.js"></script>
+<script src="/static/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+
+
+<script>
+    $(document).ready( function() {
+        //initPage();
+        onDeliverySearch();
+
+    })
+    /*
+    function initPage() {
+        $.ajax({
+            method: "GET",
+            url: `/api/admin_dashboard?init_type=0`,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                console.log(data);
+                for (var i = 0; i < data.sale_agent_list.length; i++) {
+                    $('#send_sale_agent_select').append(
+                        $('<option>').text(data.sale_agent_list[i].sale_agent_name)
+                    );
+                }
+            }
+        });
+    }
+     */
+
+    var start = moment().subtract(0, "days");
+    var end = moment();
+
+    function cb(start, end) {
+        //$("#send_pay_date").html(start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD"));
+        $("#send_delivery_date").html(start.format("YYYY-MM-DD") + " - " + end.format("YYYY-MM-DD"));
+    }
+
+
+    $("#send_delivery_date").daterangepicker({
+        startDate: start,
+        endDate: end,
+        ranges: {
+            "Today": [moment(), moment()],
+            "Yesterday": [moment().subtract(1, "days"), moment().subtract(1, "days")],
+            "Last 7 Days": [moment().subtract(6, "days"), moment()],
+            "Last 30 Days": [moment().subtract(29, "days"), moment()],
+            "This Month": [moment().startOf("month"), moment().endOf("month")],
+            "Last Month": [moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")]
+        },
+        timePicker: false,
+        timePicker24Hour: true,
+        timePickerSeconds: true,
+        singleDatePicker: false,
+        locale :{
+            format: 'YYYY-MM-DD',
+            separator: ' ~ '
+        }
+
+    }, cb);
+
+
+    let dt2 = $("#kt_datatable_delivery").DataTable({
+        "columnDefs": [
+            { "className": "text-center align-middle", "targets": "_all" }
+        ]
+    });
+
+    let dt3 = $("#kt_datatable_modal").DataTable({
+         "columnDefs": [
+            { "className": "text-center align-middle", "targets": "_all" }
+        ]
+    });
+
+    function addCommas(nStr) {
+        nStr += '';
+        var x = nStr.split('.');
+        var x1 = x[0];
+        var x2 = x.length > 1 ? '.' + x[1] : '';
+        var rgx = /(\d+)(\d{3})/;
+        while (rgx.test(x1)) {
+            x1 = x1.replace(rgx, '$1' + ',' + '$2');
+        }
+        return x1 + x2;
+    }
+
+    function onDeliverySearch() {
+
+        let send_delivery_date = document.getElementById('send_delivery_date').value;
+        console.log(send_delivery_date);
+        const delivery_arr = send_delivery_date.split("~");
+        console.log(delivery_arr);
+        //let startYmd = arr[0] + "00:00:00";
+        //let endYmd = arr[1].replaceAll(' ','') + " 23:59:59";
+
+        let delivery_startYmd = delivery_arr[0].replaceAll(' ','');
+        let delivery_endYmd = delivery_arr[1].replaceAll(' ','');
+
+        let send_delivery_type2 = document.getElementById('send_delivery_type2').value;
+        let send_delivery_status = document.getElementById('send_delivery_status').value;
+
+        //let send_delivery_type = document.getElementById('send_delivery_type').value;
+        //let send_sale_agent_select = document.getElementById('send_sale_agent_select').value;
+
+        $.ajax({
+            method: "GET",
+            url: `/api/delivery_dashboard?` +
+                `delivery_startYmd=${delivery_startYmd}&` +
+                `delivery_endYmd=${delivery_endYmd}&` +
+                `send_delivery_type=${send_delivery_type2}&` +
+                `send_delivery_status=${send_delivery_status}`,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                console.log(data);
+                pageDeliveryLoad(data);
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+
+    function pageDeliveryLoad(data) {
+
+        dt2.clear();
+
+        //document.getElementById("res_total_price").innerHTML = addCommas(data.total_price);
+        document.getElementById("res_total_deli_row").innerHTML = addCommas(data.delivery_total_row);
+
+
+        for (var i=0; i<data.list.length; i++) {
+
+            delivery_id = data.list[i].delivery_id;
+            man_id = data.list[i].man_id;
+            man_number = data.list[i].man_number;
+            delivery_created = data.list[i].delivery_created;
+            building_addr = data.list[i].building_addr;
+            detail_addr = data.list[i].detail_addr;
+            user_memo = data.list[i].user_memo;
+            if(user_memo == null) { user_memo = "" }
+            rider_desc = data.list[i].rider_desc;
+            if(rider_desc == null) { rider_desc = "" }
+
+            delivery_completed = data.list[i].delivery_completed;
+            if(delivery_completed == null) { delivery_completed = "" }
+
+            delivery_type = data.list[i].delivery_type;
+            if(delivery_type == null) { delivery_type = "" }
+            else if(delivery_type == '1' || delivery_type == 1) { delivery_type = "직접수령"}
+            else if(delivery_type == '2' || delivery_type == 2) { delivery_type = "배달기사 미접수" }
+            else if(delivery_type == '3' || delivery_type == 3) { delivery_type = "배달기사 접수"}
+            else if(delivery_type == '4' || delivery_type == 4) { delivery_type = "배달기사 호출"}
+
+            delivery_status = data.list[i].delivery_status;
+            if(delivery_status == null) { delivery_status = "" }
+            else if(delivery_status == '1' || delivery_status == 1) { delivery_status = "배송준비"}
+            else if(delivery_status == '2' || delivery_status == 2) { delivery_status = "배송중" }
+            else if(delivery_status == '3' || delivery_status == 3) { delivery_status = "배송완료"}
+            else if(delivery_status == '4' || delivery_status == 4) { delivery_status = "배송취소"}
+
+            let modal_data = '';
+
+            if(delivery_type == '배달기사 호출') {
+                modal_data = `<a href="#" class="btn btn-success btn-sm" onclick="modal_pop(${delivery_id})">배송 할당</a>`;
+            }
+            console.log(`${man_number}`);
+
+            dt2.row.add([
+                `${delivery_id}`,
+                `${delivery_type}`,
+                `${delivery_status}`,
+                `${man_id}`,
+                `${man_number}`,
+                `${delivery_created}`,
+                `${delivery_completed}`,
+                `${building_addr}`,
+                `${detail_addr}`,
+                `${user_memo}`,
+                `${rider_desc}`,
+                `${modal_data}`
+            ]);
+        }
+        dt2.draw();
+
+    }
+
+    function modal_pop(delivery_id) {
+        onRiderSearch(delivery_id);
+
+        $("#modal-pop").modal("show");
+    }
+
+    function onRiderSearch(delivery_id) {
+
+        $.ajax({
+            method: "GET",
+            url: `/api/rider_search?`,
+            dataType: "json",
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                setRider(data, delivery_id);
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+
+    function setRider(data, delivery_id) {
+
+        dt3.clear();
+
+        for (var i=0; i<data.list.length; i++) {
+
+            dt3.row.add([
+                `${data.list[i].user_id}`,
+                `${data.list[i].user_name}`,
+                `${data.list[i].phone_number}`,
+                `수정 되면 넣을것.`,
+                `수정 되면 넣을것.`,
+                `수정 되면 넣을것.`,
+                `<a href="#" class="btn btn-success btn-sm">${delivery_id} / delivery_id값 가지고 할당한 상태로 변경할것.</a>`
+            ]);
+        }
+        dt3.draw();
+
+    }
+
+
+
+
+</script>
+
+
+</body>
+<!--end::Body-->
+</html>
