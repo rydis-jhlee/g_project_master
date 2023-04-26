@@ -5,8 +5,8 @@ from django.urls import path, include
 from .views import *
 
 urlpatterns = [
-    # GET(배송 현황 조회)
-    path("api/delivery", DeliveryAPI.as_view(), name='delivery'),
+    # GET(배송 현황 조회) TODO: API 변경으로 수정 생성해야됨
+    # path("api/delivery", DeliveryAPI.as_view(), name='delivery'),
 
     # POST(배달기사 픽업 수령)
     # GET(배달기사 픽업 조회)

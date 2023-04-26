@@ -259,6 +259,74 @@ class PaymentAPI(View):
             })
 
 
+class PaymentDetailAPI(View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(PaymentDetailAPI, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+
+        # 필수 파라미터
+        payment_id = request.GET.get('payment_id')  # 결제ID
+        user_id = request.user.username       # 사용자ID
+
+        _payment = {}
+
+        # 결제id와 결제이용자id로 조회하고, delivery_id가 None이 아니면 조회
+        if payment_id and user_id:
+            payment = Payment.objects.filter(
+                Q(payment_id=payment_id) &
+                Q(user_id=user_id) &
+                ~Q(delivery_id=None)
+            ).first()
+
+            # 결제 내역
+            if payment:
+                _payment.update({
+                    "product_id": payment.payment_id,
+                    "user_id": payment.user_id,
+                    "price": payment.price,
+                    "updated": payment.updated,
+                    "status": payment.status,
+                    "payment_date": payment.payment_date,
+                    "delivery_type": payment.delivery_type,
+                    "payment_type": payment.payment_type,
+                    "payment_desc": payment.desc,
+                    "payment_memo": payment.memo,
+                    "delivery_id": payment.delivery_id_id,
+                    "delivery_type": payment.delivery_id.type,
+                    "delivery_status": payment.delivery_id.status,
+                    "delivery_name": payment.delivery_id.username,
+                    "delivery_mobile": payment.delivery_id.mobile,
+                    "addr1": payment.delivery_id.addr1,
+                    "addr2": payment.delivery_id.addr2,
+                    "delivery_desc": payment.delivery_id.desc,
+                    "delivery_memo": payment.delivery_id.memo
+                })
+
+                return JsonResponse(_payment, json_dumps_params={
+                    'ensure_ascii': False,
+                    'indent': 4
+                })
+
+
+            else:
+                # '조회실패': "조회된 구매건이 없습니다."
+                result_data = {
+                    'result_code': '2',
+                    'result_msg': 'Payment does not exists'
+                    # 'token': request.session.session_key
+                }
+                return JsonResponse(result_data)
+        else:
+            # '조회실패': "입력값이 존재하지 않습니다."
+            result_data = {
+                'result_code': '2',
+                'result_msg': 'Invalid Parameters'
+                # 'token': request.session.session_key
+            }
+            return JsonResponse(result_data)
+
 class PaymentCompletion(View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
